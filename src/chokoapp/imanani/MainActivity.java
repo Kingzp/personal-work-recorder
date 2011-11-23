@@ -9,8 +9,11 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.Chronometer;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -51,5 +54,16 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_spinner_item, tasks);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+    }
+
+    public void onClickStartButton(View view) {
+    	Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
+    	chronometer.setBase(SystemClock.elapsedRealtime());
+    	chronometer.start();
+    }
+
+    public void onClickFinishButton(View view) {
+    	Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
+    	chronometer.stop();
     }
 }
