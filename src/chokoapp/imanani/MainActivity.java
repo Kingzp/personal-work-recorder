@@ -18,6 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
+    private SQLiteDatabase db;
+    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,6 +28,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
         displayToday();
+        db = (new DBOpenHelper(this)).getReadableDatabase();
         setupSpinner();
     }
 
@@ -38,9 +41,8 @@ public class MainActivity extends Activity {
     private void setupSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.selectWBSSpinner);
 
-        SQLiteDatabase db = (new DBOpenHelper(this)).getReadableDatabase();
-        final Cursor c = db.query(Task.TABLE_NAME, new String[] { "code",
-                "description" }, null, null, null, null, null);
+        final Cursor c = db.query(Task.TABLE_NAME, new String[] { "code", "description" },
+                                  null, null, null, null, null);
         List<Task> tasks = new ArrayList<Task>() {
             private static final long serialVersionUID = 6925359347298994019L;
             {
@@ -51,19 +53,19 @@ public class MainActivity extends Activity {
         };
         c.close();
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(this,
-                android.R.layout.simple_spinner_item, tasks);
+                                                            android.R.layout.simple_spinner_item, tasks);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
 
     public void onClickStartButton(View view) {
-    	Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
-    	chronometer.setBase(SystemClock.elapsedRealtime());
-    	chronometer.start();
+        Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
     }
 
     public void onClickFinishButton(View view) {
-    	Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
-    	chronometer.stop();
+        Chronometer chronometer = (Chronometer)findViewById(R.id.durationView);
+        chronometer.stop();
     }
 }
