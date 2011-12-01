@@ -33,7 +33,9 @@ public class MainActivity extends Activity {
         db = (new DBOpenHelper(this)).getReadableDatabase();
         setupSpinner();
 
-        timeKeeper = new TimeKeeper();
+		timeKeeper = new TimeKeeper(
+				(TextView) findViewById(R.id.totalTimeView),
+				(TextView) findViewById(R.id.durationView));
         ticker = new Ticker(timeKeeper);
     }
 
@@ -101,8 +103,28 @@ public class MainActivity extends Activity {
      */
     private class TimeKeeper implements Runnable {
 
+    	/**
+    	 * 勤務時間。
+    	 */
         private long workStartTime;
+        /**
+         * 作業時間。
+         */
         private long taskStartTime;
+
+        /**
+         * 勤務時間表示用View。
+         */
+        private TextView workTimeView;
+        /**
+         * 作業時間表示用View。
+         */
+        private TextView taskTimeView;
+
+        public TimeKeeper(TextView workTimeView, TextView taskTimeView) {
+        	this.workTimeView = workTimeView;
+        	this.taskTimeView = taskTimeView;
+        }
 
         /**
          * 勤務開始。
@@ -154,12 +176,10 @@ public class MainActivity extends Activity {
 		public void run() {
 			long now = System.currentTimeMillis();
 			if (workStartTime != 0) {
-				TextView total = (TextView) findViewById(R.id.totalTimeView);
-				total.setText(format(now - workStartTime));
+				workTimeView.setText(format(now - workStartTime));
 			}
 			if (taskStartTime != 0) {
-				TextView duration = (TextView) findViewById(R.id.durationView);
-				duration.setText(format(now - taskStartTime));
+				taskTimeView.setText(format(now - taskStartTime));
 			}
 		}
 
