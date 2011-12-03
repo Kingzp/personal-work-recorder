@@ -28,27 +28,28 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.main);
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title_bar);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+                R.layout.title_bar);
         displayToday();
         db = (new DBOpenHelper(this)).getReadableDatabase();
         setupSpinner();
 
-		timeKeeper = new TimeKeeper(
-				(TextView) findViewById(R.id.totalTimeView),
-				(TextView) findViewById(R.id.durationView));
+        timeKeeper = new TimeKeeper(
+                (TextView) findViewById(R.id.totalTimeView),
+                (TextView) findViewById(R.id.durationView));
         ticker = new Ticker(timeKeeper);
     }
 
     @Override
     public void onResume() {
-    	super.onResume();
-    	ticker.start();
+        super.onResume();
+        ticker.start();
     }
 
     @Override
     public void onPause() {
-    	super.onPause();
-    	ticker.stop();
+        super.onPause();
+        ticker.stop();
     }
 
     private void displayToday() {
@@ -60,8 +61,8 @@ public class MainActivity extends Activity {
     private void setupSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.selectWBSSpinner);
 
-        final Cursor c = db.query(Task.TABLE_NAME, new String[] { "code", "description" },
-                                  null, null, null, null, null);
+        final Cursor c = db.query(Task.TABLE_NAME, new String[] { "code",
+                "description" }, null, null, null, null, null);
         List<Task> tasks = new ArrayList<Task>() {
             private static final long serialVersionUID = 6925359347298994019L;
             {
@@ -72,128 +73,130 @@ public class MainActivity extends Activity {
         };
         c.close();
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(this,
-                                                            android.R.layout.simple_spinner_item, tasks);
+                android.R.layout.simple_spinner_item, tasks);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-		OnItemSelectedListener listener = new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id) {
-				timeKeeper.changeTask();
-			}
+        OnItemSelectedListener listener = new OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view,
+                    int pos, long id) {
+                timeKeeper.changeTask();
+            }
 
-			@Override
-			public void onNothingSelected(AdapterView<?> parent) {
-				timeKeeper.changeTask();
-			}
-		};
-		spinner.setOnItemSelectedListener(listener);
+            public void onNothingSelected(AdapterView<?> parent) {
+                timeKeeper.changeTask();
+            }
+        };
+        spinner.setOnItemSelectedListener(listener);
     }
 
     public void onClickStartButton(View view) {
-    	timeKeeper.beginWork();
+        timeKeeper.beginWork();
     }
 
     public void onClickFinishButton(View view) {
-    	timeKeeper.endWork();
+        timeKeeper.endWork();
     }
 
     /**
-     * ‹Î–±ŠÔ‚Æì‹ÆŠÔ‚ğŒv‚Á‚ÄA•\¦‚É”½‰f‚³‚¹‚éƒNƒ‰ƒXB
+     * å‹¤å‹™æ™‚é–“ã¨ä½œæ¥­æ™‚é–“ã‚’è¨ˆã£ã¦ã€è¡¨ç¤ºã«åæ˜ ã•ã›ã‚‹ã‚¯ãƒ©ã‚¹ã€‚
      */
     private class TimeKeeper implements Runnable {
 
-    	/**
-    	 * ‹Î–±ŠÔB
-    	 */
+        /**
+         * å‹¤å‹™æ™‚é–“ã€‚
+         */
         private long workStartTime;
         /**
-         * ì‹ÆŠÔB
+         * ä½œæ¥­æ™‚é–“ã€‚
          */
         private long taskStartTime;
 
         /**
-         * ‹Î–±ŠÔ•\¦—pViewB
+         * å‹¤å‹™æ™‚é–“è¡¨ç¤ºç”¨Viewã€‚
          */
         private TextView workTimeView;
         /**
-         * ì‹ÆŠÔ•\¦—pViewB
+         * ä½œæ¥­æ™‚é–“è¡¨ç¤ºç”¨Viewã€‚
          */
         private TextView taskTimeView;
 
         public TimeKeeper(TextView workTimeView, TextView taskTimeView) {
-        	this.workTimeView = workTimeView;
-        	this.taskTimeView = taskTimeView;
+            this.workTimeView = workTimeView;
+            this.taskTimeView = taskTimeView;
         }
 
         /**
-         * ‹Î–±ŠJnB
-         * @return ’Êí‚Í‚O‚ğ•Ô‚·B‹Î–±‚ğI—¹‚¹‚¸‚ÉÄ‚ÑŠJn‚µ‚½‚çA‘O‰ñŠJn‚µ‚Ä‚©‚çŒ»İ‚Ü‚Å‚ÌŠÔ‚ğ•Ô‚·B
+         * å‹¤å‹™é–‹å§‹ã€‚
+         * 
+         * @return é€šå¸¸ã¯ï¼ã‚’è¿”ã™ã€‚å‹¤å‹™ã‚’çµ‚äº†ã›ãšã«å†ã³é–‹å§‹ã—ãŸã‚‰ã€å‰å›é–‹å§‹ã—ã¦ã‹ã‚‰ç¾åœ¨ã¾ã§ã®æ™‚é–“ã‚’è¿”ã™ã€‚
          */
         public long beginWork() {
-			long now = System.currentTimeMillis();
-			try {
-				return workStartTime == 0 ? 0 : now - workStartTime;
-			} finally {
-				workStartTime = taskStartTime = now;
-        	}
-		}
+            long now = System.currentTimeMillis();
+            try {
+                return workStartTime == 0 ? 0 : now - workStartTime;
+            } finally {
+                workStartTime = taskStartTime = now;
+            }
+        }
 
         /**
-         * ‹Î–±I—¹B
-         * @return ‹Î–±ŠJn‚©‚çŒ»İ‚Ü‚Å‚ÌŠÔ‚ğ•Ô‚·B
+         * å‹¤å‹™çµ‚äº†ã€‚
+         * 
+         * @return å‹¤å‹™é–‹å§‹ã‹ã‚‰ç¾åœ¨ã¾ã§ã®æ™‚é–“ã‚’è¿”ã™ã€‚
          */
         public long endWork() {
-        	long now = System.currentTimeMillis();
-        	try {
-				return workStartTime == 0 ? 0 : now - workStartTime;
-        	} finally {
-        		workStartTime = taskStartTime = 0;
-        	}
+            long now = System.currentTimeMillis();
+            try {
+                return workStartTime == 0 ? 0 : now - workStartTime;
+            } finally {
+                workStartTime = taskStartTime = 0;
+            }
         }
 
         /**
-         * ì‹Æ•ÏXB
-         * @return ‹Î–±ŠJn‚Ü‚½‚Í‘O‰ñ‚Ìì‹Æ•ÏX‚©‚çŒ»İ‚Ü‚Å‚ÌŠÔ‚ğ•Ô‚·B
+         * ä½œæ¥­å¤‰æ›´ã€‚
+         * 
+         * @return å‹¤å‹™é–‹å§‹ã¾ãŸã¯å‰å›ã®ä½œæ¥­å¤‰æ›´ã‹ã‚‰ç¾åœ¨ã¾ã§ã®æ™‚é–“ã‚’è¿”ã™ã€‚
          */
         public long changeTask() {
-			if (workStartTime == 0) {
-				// ‹Î–±‚ªŠJn‚µ‚Ä‚¢‚È‚¯‚ê‚ÎAì‹Æ‚àŠJn‚µ‚È‚¢‚Å‚O‚ğ•Ô‚·B
-				return 0;
-			}
-        	long now = System.currentTimeMillis();
-        	try {
-				return taskStartTime == 0 ? 0 : now - taskStartTime;
-        	} finally {
-        		taskStartTime = now;
-        	}
+            if (workStartTime == 0) {
+                // å‹¤å‹™ãŒé–‹å§‹ã—ã¦ã„ãªã‘ã‚Œã°ã€ä½œæ¥­ã‚‚é–‹å§‹ã—ãªã„ã§ï¼ã‚’è¿”ã™ã€‚
+                return 0;
+            }
+            long now = System.currentTimeMillis();
+            try {
+                return taskStartTime == 0 ? 0 : now - taskStartTime;
+            } finally {
+                taskStartTime = now;
+            }
         }
 
         /**
-         * ‹Î–±ŠÔ‚Æì‹ÆŠÔ‚ğ•\¦‚É”½‰f‚³‚¹‚éB
+         * å‹¤å‹™æ™‚é–“ã¨ä½œæ¥­æ™‚é–“ã‚’è¡¨ç¤ºã«åæ˜ ã•ã›ã‚‹ã€‚
          */
-        @Override
-		public void run() {
-			long now = System.currentTimeMillis();
-			if (workStartTime != 0) {
-				workTimeView.setText(format(now - workStartTime));
-			}
-			if (taskStartTime != 0) {
-				taskTimeView.setText(format(now - taskStartTime));
-			}
-		}
+        public void run() {
+            long now = System.currentTimeMillis();
+            if (workStartTime != 0) {
+                workTimeView.setText(format(now - workStartTime));
+            }
+            if (taskStartTime != 0) {
+                taskTimeView.setText(format(now - taskStartTime));
+            }
+        }
 
         /**
-         * ŠÔ‚ÌƒtƒH[ƒ}ƒbƒeƒBƒ“ƒOB
-         * @param time ƒ~ƒŠ•b’PˆÊ‚ÌŠÔB
-         * @return H:MM:SSŒ`®‚Ì•¶š—ñB
+         * æ™‚é–“ã®ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒ†ã‚£ãƒ³ã‚°ã€‚
+         * 
+         * @param time
+         *            ãƒŸãƒªç§’å˜ä½ã®æ™‚é–“ã€‚
+         * @return H:MM:SSå½¢å¼ã®æ–‡å­—åˆ—ã€‚
          */
-		public String format(long time) {
-			long sec = time / 1000;
-			long min = sec / 60;
-			long hour = min / 60;
-			return String.format("%02d:%02d:%02d", hour, min % 60, sec % 60);
-		}
+        public String format(long time) {
+            long sec = time / 1000;
+            long min = sec / 60;
+            long hour = min / 60;
+            return String.format("%02d:%02d:%02d", hour, min % 60, sec % 60);
+        }
 
     }
 }

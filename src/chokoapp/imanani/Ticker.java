@@ -6,67 +6,65 @@ import java.util.TimerTask;
 import android.os.Handler;
 
 /**
- * ‚P•b‚²‚Æ‚Éˆ—‚ğÀs‚·‚éƒNƒ‰ƒXB
- * w’è‚³‚ê‚½ˆ—‚ğAƒƒCƒ“ƒXƒŒƒbƒh‚ÅÀs‚·‚é‚½‚ß‚ÉHandler‚ğŒo—R‚·‚éB
+ * ï¼‘ç§’ã”ã¨ã«å‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã‚¯ãƒ©ã‚¹ã€‚ æŒ‡å®šã•ã‚ŒãŸå‡¦ç†ã‚’ã€ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã§å®Ÿè¡Œã™ã‚‹ãŸã‚ã«Handlerã‚’çµŒç”±ã™ã‚‹ã€‚
  */
 public class Ticker {
 
-	private Timer timer;
-	private TickerTask task;
+    private Timer timer;
+    private TickerTask task;
 
-	public Ticker(Runnable proc) {
-		task = new TickerTask(proc);
-	}
+    public Ticker(Runnable proc) {
+        task = new TickerTask(proc);
+    }
 
-	/**
-	 * ˆ—‚Ì’èŠúÀs‚ğŠJnB
-	 */
-	public void start() {
-		// Šù‚É“®‚¢‚Ä‚¢‚½‚ç~‚ß‚éB
-		stop();
-		// V‚µ‚¢ƒ^ƒCƒ}[‚ğ¶¬‚µ‚ÄƒXƒPƒWƒ…[ƒŠƒ“ƒOB
-		timer = new Timer();
-		timer.scheduleAtFixedRate(task,	0, 1000);
-	}
+    /**
+     * å‡¦ç†ã®å®šæœŸå®Ÿè¡Œã‚’é–‹å§‹ã€‚
+     */
+    public void start() {
+        // æ—¢ã«å‹•ã„ã¦ã„ãŸã‚‰æ­¢ã‚ã‚‹ã€‚
+        stop();
+        // æ–°ã—ã„ã‚¿ã‚¤ãƒãƒ¼ã‚’ç”Ÿæˆã—ã¦ã‚¹ã‚±ã‚¸ãƒ¥ãƒ¼ãƒªãƒ³ã‚°ã€‚
+        timer = new Timer();
+        timer.scheduleAtFixedRate(task, 0, 1000);
+    }
 
-	/**
-	 * ˆ—‚Ì’èŠúÀs‚ğI—¹‚µAƒ^ƒCƒ}[‚ğ‰ğ•úB
-	 */
-	public void stop() {
-		// ƒ^ƒCƒ}[‚ª‘¶İ‚µ‚½‚ç~‚ß‚Ä‰ğ•úB
-		if (timer != null) {
-			timer.cancel();
-			timer = null;
-		}
-	}
+    /**
+     * å‡¦ç†ã®å®šæœŸå®Ÿè¡Œã‚’çµ‚äº†ã—ã€ã‚¿ã‚¤ãƒãƒ¼ã‚’è§£æ”¾ã€‚
+     */
+    public void stop() {
+        // ã‚¿ã‚¤ãƒãƒ¼ãŒå­˜åœ¨ã—ãŸã‚‰æ­¢ã‚ã¦è§£æ”¾ã€‚
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
 
-	/**
-	 * ˆ—‚ğƒ^ƒCƒ}[‚É“n‚·‚½‚ß‚ÌTimerTask‚ÌƒTƒuƒNƒ‰ƒXB
-	 * ˆ—‚ğAndroid‚ÌHandlerŒo—R‚ÅÀs‚·‚é‚Æ‚±‚ë‚ªƒ~ƒ\B
-	 */
-	private class TickerTask extends TimerTask {
+    /**
+     * å‡¦ç†ã‚’ã‚¿ã‚¤ãƒãƒ¼ã«æ¸¡ã™ãŸã‚ã®TimerTaskã®ã‚µãƒ–ã‚¯ãƒ©ã‚¹ã€‚ å‡¦ç†ã‚’Androidã®HandlerçµŒç”±ã§å®Ÿè¡Œã™ã‚‹ã¨ã“ã‚ãŒãƒŸã‚½ã€‚
+     */
+    private class TickerTask extends TimerTask {
 
-		/**
-		 * ƒƒCƒ“ƒXƒŒƒbƒh‚Æ‚Ì‹´“n‚µ‚ğ‚·‚éƒnƒ“ƒhƒ‰B
-		 */
-		Handler handler = new Handler();
-		/**
-		 * ’èŠú“I‚ÉÀs‚µ‚½‚¢ˆ—B
-		 */
-		Runnable proc;
+        /**
+         * ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã¨ã®æ©‹æ¸¡ã—ã‚’ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©ã€‚
+         */
+        Handler handler = new Handler();
+        /**
+         * å®šæœŸçš„ã«å®Ÿè¡Œã—ãŸã„å‡¦ç†ã€‚
+         */
+        Runnable proc;
 
-		private TickerTask(Runnable proc) {
-			this.proc = proc;
-		}
+        private TickerTask(Runnable proc) {
+            this.proc = proc;
+        }
 
-		/**
-		 * @see TimerTask#run()
-		 */
-		@Override
-		public void run() {
-			// ƒƒCƒ“ƒXƒŒƒbƒh‚Éˆ—‚ğ‚ ‚¸‚¯‚éB
-			handler.post(proc);
-		}
-		
-	}
+        /**
+         * @see TimerTask#run()
+         */
+        @Override
+        public void run() {
+            // ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰ã«å‡¦ç†ã‚’ã‚ãšã‘ã‚‹ã€‚
+            handler.post(proc);
+        }
+
+    }
 }
