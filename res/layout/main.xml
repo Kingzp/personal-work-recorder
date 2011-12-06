@@ -70,13 +70,13 @@
             android:text="@string/now_recording" />
 
         <Spinner
-            android:id="@+id/selectWBSSpinner"
+            android:id="@+id/selectTaskSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:prompt="@string/selectWBS" />
+            android:prompt="@string/selectTask" />
 
         <TextView
             android:id="@+id/durationView"
@@ -108,14 +108,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="2dp"
-                    android:text="@string/wbs_code" />
+                    android:text="@string/task_code" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="2dp"
-                    android:text="@string/wbs_name" />
+                    android:text="@string/task_name" />
 
             </TableRow>
 
@@ -124,7 +124,7 @@
                 android:layout_height="wrap_content" >
 
                 <EditText
-                    android:id="@+id/wbsCodeText"
+                    android:id="@+id/taskCodeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -132,7 +132,7 @@
                     />
 
                 <EditText
-                    android:id="@+id/wbsDescription"
+                    android:id="@+id/taskDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
@@ -181,14 +181,14 @@
             android:text="@string/monthly_summary" />
 
         <Button
-            android:id="@+id/definWBSButton"
+            android:id="@+id/definTaskButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="@string/define_wbs" />
+            android:text="@string/define_task" />
 
     </LinearLayout>
 

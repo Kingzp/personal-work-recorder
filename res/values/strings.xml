@@ -8,11 +8,11 @@
     <string name="start_recording">Start</string>
     <string name="finish_recording">Finish</string>
     <string name="now_recording">Now recording...</string>
-    <string name="wbs_code">CODE</string>
-    <string name="wbs_name">DESCRIPTION</string>
+    <string name="task_code">CODE</string>
+    <string name="task_name">DESCRIPTION</string>
     <string name="update">Update</string>
     <string name="daily_summary">Daily</string>
     <string name="monthly_summary">Monthly</string>
-    <string name="define_wbs">New Work</string>
-    <string name="selectWBS">Select your task</string>
+    <string name="define_task">New Task</string>
+    <string name="selectTask">Select your task</string>
 </resources>

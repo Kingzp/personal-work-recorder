@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
     }
 
     private void setupSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.selectWBSSpinner);
+        Spinner spinner = (Spinner) findViewById(R.id.selectTaskSpinner);
 
         final Cursor c = db.query(Task.TABLE_NAME, new String[] { "code",
                 "description" }, null, null, null, null, null);
