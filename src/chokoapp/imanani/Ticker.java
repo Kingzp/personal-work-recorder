@@ -11,10 +11,10 @@ import android.os.Handler;
 public class Ticker {
 
     private Timer timer;
-    private TickerTask task;
+    private Runnable proc;
 
     public Ticker(Runnable proc) {
-        task = new TickerTask(proc);
+        this.proc = proc;
     }
 
     /**
@@ -25,7 +25,7 @@ public class Ticker {
         stop();
         // 新しいタイマーを生成してスケジューリング。
         timer = new Timer();
-        timer.scheduleAtFixedRate(task, 0, 1000);
+        timer.scheduleAtFixedRate(new TickerTask(proc), 0, 1000);
     }
 
     /**
@@ -35,6 +35,7 @@ public class Ticker {
         // タイマーが存在したら止めて解放。
         if (timer != null) {
             timer.cancel();
+            timer.purge();
             timer = null;
         }
     }

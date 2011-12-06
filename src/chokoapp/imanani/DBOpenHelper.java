@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteStatement;
 public class DBOpenHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String DB_NAME = "pwr.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public DBOpenHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -22,12 +22,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Task.create_sql());
+        db.execSQL(createTableSql("tasks", "code TEXT", "description TEXT"));
+        db.execSQL(createTableSql("task_records", "work_id INTEGER",
+                "start_time INTEGER", "code TEXT", "description TEXT"));
+        db.execSQL(createTableSql("work_records", "start_time INTEGER",
+                "end_time INTEGER"));
         loadSampleTask(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("drop table if exists tasks");
+        db.execSQL("drop table if exists task_records");
+        db.execSQL("drop table if exists work_records");
+        onCreate(db);
     }
 
     private void loadSampleTask(SQLiteDatabase db) {
@@ -51,5 +59,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String createTableSql(String table, String... columns) {
+        return String.format(
+                "CREATE TABLE %s (id INTEGER PRIMARY KEY AUTOINCREMENT, %s);",
+                table, join(columns));
+    }
+
+    private String join(String[] args) {
+        StringBuilder sb = new StringBuilder(args[0]);
+        for (int i = 1; i < args.length; i++) {
+            sb.append(", ");
+            sb.append(args[i]);
+        }
+        return sb.toString();
     }
 }

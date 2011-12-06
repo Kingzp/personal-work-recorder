@@ -31,12 +31,13 @@ public class MainActivity extends Activity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
                 R.layout.title_bar);
         displayToday();
-        db = (new DBOpenHelper(this)).getReadableDatabase();
+        db = (new DBOpenHelper(this)).getWritableDatabase();
         setupSpinner();
 
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
                 (TextView) findViewById(R.id.durationView));
+        timeKeeper.init(db);
         ticker = new Ticker(timeKeeper);
     }
 

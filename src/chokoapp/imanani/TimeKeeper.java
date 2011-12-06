@@ -1,5 +1,7 @@
 package chokoapp.imanani;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.widget.TextView;
 
 /**
@@ -8,11 +10,15 @@ import android.widget.TextView;
 class TimeKeeper implements Runnable {
 
     /**
-     * 勤務時間。
+     * 勤務実績のID。
+     */
+    private long workId;
+    /**
+     * 勤務開始時刻。
      */
     private long workStartTime;
     /**
-     * 作業時間。
+     * 作業開始時刻。
      */
     private long taskStartTime;
 
@@ -25,6 +31,11 @@ class TimeKeeper implements Runnable {
      */
     private TextView taskTimeView;
 
+    /**
+     * DB.
+     */
+    private SQLiteDatabase db;
+
     public TimeKeeper(TextView workTimeView, TextView taskTimeView) {
         this.workTimeView = workTimeView;
         this.taskTimeView = taskTimeView;
@@ -32,48 +43,46 @@ class TimeKeeper implements Runnable {
 
     /**
      * 勤務開始。
-     * 
-     * @return 通常は０を返す。勤務を終了せずに再び開始したら、前回開始してから現在までの時間を返す。
      */
-    public long beginWork() {
-        long now = System.currentTimeMillis();
+    public void beginWork() {
+        workStartTime = System.currentTimeMillis();
+        db.execSQL("insert into work_records (start_time) values(?)",
+                new Object[] { workStartTime });
+        Cursor cursor = db.rawQuery("select last_insert_rowid()", null);
         try {
-            return workStartTime == 0 ? 0 : now - workStartTime;
+            cursor.moveToFirst();
+            workId = cursor.getLong(0);
+            changeTask();
         } finally {
-            workStartTime = taskStartTime = now;
+            cursor.close();
         }
     }
 
     /**
      * 勤務終了。
-     * 
-     * @return 勤務開始から現在までの時間を返す。
      */
-    public long endWork() {
-        long now = System.currentTimeMillis();
-        try {
-            return workStartTime == 0 ? 0 : now - workStartTime;
-        } finally {
+    public void endWork() {
+        if (workStartTime != 0) {
+            db.execSQL("update work_records set end_time = ? where id = ?",
+                    new Object[] { System.currentTimeMillis(), workId });
             workStartTime = taskStartTime = 0;
+            workId = 0;
         }
     }
 
     /**
      * 作業変更。
-     * 
-     * @return 勤務開始または前回の作業変更から現在までの時間を返す。
      */
-    public long changeTask() {
+    public void changeTask() {
         if (workStartTime == 0) {
-            // 勤務が開始していなければ、作業も開始しないで０を返す。
-            return 0;
+            // 勤務が開始していなければ、作業も開始しない。
+            return;
         }
-        long now = System.currentTimeMillis();
-        try {
-            return taskStartTime == 0 ? 0 : now - taskStartTime;
-        } finally {
-            taskStartTime = now;
-        }
+        taskStartTime = System.currentTimeMillis();
+        db.execSQL("insert into task_records"
+                + "(work_id, start_time, code, description)"
+                + "values(?,?,?,?)", new Object[] { workId, taskStartTime,
+                "code", "desc" });
     }
 
     /**
@@ -101,6 +110,33 @@ class TimeKeeper implements Runnable {
         long min = sec / 60;
         long hour = min / 60;
         return String.format("%02d:%02d:%02d", hour, min % 60, sec % 60);
+    }
+
+    public void init(SQLiteDatabase db) {
+        this.db = db;
+        Cursor workCursor = db.rawQuery("select id, start_time"
+                + " from work_records" + " where end_time is null", null);
+        try {
+            if (!workCursor.moveToFirst()) {
+                return;
+            }
+            workId = workCursor.getLong(0);
+            taskStartTime = workStartTime = workCursor.getLong(1);
+            Cursor taskCursor = db.rawQuery("select start_time"
+                    + " from task_records" + " where work_id = ?"
+                    + " order by start_time desc",
+                    new String[] { String.valueOf(workId) });
+            try {
+                if (!taskCursor.moveToFirst()) {
+                    return;
+                }
+                taskStartTime = taskCursor.getLong(0);
+            } finally {
+                taskCursor.close();
+            }
+        } finally {
+            workCursor.close();
+        }
     }
 
 }
