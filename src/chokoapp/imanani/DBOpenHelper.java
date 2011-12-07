@@ -63,7 +63,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     private String createTableSql(String table, String... columns) {
         return String.format(
-                "CREATE TABLE %s (id INTEGER PRIMARY KEY AUTOINCREMENT, %s);",
+                "CREATE TABLE %s (_id INTEGER PRIMARY KEY AUTOINCREMENT, %s);",
                 table, join(columns));
     }
 

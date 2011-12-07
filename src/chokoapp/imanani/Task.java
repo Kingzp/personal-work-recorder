@@ -2,7 +2,7 @@ package chokoapp.imanani;
 
 public class Task {
     public static final String TABLE_NAME = "tasks";
-    private long id;
+    private long _id;
     private String code;
     private String description;
 
@@ -13,7 +13,7 @@ public class Task {
 
     public static String create_sql() {
         return "CREATE TABLE tasks (\n"
-                + "  id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
+                + "  _id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
                 + "  code TEXT,\n"
                 + "  description TEXT\n"
                 + ");";

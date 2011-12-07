@@ -114,7 +114,7 @@ class TimeKeeper implements Runnable {
 
     public void init(SQLiteDatabase db) {
         this.db = db;
-        Cursor workCursor = db.rawQuery("select id, start_time"
+        Cursor workCursor = db.rawQuery("select _id, start_time"
                 + " from work_records" + " where end_time is null", null);
         try {
             if (!workCursor.moveToFirst()) {

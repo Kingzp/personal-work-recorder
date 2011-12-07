@@ -11,4 +11,9 @@
     <string name="monthly_summary">月次集計</string>
     <string name="define_task">作業登録</string>
     <string name="selectTask">作業を選択</string>
+    <string name="no_data">タスクはありません</string>
+    <string name="task_list">作業一覧</string>
+    <string name="delete_task">削除</string>
+    <string name="should_not_be_empty">空ではいけません</string>
+    <string name="has_the_same_code">既に同じコードがあります</string>
 </resources>

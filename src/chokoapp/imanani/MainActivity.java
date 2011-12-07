@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -96,5 +97,9 @@ public class MainActivity extends Activity {
 
     public void onClickFinishButton(View view) {
         timeKeeper.endWork();
+    }
+    
+    public void newTask(View v) {
+        startActivity(new Intent(this, TaskListActivity.class));
     }
 }
