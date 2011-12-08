@@ -4,42 +4,52 @@ import java.util.ArrayList;
 
 import android.app.ListActivity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.InputFilter;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class TaskListActivity extends ListActivity {
-    SQLiteDatabase db;
-    Cursor allTaskCursor;
-    EditText taskCode;
-    EditText taskDescription;
-    
+    private SQLiteDatabase db;
+    private Cursor allTaskCursor;
+    private Button deleteTask;
+    private Button defineTask;
+    private EditText taskCode;
+    private EditText taskDescription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_list);
-        
+
+        deleteTask = (Button)findViewById(R.id.deleteTaskButton);
+        deleteTask.setEnabled(false);
+
+        defineTask = (Button)findViewById(R.id.defineTaskButton);
+        defineTask.setEnabled(false);
+
         taskCode = (EditText)findViewById(R.id.definedTaskCode);
+        taskCode.setFilters(new InputFilter[] { new AlphaNumericFilter() });
+        taskCode.addTextChangedListener(new EnableDefineButton(defineTask));
+
         taskDescription = (EditText)findViewById(R.id.definedDescription);
-        
+
         db = (new DBOpenHelper(this)).getWritableDatabase();
         allTaskCursor = db.query(Task.TABLE_NAME, 
                             new String[] {"_id", "code", "description"},
                             null, null, null, null, null);
         startManagingCursor(allTaskCursor);
-        setListAdapter(new TaskListAdapter(this, allTaskCursor));
+        setListAdapter(new TaskListAdapter(this, allTaskCursor, deleteTask));
+
     }
-    
+
     public void defineTask(View v) {
         String code = taskCode.getText().toString();
         if ( code.length() > 0 ) {
@@ -54,6 +64,8 @@ public class TaskListActivity extends ListActivity {
                 newTask.put("description", taskDescription.getText().toString());
                 db.insert(Task.TABLE_NAME, null, newTask);
                 allTaskCursor.requery();
+                taskCode.setText("");
+                taskDescription.setText("");
             }
             specifiedCodeCursor.close();
         } else {
@@ -61,7 +73,7 @@ public class TaskListActivity extends ListActivity {
                            Toast.LENGTH_SHORT).show();
         }
     }
-    
+
     public void deleteTask(View v) {
         ListView tasks = getListView();
         int tasks_count = tasks.getChildCount();
@@ -87,30 +99,4 @@ public class TaskListActivity extends ListActivity {
         allTaskCursor.requery();
     }
 
-    private class TaskListAdapter extends CursorAdapter {
-        private LayoutInflater inf;
-
-        public TaskListAdapter(Context context, Cursor c) {
-            super(context, c, true);
-            inf = (LayoutInflater)context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            CheckBox check = (CheckBox)view.findViewById(R.id.deleteCheck);
-            check.setChecked(false);
-            TextView taskId = (TextView)view.findViewById(R.id.taskId);
-            taskId.setText(String.format("%d",cursor.getLong(0)));
-            TextView taskCode = (TextView)view.findViewById(R.id.taskCode);
-            taskCode.setText(cursor.getString(1));
-            TextView taskDescription = (TextView)view.findViewById(R.id.taskDescription);
-            taskDescription.setText(cursor.getString(2));
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return inf.inflate(R.layout.task_item, null);
-        }
-        
-    }
 }

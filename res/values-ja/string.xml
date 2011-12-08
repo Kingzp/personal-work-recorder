@@ -16,4 +16,5 @@
     <string name="delete_task">削除</string>
     <string name="should_not_be_empty">空ではいけません</string>
     <string name="has_the_same_code">既に同じコードがあります</string>
+    <string name="edit_task">作業内容を編集</string>
 </resources>
