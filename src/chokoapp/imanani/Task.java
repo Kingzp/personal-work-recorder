@@ -10,6 +10,11 @@ public class Task {
         this.code = code;
         this.description = description;
     }
+    public Task(long id, String code, String description) {
+        this._id = id;
+        this.code = code;
+        this.description = description;
+    }
 
     public static String create_sql() {
         return "CREATE TABLE tasks (\n"
