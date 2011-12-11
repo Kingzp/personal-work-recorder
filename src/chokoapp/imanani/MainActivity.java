@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -42,6 +45,27 @@ public class MainActivity extends Activity {
                 (TextView) findViewById(R.id.durationView));
         timeKeeper.init(db);
         ticker = new Ticker(timeKeeper);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(getApplication()).inflate(R.menu.transition, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.dailySummaryMenu:
+            return true;
+        case R.id.monthlySummaryMenu:
+            return true;
+        case R.id.defineTaskMenu:
+            startActivity(new Intent(this, TaskListActivity.class));
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -97,9 +121,5 @@ public class MainActivity extends Activity {
 
     public void onClickFinishButton(View view) {
         timeKeeper.endWork();
-    }
-    
-    public void newTask(View v) {
-        startActivity(new Intent(this, TaskListActivity.class));
     }
 }
