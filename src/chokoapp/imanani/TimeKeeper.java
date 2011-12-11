@@ -63,7 +63,7 @@ class TimeKeeper implements Runnable {
      */
     public void endWork() {
         if (workStartTime != 0) {
-            db.execSQL("update work_records set end_time = ? where id = ?",
+            db.execSQL("update work_records set end_time = ? where _id = ?",
                     new Object[] { System.currentTimeMillis(), workId });
             workStartTime = taskStartTime = 0;
             workId = 0;
