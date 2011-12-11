@@ -15,6 +15,9 @@ public class Task {
         this.code = code;
         this.description = description;
     }
+    public long getId() { return _id; }
+    public String getCode() { return code; }
+    public String getDescription() { return description; }
 
     public static String create_sql() {
         return "CREATE TABLE tasks (\n"

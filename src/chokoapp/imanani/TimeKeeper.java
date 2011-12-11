@@ -44,7 +44,7 @@ class TimeKeeper implements Runnable {
     /**
      * 勤務開始。
      */
-    public void beginWork() {
+    public void beginWork(Task task) {
         workStartTime = System.currentTimeMillis();
         db.execSQL("insert into work_records (start_time) values(?)",
                 new Object[] { workStartTime });
@@ -52,7 +52,7 @@ class TimeKeeper implements Runnable {
         try {
             cursor.moveToFirst();
             workId = cursor.getLong(0);
-            changeTask();
+            changeTask(task);
         } finally {
             cursor.close();
         }
@@ -73,7 +73,7 @@ class TimeKeeper implements Runnable {
     /**
      * 作業変更。
      */
-    public void changeTask() {
+    public void changeTask(Task task) {
         if (workStartTime == 0) {
             // 勤務が開始していなければ、作業も開始しない。
             return;
@@ -82,7 +82,7 @@ class TimeKeeper implements Runnable {
         db.execSQL("insert into task_records"
                 + "(work_id, start_time, code, description)"
                 + "values(?,?,?,?)", new Object[] { workId, taskStartTime,
-                "code", "desc" });
+                                                    task.getCode(), task.getDescription() });
     }
 
     /**

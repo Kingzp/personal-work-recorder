@@ -24,6 +24,8 @@ public class MainActivity extends Activity {
     private Cursor allTaskCursor;
     private TimeKeeper timeKeeper;
     private Ticker ticker;
+    private Spinner spinner;
+    private int savedSpinnerPosition = 0;
 
     /** Called when the activity is first created. */
     @Override
@@ -39,6 +41,8 @@ public class MainActivity extends Activity {
                                  new String[] {"_id", "code", "description" },
                                  null, null, null, null, null);
         startManagingCursor(allTaskCursor);
+
+        spinner = (Spinner) findViewById(R.id.selectTaskSpinner);
 
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
@@ -71,7 +75,7 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        setupSpinner(allTaskCursor);
+        setupSpinner();
         ticker.start();
     }
 
@@ -81,26 +85,41 @@ public class MainActivity extends Activity {
         ticker.stop();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("savedSpinnerPosition", savedSpinnerPosition);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        savedSpinnerPosition = savedInstanceState.getInt("savedSpinnerPosition", 0);
+    }
+
     private void displayToday() {
         TextView v = (TextView) findViewById(R.id.todayView);
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd (E)");
         v.setText(df.format(Calendar.getInstance().getTime()));
     }
 
-    private void setupSpinner(Cursor c) {
-        Spinner spinner = (Spinner) findViewById(R.id.selectTaskSpinner);
+    private void setupSpinner() {
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
-            this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(c));
+            this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(allTaskCursor));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(savedSpinnerPosition);
         OnItemSelectedListener listener = new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view,
-                    int pos, long id) {
-                timeKeeper.changeTask();
+                                       int pos, long id) {
+                if ( savedSpinnerPosition != pos ) {
+                    savedSpinnerPosition = pos;
+                    Task selectedTask = (Task)parent.getItemAtPosition(pos);
+                    timeKeeper.changeTask(selectedTask);
+                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
-                timeKeeper.changeTask();
             }
         };
         spinner.setOnItemSelectedListener(listener);
@@ -116,7 +135,7 @@ public class MainActivity extends Activity {
     }
 
     public void onClickStartButton(View view) {
-        timeKeeper.beginWork();
+        timeKeeper.beginWork((Task)spinner.getSelectedItem());
     }
 
     public void onClickFinishButton(View view) {
