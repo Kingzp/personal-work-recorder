@@ -19,4 +19,5 @@
     <string name="should_not_be_empty">should not be empty</string>
     <string name="has_the_same_code">You has the same code</string>
     <string name="edit_task">Edit Task</string>
+    <string name="cannot_delete">You cannot delete currently recording task</string>
 </resources>

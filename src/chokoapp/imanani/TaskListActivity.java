@@ -46,7 +46,8 @@ public class TaskListActivity extends ListActivity {
                             new String[] {"_id", "code", "description"},
                             null, null, null, null, null);
         startManagingCursor(allTaskCursor);
-        setListAdapter(new TaskListAdapter(this, allTaskCursor, deleteTask));
+        long cannotDeleteId = getIntent().getLongExtra("chokoapp.imanani.cannotDeleteId", -1);
+        setListAdapter(new TaskListAdapter(this, allTaskCursor, deleteTask, cannotDeleteId));
 
     }
 

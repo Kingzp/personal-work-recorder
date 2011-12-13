@@ -13,7 +13,6 @@ public class TaskSelectionSpinner extends Spinner {
     public TaskSelectionSpinner(Context context, ArrayAdapter<Task> adapter, 
                                 long currentTaskId, TimeKeeper timeKeeper) {
         super(context);
-        this.currentTaskId = currentTaskId;
         this.timeKeeper = timeKeeper;
 
         setPromptId(R.string.selectTask);
@@ -25,6 +24,7 @@ public class TaskSelectionSpinner extends Spinner {
                 spinnerPosition = i;
             }
         }
+        this.currentTaskId = adapter.getItem(spinnerPosition).getId();
         setSelection(spinnerPosition);
         setOnItemSelectedListener(new ChangeTask(spinnerPosition));
     }

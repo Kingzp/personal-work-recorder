@@ -65,7 +65,12 @@ public class MainActivity extends Activity {
         case R.id.monthlySummaryMenu:
             return true;
         case R.id.defineTaskMenu:
-            startActivity(new Intent(this, TaskListActivity.class));
+            Intent intent = new Intent(this, TaskListActivity.class);
+            if (timeKeeper.nowRecording()) {
+                intent.putExtra("chokoapp.imanani.cannotDeleteId", 
+                                spinner.getCurrentTaskId());
+            }
+            startActivity(intent);
             return true;
         default:
             return super.onOptionsItemSelected(item);

@@ -139,4 +139,7 @@ class TimeKeeper implements Runnable {
         }
     }
 
+    public boolean nowRecording() {
+        return workStartTime != 0;
+    }
 }
