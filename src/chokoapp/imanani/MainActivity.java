@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -13,10 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -24,8 +25,9 @@ public class MainActivity extends Activity {
     private Cursor allTaskCursor;
     private TimeKeeper timeKeeper;
     private Ticker ticker;
-    private Spinner spinner;
-    private int savedSpinnerPosition = 0;
+    private TaskSelectionSpinner spinner;
+    private long currentTaskId = 0;
+    private SharedPreferences pref;
 
     /** Called when the activity is first created. */
     @Override
@@ -41,8 +43,6 @@ public class MainActivity extends Activity {
                                  new String[] {"_id", "code", "description" },
                                  null, null, null, null, null);
         startManagingCursor(allTaskCursor);
-
-        spinner = (Spinner) findViewById(R.id.selectTaskSpinner);
 
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
@@ -86,15 +86,19 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("savedSpinnerPosition", savedSpinnerPosition);
+    public void onStart() {
+        super.onStart();
+        pref = getSharedPreferences("pref", MODE_PRIVATE|MODE_WORLD_READABLE);
+        currentTaskId = pref.getLong("currentTaskId", 0);
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        savedSpinnerPosition = savedInstanceState.getInt("savedSpinnerPosition", 0);
+    public void onStop() {
+        super.onStop();
+        pref = getSharedPreferences("pref", MODE_PRIVATE|MODE_WORLD_WRITEABLE);
+        Editor e = pref.edit();
+        e.putLong("currentTaskId", spinner.getCurrentTaskId());
+        e.commit();
     }
 
     private void displayToday() {
@@ -104,25 +108,17 @@ public class MainActivity extends Activity {
     }
 
     private void setupSpinner() {
+        LinearLayout layout = (LinearLayout)findViewById(R.id.recordingLinearLayout);
+        if ( spinner != null ) {
+            layout.removeView(spinner);
+        }
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
             this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(allTaskCursor));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setSelection(savedSpinnerPosition);
-        OnItemSelectedListener listener = new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int pos, long id) {
-                if ( savedSpinnerPosition != pos ) {
-                    savedSpinnerPosition = pos;
-                    Task selectedTask = (Task)parent.getItemAtPosition(pos);
-                    timeKeeper.changeTask(selectedTask);
-                }
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        };
-        spinner.setOnItemSelectedListener(listener);
+        spinner = new TaskSelectionSpinner(this, adapter, currentTaskId, timeKeeper);
+        LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        param.setMargins(20, 0, 20, 0);
+        layout.addView(spinner, 1, param);
     }
 
     private ArrayList<Task> makeArrayListForSpinner(Cursor c) {

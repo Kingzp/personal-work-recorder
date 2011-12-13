@@ -67,6 +67,7 @@
             android:orientation="vertical" >
 
             <LinearLayout
+                android:id="@+id/recordingLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -79,15 +80,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:text="@string/now_recording" />
-
-                <Spinner
-                    android:id="@+id/selectTaskSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:prompt="@string/selectTask" />
 
                 <TextView
                     android:id="@+id/durationView"
