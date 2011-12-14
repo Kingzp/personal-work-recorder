@@ -18,4 +18,8 @@
     <string name="has_the_same_code">既に同じコードがあります</string>
     <string name="edit_task">作業内容を編集</string>
     <string name="cannot_delete">現在記録中の作業は削除できません</string>
+    <string name="reset">リセット</string>
+    <string name="save">保存</string>
+    <string name="daily_total">合計時間</string>
+    <string name="daily_summary_title">一日の作業集計結果</string>
 </resources>

@@ -20,4 +20,8 @@
     <string name="has_the_same_code">You has the same code</string>
     <string name="edit_task">Edit Task</string>
     <string name="cannot_delete">You cannot delete currently recording task</string>
+    <string name="daily_total">Daily Total</string>
+    <string name="daily_summary_title">The Daily Summary</string>
+    <string name="reset">Reset</string>
+    <string name="save">Save</string>
 </resources>

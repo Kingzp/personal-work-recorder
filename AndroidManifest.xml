@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".TaskListActivity"></activity>
+        <activity android:name=".DailySummaryActivity"></activity>
     </application>
 
 </manifest>
