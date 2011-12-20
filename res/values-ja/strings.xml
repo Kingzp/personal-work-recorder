@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">What\'s doing?</string>
     <string name="today_summary">今日の作業時間合計</string>
     <string name="start_recording">記録開始</string>
     <string name="finish_recording">記録終了</string>
