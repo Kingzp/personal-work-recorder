@@ -44,7 +44,8 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:padding="5dp"
-            android:src="@drawable/plus" />
+            android:clickable="true"
+            android:src="@drawable/plus_button" />
 
         <ImageView
             android:id="@+id/timeMinusView"
@@ -52,7 +53,8 @@
             android:layout_height="24dp"
             android:layout_gravity="center_vertical"
             android:padding="5dp"
-            android:src="@drawable/minus" />
+            android:clickable="true"
+            android:src="@drawable/minus_button" />
 
     </LinearLayout>
 
