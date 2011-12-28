@@ -23,4 +23,5 @@
     <string name="daily_summary_title">The Daily Summary</string>
     <string name="reset">Reset</string>
     <string name="save">Save</string>
+    <string name="select_date">Select Date</string>
 </resources>
