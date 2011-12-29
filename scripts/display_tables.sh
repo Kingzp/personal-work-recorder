@@ -28,8 +28,12 @@ SELECT_TASK_RECORDS="SELECT work_id w_id, \
                             code, description \
                        FROM work_records LEFT OUTER JOIN task_records \
                          ON work_id = work_records._id;"
+SELECT_DAILY_WROK_SUMMARY="SELECT _id, \
+                                  datetime(start_at / 1000, 'unixepoch', 'localtime') 'start at', \
+                                  datetime(end_at / 1000, 'unixepoch', 'localtime') 'end at' \
+                                  FROM daily_work_summary;"
 
-echo "tm)tasks, wr)work_records, tr)task_records, q)quit"
+echo "tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, q)quit"
 echo
 while read TABLE_NAME; do
     case $TABLE_NAME in
@@ -42,6 +46,9 @@ while read TABLE_NAME; do
         tr|task_records)
             sqlite3 -header -column pwr.db "$SELECT_TASK_RECORDS"
             ;;
+        ds|daily_work_summary)
+            sqlite3 -header -column pwr.db "$SELECT_DAILY_WROK_SUMMARY"
+            ;;
         q|quit)
             break
             ;;
@@ -49,7 +56,7 @@ while read TABLE_NAME; do
             ;;
     esac
 
-    echo "tm)tasks, wr)work_records, tr)task_records, q)quit"
+    echo "tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, q)quit"
     echo
 done
 exit 0
