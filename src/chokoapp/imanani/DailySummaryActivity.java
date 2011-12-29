@@ -33,7 +33,7 @@ public class DailySummaryActivity extends ListActivity {
         datePicker = new DatePicker(this);
         builder.setView(datePicker);
         builder.setTitle(getResources().getString(R.string.select_date));
-        builder.setPositiveButton(android.R.string.ok, new DisplaySummary(this));
+        builder.setPositiveButton(android.R.string.ok, new DisplaySummary());
         builder.setNegativeButton(android.R.string.cancel, null);
         dateSelector = builder.create();
 
@@ -48,12 +48,6 @@ public class DailySummaryActivity extends ListActivity {
     }
 
     private class DisplaySummary implements DialogInterface.OnClickListener {
-        private Activity act;
-
-        public DisplaySummary(Activity act) {
-            this.act = act;
-        }
-
         @Override
         public void onClick(DialogInterface dialog, int which) {
             Calendar cal = Calendar.getInstance();
