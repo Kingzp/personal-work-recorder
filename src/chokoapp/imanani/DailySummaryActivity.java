@@ -18,7 +18,7 @@ public class DailySummaryActivity extends ListActivity {
     private Cursor summaryCursor;
     private DatePicker datePicker;
     private AlertDialog dateSelector;
-    private Calendar selectedDate;
+    private DateButton dateSelectButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,31 +37,14 @@ public class DailySummaryActivity extends ListActivity {
         builder.setNegativeButton(android.R.string.cancel, null);
         dateSelector = builder.create();
 
-        selectedDate = Calendar.getInstance();
+        dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
     }
 
     public void selectDate(View v) {
-        datePicker.updateDate(selectedDate.get(Calendar.YEAR),
-                              selectedDate.get(Calendar.MONTH),
-                              selectedDate.get(Calendar.DATE));
+        datePicker.updateDate(dateSelectButton.getYear(),
+                              dateSelectButton.getMonth(),
+                              dateSelectButton.getDay());
         dateSelector.show();
-    }
-
-    private String getSelectedDate() {
-        if (datePicker != null) {
-            return String.format("%04d年%02d月%02d日",
-                                 datePicker.getYear(),
-                                 datePicker.getMonth() + 1,
-                                 datePicker.getDayOfMonth());
-        } else {
-            return "9999年99月99日";
-        }
-    }
-
-    private void updateSelectedDate() {
-        selectedDate.set(Calendar.YEAR, datePicker.getYear());
-        selectedDate.set(Calendar.MONTH, datePicker.getMonth());
-        selectedDate.set(Calendar.DATE, datePicker.getDayOfMonth());
     }
 
     private class DisplaySummary implements DialogInterface.OnClickListener {
@@ -73,11 +56,11 @@ public class DailySummaryActivity extends ListActivity {
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            Button dateSelectButton = (Button)act.findViewById(R.id.dateSelectButton);
-            dateSelectButton.setText(getSelectedDate());
-            updateSelectedDate();
-            // TODO
-            Toast.makeText(act, "NOT YET IMPLEMENTED", Toast.LENGTH_SHORT).show();
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, datePicker.getYear());
+            cal.set(Calendar.MONTH, datePicker.getMonth());
+            cal.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+            dateSelectButton.setDate(cal.getTime());
         }
     }
 }
