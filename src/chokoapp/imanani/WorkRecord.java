@@ -6,7 +6,7 @@ import java.util.Date;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class WorkRecords {
+public class WorkRecord {
     public static final String TABLE_NAME = "work_records";
     public static final String[] COLUMNS = {
         "start_time INTEGER",

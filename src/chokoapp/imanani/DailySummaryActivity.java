@@ -134,7 +134,7 @@ public class DailySummaryActivity extends ListActivity {
         }
 
         private void updateDailyWorkTable() {
-            Cursor work_record_cursor = WorkRecords.findByDate(db, dateButton.getTime());
+            Cursor work_record_cursor = WorkRecord.findByDate(db, dateButton.getTime());
             Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
             if ( daily_work_summary_cursor.moveToFirst() ) {   // already has a summary record
                 if ( work_record_cursor.moveToFirst() ) {
