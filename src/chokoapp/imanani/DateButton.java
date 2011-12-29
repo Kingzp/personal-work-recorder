@@ -56,4 +56,7 @@ public class DateButton extends Button {
         return cal.get(Calendar.DAY_OF_MONTH);
     }
 
+    public long getTime() {
+        return date.getTime();
+    }
 }
