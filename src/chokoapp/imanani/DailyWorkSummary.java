@@ -31,6 +31,15 @@ public class DailyWorkSummary {
                   new String[] { (new SimpleDateFormat("yyyy-MM-dd")).format(new Date(date)) });
     }
 
+    public static void setEndTimeNull(SQLiteDatabase db, long date) {
+        ContentValues val = new ContentValues();
+        val.putNull("end_at");
+        db.update(TABLE_NAME,
+                  val,
+                  "date(start_at / 1000, 'unixepoch', 'localtime') = ?",
+                  new String[] { (new SimpleDateFormat("yyyy-MM-dd")).format(new Date(date)) });
+    }
+
     public static void setStartTime(SQLiteDatabase db, long start) {
         ContentValues val = new ContentValues();
         val.put("start_at", start);

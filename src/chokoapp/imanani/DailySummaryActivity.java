@@ -137,10 +137,12 @@ public class DailySummaryActivity extends ListActivity {
             Cursor work_record_cursor = WorkRecords.findByDate(db, dateButton.getTime());
             Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
             if ( daily_work_summary_cursor.moveToFirst() ) {   // already has a summary record
-                if ( daily_work_summary_cursor.isNull(1) ) {   // but the record has not ended
-                    if ( work_record_cursor.moveToFirst() &&
-                         !work_record_cursor.isNull(1) ) {     // if we have a latest info, update it.
-                        DailyWorkSummary.setEndTime(db, dateButton.getTime(), work_record_cursor.getLong(1));
+                if ( work_record_cursor.moveToFirst() ) {
+                    if ( work_record_cursor.isNull(1) ) {
+                        DailyWorkSummary.setEndTimeNull(db, dateButton.getTime());
+                    } else {
+                        DailyWorkSummary.setEndTime(db, dateButton.getTime(),
+                                                    work_record_cursor.getLong(1));
                     }
                 }
             } else {                                           // no summary record
