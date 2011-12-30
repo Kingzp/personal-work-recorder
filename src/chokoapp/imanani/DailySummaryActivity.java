@@ -1,5 +1,7 @@
 package chokoapp.imanani;
 
+import android.widget.ImageView;
+
 import java.util.Calendar;
 
 import android.app.AlertDialog;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -23,6 +26,10 @@ public class DailySummaryActivity extends ListActivity {
     private DateTimeView startTimeView;
     private DateTimeView endTimeView;
     private TextView totalTimeView;
+    private ImageView startTimeUp;
+    private ImageView startTimeDown;
+    private ImageView endTimeUp;
+    private ImageView endTimeDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,21 @@ public class DailySummaryActivity extends ListActivity {
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
         endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
         totalTimeView = (TextView)findViewById(R.id.totalTimeView);
+        startTimeView.addTextChangedListener(new CalculateTotal(startTimeView,
+                                                                endTimeView,
+                                                                totalTimeView));
+        endTimeView.addTextChangedListener(new CalculateTotal(startTimeView,
+                                                              endTimeView,
+                                                              totalTimeView));
+
+        startTimeUp = (ImageView)findViewById(R.id.startTimeUp);
+        startTimeUp.setOnClickListener(new Up(startTimeView));
+        startTimeDown = (ImageView)findViewById(R.id.startTimeDown);
+        startTimeDown.setOnClickListener(new Down(startTimeView));
+        endTimeUp = (ImageView)findViewById(R.id.endTimeUp);
+        endTimeUp.setOnClickListener(new Up(endTimeView));
+        endTimeDown = (ImageView)findViewById(R.id.endTimeDown);
+        endTimeDown.setOnClickListener(new Down(endTimeView));
     }
 
     public void selectDate(View v) {
@@ -106,24 +128,17 @@ public class DailySummaryActivity extends ListActivity {
                              long start, long end) {
             startView.setTime(start);
             endView.setTime(end);
-            long totalSeconds = (end - start) / 1000;
-            long sec = totalSeconds % 60;
-            long min = (totalSeconds / 60) % 60;
-            long hor = totalSeconds / (60 * 60);
-            totalView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
         }
 
         private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
                              long start) {
             startView.setTime(start);
             endView.clearTime();
-            totalView.setText("00:00:00");
         }
 
         private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView) {
             startView.clearTime();
             endView.clearTime();
-            totalView.setText("00:00:00");
         }
 
         private long updateDailyWorkTable() {
@@ -182,5 +197,62 @@ public class DailySummaryActivity extends ListActivity {
             task_record_cursor.close();
         }
 
+    }
+
+    private class Up implements OnClickListener {
+        private DateTimeView view;
+
+        public Up(DateTimeView view) {
+            this.view = view;
+        }
+
+        @Override
+        public void onClick(View v) {
+            view.up();
+        }
+    }
+
+    private class Down implements OnClickListener {
+        private DateTimeView view;
+
+        public Down(DateTimeView view) {
+            this.view = view;
+        }
+
+        @Override
+        public void onClick(View v) {
+            view.down();
+        }
+    }
+
+    private class CalculateTotal implements TextWatcher {
+        private DateTimeView startView;
+        private DateTimeView endView;
+        private TextView totalView;
+
+        public CalculateTotal(DateTimeView startView, DateTimeView endView, TextView totalView) {
+            this.startView = startView;
+            this.endView = endView;
+            this.totalView = totalView;
+        }
+
+        @Override
+        public void afterTextChanged(Editable e) {
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) {
+                totalView.setText("00:00:00");
+            } else {
+                long totalSeconds = (endView.getTime() - startView.getTime()) / 1000;
+                long sec = totalSeconds % 60;
+                long min = (totalSeconds / 60) % 60;
+                long hor = totalSeconds / (60 * 60);
+                totalView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
+            }
+        }
     }
 }

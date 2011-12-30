@@ -8,6 +8,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class DateTimeView extends TextView {
+    private final static long UP_AND_DOWN_STEP = 15 * 60 * 1000;
     private Date date;
     private SimpleDateFormat df;
 
@@ -25,7 +26,7 @@ public class DateTimeView extends TextView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if ( date != null ) {
+        if ( !isEmpty() ) {
             setText(df.format(this.date));
         } else {
             setText("9999/99/99 00:00:00");
@@ -43,6 +44,26 @@ public class DateTimeView extends TextView {
     }
 
     public long getTime() {
-        return date == null ? -1 : date.getTime();
+        return isEmpty() ? -1 : date.getTime();
+    }
+
+    public void up() {
+        if ( !isEmpty() ) {
+            long current = date.getTime();
+            long remainder = current % UP_AND_DOWN_STEP;
+            setTime(current - remainder + UP_AND_DOWN_STEP);
+        }
+    }
+
+    public void down() {
+        if ( !isEmpty() ) {
+            long current = date.getTime();
+            long remainder = current % UP_AND_DOWN_STEP;
+            setTime(current - (remainder == 0 ? UP_AND_DOWN_STEP : remainder));
+        }
+    }
+
+    public boolean isEmpty() {
+        return date == null;
     }
 }
