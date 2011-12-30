@@ -1,7 +1,5 @@
 package chokoapp.imanani;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Calendar;
 
 import android.app.AlertDialog;
@@ -22,8 +20,8 @@ public class DailySummaryActivity extends ListActivity {
     private DatePicker datePicker;
     private AlertDialog dateSelector;
     private DateButton dateSelectButton;
-    private TextView startTimeView;
-    private TextView endTimeView;
+    private DateTimeView startTimeView;
+    private DateTimeView endTimeView;
     private TextView totalTimeView;
 
     @Override
@@ -43,8 +41,8 @@ public class DailySummaryActivity extends ListActivity {
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
         dateSelectButton.addTextChangedListener(new DisplaySummary(dateSelectButton, this));
 
-        startTimeView = (TextView)findViewById(R.id.startTimeView);
-        endTimeView = (TextView)findViewById(R.id.endTimeView);
+        startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
+        endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
         totalTimeView = (TextView)findViewById(R.id.totalTimeView);
     }
 
@@ -104,15 +102,10 @@ public class DailySummaryActivity extends ListActivity {
             act.setListAdapter(new TaskSummaryAdapter(act, daily_task_summary_cursor));
         }
 
-        private void setTime(TextView startView, TextView endView, TextView totalView,
+        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
                              long start, long end) {
-            Date startDate = new Date();
-            startDate.setTime(start);
-            Date endDate = new Date();
-            endDate.setTime(end);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            startView.setText(df.format(startDate));
-            endView.setText(df.format(endDate));
+            startView.setTime(start);
+            endView.setTime(end);
             long totalSeconds = (end - start) / 1000;
             long sec = totalSeconds % 60;
             long min = (totalSeconds / 60) % 60;
@@ -120,20 +113,17 @@ public class DailySummaryActivity extends ListActivity {
             totalView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
         }
 
-        private void setTime(TextView startView, TextView endView, TextView totalView,
+        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
                              long start) {
-            Date startDate = new Date();
-            startDate.setTime(start);
-            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-            startView.setText(df.format(startDate));
-            endView.setText("9999/99/99 99:99:99");
-            totalView.setText("99:99:99");
+            startView.setTime(start);
+            endView.clearTime();
+            totalView.setText("00:00:00");
         }
 
-        private void setTime(TextView startView, TextView endView, TextView totalView) {
-            startView.setText("9999/99/99 99:99:99");
-            endView.setText("9999/99/99 99:99:99");
-            totalView.setText("99:99:99");
+        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView) {
+            startView.clearTime();
+            endView.clearTime();
+            totalView.setText("00:00:00");
         }
 
         private long updateDailyWorkTable() {

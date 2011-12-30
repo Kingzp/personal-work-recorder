@@ -45,7 +45,7 @@
             android:text="@string/start_recording"
             android:textSize="16dp" />
 
-        <TextView
+        <chokoapp.imanani.DateTimeView
             android:id="@+id/startTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
             android:text="@string/finish_recording"
             android:textSize="16dp" />
 
-        <TextView
+        <chokoapp.imanani.DateTimeView
             android:id="@+id/endTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
