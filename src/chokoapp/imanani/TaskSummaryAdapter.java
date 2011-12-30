@@ -23,7 +23,11 @@ public class TaskSummaryAdapter extends CursorAdapter {
         TextView taskDurationView = (TextView)view.findViewById(R.id.taskDurationOnSummary);
         codeView.setText(cursor.getString(1));
         descriptionView.setText(cursor.getString(2));
-        taskDurationView.setText(cursor.getString(3));
+        long duration = cursor.getLong(3) / 1000;
+        long sec = duration % 60;
+        long min = (duration / 60) % 60;
+        long hor = duration / (60 * 60);
+        taskDurationView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
     }
 
     @Override

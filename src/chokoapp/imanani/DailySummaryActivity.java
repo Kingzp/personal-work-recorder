@@ -6,6 +6,7 @@ import java.util.Calendar;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,7 +19,6 @@ import android.widget.TextView;
 
 public class DailySummaryActivity extends ListActivity {
     private SQLiteDatabase db;
-    private Cursor summaryCursor;
     private DatePicker datePicker;
     private AlertDialog dateSelector;
     private DateButton dateSelectButton;
@@ -31,9 +31,6 @@ public class DailySummaryActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daily_summay);
         db = (new DBOpenHelper(this)).getWritableDatabase();
-        summaryCursor = db.rawQuery("SELECT _id, code, description, '99:99:99' FROM task_records", null);
-
-        setListAdapter(new TaskSummaryAdapter(this, summaryCursor));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         datePicker = new DatePicker(this);
@@ -44,7 +41,7 @@ public class DailySummaryActivity extends ListActivity {
         dateSelector = builder.create();
 
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
-        dateSelectButton.addTextChangedListener(new DisplaySummary(dateSelectButton));
+        dateSelectButton.addTextChangedListener(new DisplaySummary(dateSelectButton, this));
 
         startTimeView = (TextView)findViewById(R.id.startTimeView);
         endTimeView = (TextView)findViewById(R.id.endTimeView);
@@ -71,9 +68,11 @@ public class DailySummaryActivity extends ListActivity {
 
     private class DisplaySummary implements TextWatcher {
         private DateButton dateButton;
+        private ListActivity act;
 
-        public DisplaySummary(DateButton dateButton) {
+        public DisplaySummary(DateButton dateButton, ListActivity act) {
             this.dateButton = dateButton;
+            this.act = act;
         }
 
         @Override
@@ -84,21 +83,25 @@ public class DailySummaryActivity extends ListActivity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            updateDailyWorkTable();
+            long work_summary_id = updateDailyWorkTable();
+            updateDailyTaskTable(work_summary_id);
 
             Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
             if ( daily_work_summary_cursor.moveToFirst() ) {
-                if ( daily_work_summary_cursor.isNull(1) ) {
+                if ( daily_work_summary_cursor.isNull(2) ) {
                     setTime(startTimeView, endTimeView, totalTimeView,
-                            daily_work_summary_cursor.getLong(0));
+                            daily_work_summary_cursor.getLong(1));
                 } else {
                     setTime(startTimeView, endTimeView, totalTimeView,
-                            daily_work_summary_cursor.getLong(0),
-                            daily_work_summary_cursor.getLong(1));
+                            daily_work_summary_cursor.getLong(1),
+                            daily_work_summary_cursor.getLong(2));
                 }
             } else {
                 setTime(startTimeView, endTimeView, totalTimeView);
             }
+
+            Cursor daily_task_summary_cursor = DailyTaskSummary.findById(db, work_summary_id);
+            act.setListAdapter(new TaskSummaryAdapter(act, daily_task_summary_cursor));
         }
 
         private void setTime(TextView startView, TextView endView, TextView totalView,
@@ -133,9 +136,10 @@ public class DailySummaryActivity extends ListActivity {
             totalView.setText("99:99:99");
         }
 
-        private void updateDailyWorkTable() {
+        private long updateDailyWorkTable() {
             Cursor work_record_cursor = WorkRecord.findByDate(db, dateButton.getTime());
             Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
+            long daily_work_summary_id = -1;
             if ( daily_work_summary_cursor.moveToFirst() ) {   // already has a summary record
                 if ( work_record_cursor.moveToFirst() ) {
                     if ( work_record_cursor.isNull(1) ) {
@@ -145,18 +149,47 @@ public class DailySummaryActivity extends ListActivity {
                                                     work_record_cursor.getLong(1));
                     }
                 }
+                daily_work_summary_id = daily_work_summary_cursor.getLong(0);
             } else {                                           // no summary record
                 if ( work_record_cursor.moveToFirst() ) {      // i have recorded the work
                     if ( work_record_cursor.isNull(1) ) {      // but i am now recording the work
-                        DailyWorkSummary.setStartTime(db, work_record_cursor.getLong(0));
+                        daily_work_summary_id =
+                            DailyWorkSummary.setStartTime(db, work_record_cursor.getLong(0));
                     } else {
-                        DailyWorkSummary.setStartEndTime(db, work_record_cursor.getLong(0),
-                                                         work_record_cursor.getLong(1));
+                        daily_work_summary_id =
+                            DailyWorkSummary.setStartEndTime(db, work_record_cursor.getLong(0),
+                                                             work_record_cursor.getLong(1));
                     }
                 }
             }
-            daily_work_summary_cursor.close();
-            work_record_cursor.close();
+            try {
+                return daily_work_summary_id;
+            } finally {
+                daily_work_summary_cursor.close();
+                work_record_cursor.close();
+            }
+        }
+
+        private void updateDailyTaskTable(long work_summary_id) {
+            Cursor task_record_cursor = TaskRecord.findByDate(db, dateButton.getTime());
+            db.beginTransaction();
+            try {
+                db.delete(DailyTaskSummary.TABLE_NAME,
+                          "daily_work_summary_id = ?",
+                          new String[] { String.format("%d", work_summary_id) } );
+                while ( task_record_cursor.moveToNext() ) {
+                    ContentValues val = new ContentValues();
+                    val.put("code" , task_record_cursor.getString(0));
+                    val.put("description", task_record_cursor.getString(1));
+                    val.put("duration", task_record_cursor.getLong(2));
+                    val.put("daily_work_summary_id", work_summary_id);
+                    db.insert(DailyTaskSummary.TABLE_NAME, null, val);
+                }
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
+            task_record_cursor.close();
         }
 
     }

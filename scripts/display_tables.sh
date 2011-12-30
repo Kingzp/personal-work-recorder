@@ -31,9 +31,17 @@ SELECT_TASK_RECORDS="SELECT work_id w_id, \
 SELECT_DAILY_WROK_SUMMARY="SELECT _id, \
                                   datetime(start_at / 1000, 'unixepoch', 'localtime') 'start at', \
                                   datetime(end_at / 1000, 'unixepoch', 'localtime') 'end at' \
-                                  FROM daily_work_summary;"
+                             FROM daily_work_summary;"
+SELECT_DAILY_TASK_SUMMARY="SELECT _id, \
+                                  code, \
+                                  (duration / (3600 * 1000))||\":\"||((duration / (60 * 1000)) % 60)||\":\"||((duration / 1000) % 60) 'duration', \
+                                  daily_work_summary_id ws_id, \
+                                  description \
+                             FROM daily_task_summary;"
 
-echo "tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, q)quit"
+MESSAGE="tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, dt)daily_task_summary, q)quit"
+
+echo $MESSAGE
 echo
 while read TABLE_NAME; do
     case $TABLE_NAME in
@@ -49,6 +57,9 @@ while read TABLE_NAME; do
         ds|daily_work_summary)
             sqlite3 -header -column pwr.db "$SELECT_DAILY_WROK_SUMMARY"
             ;;
+        dt|daily_task_summary)
+            sqlite3 -header -column pwr.db "$SELECT_DAILY_TASK_SUMMARY"
+            ;;
         q|quit)
             break
             ;;
@@ -56,7 +67,7 @@ while read TABLE_NAME; do
             ;;
     esac
 
-    echo "tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, q)quit"
+    echo $MESSAGE
     echo
 done
 exit 0

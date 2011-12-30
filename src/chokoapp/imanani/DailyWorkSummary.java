@@ -16,7 +16,7 @@ public class DailyWorkSummary {
 
     public static Cursor findByDate(SQLiteDatabase db, long date) {
         return db.query(TABLE_NAME,
-                        new String[] { "start_at", "end_at" },
+                        new String[] { "_id", "start_at", "end_at" },
                         "date(start_at / 1000, 'unixepoch', 'localtime') = ?",
                         new String[] { (new SimpleDateFormat("yyyy-MM-dd")).format(new Date(date)) },
                         null, null, null);
@@ -40,17 +40,17 @@ public class DailyWorkSummary {
                   new String[] { (new SimpleDateFormat("yyyy-MM-dd")).format(new Date(date)) });
     }
 
-    public static void setStartTime(SQLiteDatabase db, long start) {
+    public static long setStartTime(SQLiteDatabase db, long start) {
         ContentValues val = new ContentValues();
         val.put("start_at", start);
-        db.insert(TABLE_NAME, null, val);
+        return db.insert(TABLE_NAME, null, val);
     }
 
-    public static void setStartEndTime(SQLiteDatabase db, long start, long end) {
+    public static long setStartEndTime(SQLiteDatabase db, long start, long end) {
         ContentValues val = new ContentValues();
         val.put("start_at", start);
         val.put("end_at", end);
-        db.insert(TABLE_NAME, null, val);
+        return db.insert(TABLE_NAME, null, val);
     }
 
 }
