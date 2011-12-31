@@ -121,8 +121,7 @@ public class DailySummaryActivity extends ListActivity {
             }
             daily_work_summary_cursor.close();
 
-            Cursor daily_task_summary_cursor = DailyTaskSummary.findById(db, work_summary_id);
-            act.setListAdapter(new TaskSummaryAdapter(act, daily_task_summary_cursor));
+            act.setListAdapter(new TaskSummaryAdapter(act, DailyTaskSummary.findById(db, work_summary_id)));
         }
 
         private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
