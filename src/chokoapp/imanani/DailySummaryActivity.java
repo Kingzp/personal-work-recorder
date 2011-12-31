@@ -1,7 +1,5 @@
 package chokoapp.imanani;
 
-import android.widget.ImageView;
-
 import java.util.Calendar;
 
 import android.app.AlertDialog;
@@ -14,7 +12,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -26,10 +23,10 @@ public class DailySummaryActivity extends ListActivity {
     private DateTimeView startTimeView;
     private DateTimeView endTimeView;
     private TextView totalTimeView;
-    private ImageView startTimeUp;
-    private ImageView startTimeDown;
-    private ImageView endTimeUp;
-    private ImageView endTimeDown;
+    private UpButton startTimeUp;
+    private DownButton startTimeDown;
+    private UpButton endTimeUp;
+    private DownButton endTimeDown;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +55,17 @@ public class DailySummaryActivity extends ListActivity {
                                                               endTimeView,
                                                               totalTimeView));
 
-        startTimeUp = (ImageView)findViewById(R.id.startTimeUp);
-        startTimeUp.setOnClickListener(new Up(startTimeView));
-        startTimeDown = (ImageView)findViewById(R.id.startTimeDown);
-        startTimeDown.setOnClickListener(new Down(startTimeView));
-        endTimeUp = (ImageView)findViewById(R.id.endTimeUp);
-        endTimeUp.setOnClickListener(new Up(endTimeView));
-        endTimeDown = (ImageView)findViewById(R.id.endTimeDown);
-        endTimeDown.setOnClickListener(new Down(endTimeView));
+        startTimeUp = (UpButton)findViewById(R.id.startTimeUp);
+        startTimeUp.setupListeners(startTimeView);
+
+        startTimeDown = (DownButton)findViewById(R.id.startTimeDown);
+        startTimeDown.setupListeners(startTimeView);
+
+        endTimeUp = (UpButton)findViewById(R.id.endTimeUp);
+        endTimeUp.setupListeners(endTimeView);
+
+        endTimeDown = (DownButton)findViewById(R.id.endTimeDown);
+        endTimeDown.setupListeners(endTimeView);
     }
 
     public void selectDate(View v) {
@@ -119,6 +119,7 @@ public class DailySummaryActivity extends ListActivity {
             } else {
                 setTime(startTimeView, endTimeView, totalTimeView);
             }
+            daily_work_summary_cursor.close();
 
             Cursor daily_task_summary_cursor = DailyTaskSummary.findById(db, work_summary_id);
             act.setListAdapter(new TaskSummaryAdapter(act, daily_task_summary_cursor));
@@ -199,32 +200,6 @@ public class DailySummaryActivity extends ListActivity {
 
     }
 
-    private class Up implements OnClickListener {
-        private DateTimeView view;
-
-        public Up(DateTimeView view) {
-            this.view = view;
-        }
-
-        @Override
-        public void onClick(View v) {
-            view.up();
-        }
-    }
-
-    private class Down implements OnClickListener {
-        private DateTimeView view;
-
-        public Down(DateTimeView view) {
-            this.view = view;
-        }
-
-        @Override
-        public void onClick(View v) {
-            view.down();
-        }
-    }
-
     private class CalculateTotal implements TextWatcher {
         private DateTimeView startView;
         private DateTimeView endView;
@@ -255,4 +230,5 @@ public class DailySummaryActivity extends ListActivity {
             }
         }
     }
+
 }

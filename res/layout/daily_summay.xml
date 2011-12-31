@@ -55,7 +55,7 @@
             android:text="9999/99/99 00:00:00"
             android:textSize="16dp" />
 
-        <ImageView
+        <chokoapp.imanani.UpButton
             android:id="@+id/startTimeUp"
             android:layout_width="36dp"
             android:layout_height="20dp"
@@ -63,11 +63,9 @@
             android:paddingRight="8dp"
             android:layout_alignBottom="@+id/startTimeView"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/startTimeView"
-            android:clickable="true"
-            android:src="@drawable/plus_button" />
+            android:layout_toRightOf="@+id/startTimeView" />
 
-        <ImageView
+        <chokoapp.imanani.DownButton
             android:id="@+id/startTimeDown"
             android:layout_width="36dp"
             android:layout_height="20dp"
@@ -75,9 +73,7 @@
             android:paddingRight="8dp"
             android:layout_alignBottom="@+id/startTimeView"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/startTimeUp"
-            android:clickable="true"
-            android:src="@drawable/minus_button" />
+            android:layout_toRightOf="@+id/startTimeUp" />
 
         <TextView
             android:id="@+id/endTimeText"
@@ -99,7 +95,7 @@
             android:text="9999/99/99 00:00:00"
             android:textSize="16dp" />
 
-        <ImageView
+        <chokoapp.imanani.UpButton
             android:id="@+id/endTimeUp"
             android:layout_width="36dp"
             android:layout_height="20dp"
@@ -108,11 +104,9 @@
             android:layout_alignBottom="@+id/endTimeView"
             android:layout_below="@+id/startTimeUp"
             android:layout_gravity="center"
-            android:layout_toRightOf="@+id/endTimeView"
-            android:clickable="true"
-            android:src="@drawable/plus_button" />
+            android:layout_toRightOf="@+id/endTimeView" />
 
-        <ImageView
+        <chokoapp.imanani.DownButton
             android:id="@+id/endTimeDown"
             android:layout_width="36dp"
             android:layout_height="20dp"
@@ -121,9 +115,7 @@
             android:layout_alignBottom="@+id/endTimeView"
             android:layout_below="@+id/startTimeDown"
             android:layout_gravity="center"
-            android:layout_toRightOf="@+id/endTimeUp"
-            android:clickable="true"
-            android:src="@drawable/minus_button" />
+            android:layout_toRightOf="@+id/endTimeUp" />
 
         <ImageView
             android:id="@+id/recordSeparator"
