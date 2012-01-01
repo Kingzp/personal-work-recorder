@@ -136,18 +136,7 @@ public class DailySummaryActivity extends ListActivity {
                 dailyWorkSummary = WorkRecord.findByDate(db, dateButton.getTime());
             }
 
-            if ( dailyWorkSummary.isEmpty() ) {
-                setTime(startTimeView, endTimeView, totalTimeView);
-            } else {
-                if ( dailyWorkSummary.nowRecording() ) {
-                    setTime(startTimeView, endTimeView, totalTimeView,
-                            dailyWorkSummary.getStartAt());
-                } else {
-                    setTime(startTimeView, endTimeView, totalTimeView,
-                            dailyWorkSummary.getStartAt(),
-                            dailyWorkSummary.getEndAt());
-                }
-            }
+            setTime(startTimeView, endTimeView, dailyWorkSummary);
 
             List<DailyTaskSummary> dailyTaskSummaries =
                 dailyWorkSummary.existInDatabase() ?
@@ -157,23 +146,21 @@ public class DailySummaryActivity extends ListActivity {
             act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
         }
 
-        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
-                             long start, long end) {
-            startView.setTime(start);
-            endView.setTime(end);
-        }
+    }
 
-        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
-                             long start) {
-            startView.setTime(start);
-            endView.clearTime();
-        }
-
-        private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView) {
+    private void setTime(DateTimeView startView, DateTimeView endView, DailyWorkSummary dailyWorkSummary) {
+        if ( dailyWorkSummary.isEmpty() ) {
             startView.clearTime();
             endView.clearTime();
+        } else {
+            if ( dailyWorkSummary.nowRecording() ) {
+                startView.setTime(dailyWorkSummary.getStartAt());
+                endView.clearTime();
+            } else {
+                startView.setTime(dailyWorkSummary.getStartAt());
+                endView.setTime(dailyWorkSummary.getEndAt());
+            }
         }
-
     }
 
     private class CalculateTotal implements TextWatcher {
