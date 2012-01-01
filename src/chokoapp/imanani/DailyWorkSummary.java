@@ -35,6 +35,11 @@ public class DailyWorkSummary {
     public boolean existInDatabase() { return _id != 0; }
     public boolean isEmpty() { return _id == 0 && start_at == 0 && end_at == 0; }
 
+    public void update(DateTimeView startView, DateTimeView endView) {
+        if ( !startView.isEmpty() ) start_at = startView.getTime();
+        if ( !endView.isEmpty() )   end_at   = endView.getTime();
+    }
+
     public static DailyWorkSummary findByDate(SQLiteDatabase db, long date) {
         Cursor daily_work_summary_cursor =
             db.query(TABLE_NAME,
@@ -58,6 +63,33 @@ public class DailyWorkSummary {
             }
         } finally {
             daily_work_summary_cursor.close();
+        }
+    }
+
+    public QueryResult save(SQLiteDatabase db) {
+        if ( isEmpty() ) {
+            return QueryResult.NOTHING;
+        }
+
+        if ( nowRecording() ) {
+            return QueryResult.NOTHING;
+        }
+
+        ContentValues val = new ContentValues();
+        val.put("start_at", start_at);
+        val.put("end_at", end_at);
+        if ( existInDatabase() ) {
+            int num = db.update(TABLE_NAME, val, "_id = ?",
+                                new String[] { String.format("%d", _id) });
+            return num == 1 ? QueryResult.SUCCESS : QueryResult.FAIL;
+        } else {
+            long id = db.insert(TABLE_NAME, null, val);
+            if ( id == -1 ) {
+                return QueryResult.FAIL;
+            } else {
+                this._id = id;
+                return QueryResult.SUCCESS;
+            }
         }
     }
 

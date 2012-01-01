@@ -3,6 +3,7 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -35,6 +36,22 @@ public class DailyTaskSummary {
     public String getDescription() { return description; }
     public long getDuration() { return duration; }
     public long getDailyWorkSummaryId() { return daily_work_summary_id; }
+
+    public QueryResult save(SQLiteDatabase db, long daily_work_summary_id) {
+        ContentValues val = new ContentValues();
+        val.put("code", code);
+        val.put("description", description);
+        val.put("duration", duration);
+        val.put("daily_work_summary_id", daily_work_summary_id);
+        long id = db.insert(TABLE_NAME, null, val);
+        if ( id == -1 ) {
+            return QueryResult.FAIL;
+        } else {
+            this._id = id;
+            this.daily_work_summary_id = daily_work_summary_id;
+            return QueryResult.SUCCESS;
+        }
+    }
 
     @SuppressWarnings("serial")
     public static List<DailyTaskSummary> findById(SQLiteDatabase db, final long daily_work_summary_id) {

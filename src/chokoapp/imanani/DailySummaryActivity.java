@@ -28,7 +28,6 @@ public class DailySummaryActivity extends ListActivity {
     private UpButton endTimeUp;
     private DownButton endTimeDown;
     private DailyWorkSummary dailyWorkSummary;
-    private List<DailyTaskSummary> dailyTaskSummaries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +76,33 @@ public class DailySummaryActivity extends ListActivity {
         dateSelector.show();
     }
 
+    public void saveTable(View v) {
+        dailyWorkSummary.update(startTimeView, endTimeView);
+
+        db.beginTransaction();
+        try {
+            if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
+                return;
+            }
+            db.delete(DailyTaskSummary.TABLE_NAME,
+                      "daily_work_summary_id = ?",
+                      new String[] { String.format("%d", dailyWorkSummary.getId()) });
+
+            TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+            int count = adapter.getCount();
+            for ( int i = 0 ; i < count ; i++ ) {
+                if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
+                     != QueryResult.SUCCESS ) {
+                    return;
+                }
+            }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
     private class SetDate implements DialogInterface.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -123,11 +149,10 @@ public class DailySummaryActivity extends ListActivity {
                 }
             }
 
-            if ( dailyWorkSummary.existInDatabase() ) {
-                dailyTaskSummaries = DailyTaskSummary.findById(db, dailyWorkSummary.getId());
-            } else {
-                dailyTaskSummaries = TaskRecord.findByDate(db, dateButton.getTime());
-            }
+            List<DailyTaskSummary> dailyTaskSummaries =
+                dailyWorkSummary.existInDatabase() ?
+                    DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
+                    TaskRecord.findByDate(db, dateButton.getTime());
 
             act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
         }
