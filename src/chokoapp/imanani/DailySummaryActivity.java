@@ -135,7 +135,7 @@ public class DailySummaryActivity extends ListActivity {
                 dailyWorkSummary = WorkRecord.findByDate(db, date);
             }
 
-            setTime(startTimeView, endTimeView, dailyWorkSummary);
+            updateDisplayTime();
 
             List<DailyTaskSummary> dailyTaskSummaries =
                 dailyWorkSummary.existInDatabase() ?
@@ -147,17 +147,17 @@ public class DailySummaryActivity extends ListActivity {
 
     }
 
-    private void setTime(DateTimeView startView, DateTimeView endView, DailyWorkSummary dailyWorkSummary) {
+    private void updateDisplayTime() {
         if ( dailyWorkSummary.isEmpty() ) {
-            startView.clearTime();
-            endView.clearTime();
+            startTimeView.clearTime();
+            endTimeView.clearTime();
         } else {
             if ( dailyWorkSummary.nowRecording() ) {
-                startView.setTime(dailyWorkSummary.getStartAt());
-                endView.clearTime();
+                startTimeView.setTime(dailyWorkSummary.getStartAt());
+                endTimeView.clearTime();
             } else {
-                startView.setTime(dailyWorkSummary.getStartAt());
-                endView.setTime(dailyWorkSummary.getEndAt());
+                startTimeView.setTime(dailyWorkSummary.getStartAt());
+                endTimeView.setTime(dailyWorkSummary.getEndAt());
             }
         }
     }
