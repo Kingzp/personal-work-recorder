@@ -70,9 +70,11 @@ public class DailySummaryActivity extends ListActivity {
     }
 
     public void selectDate(View v) {
-        datePicker.updateDate(dateSelectButton.getYear(),
-                              dateSelectButton.getMonth(),
-                              dateSelectButton.getDay());
+        if ( dateSelectButton.dateSelected() ) {
+            datePicker.updateDate(dateSelectButton.getYear(),
+                                  dateSelectButton.getMonth(),
+                                  dateSelectButton.getDay());
+        }
         dateSelector.show();
     }
 

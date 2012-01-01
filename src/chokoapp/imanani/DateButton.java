@@ -13,14 +13,12 @@ public class DateButton extends Button {
     private SimpleDateFormat df;
 
     public DateButton(Context context) {
-        super(context);
-        date = new Date();
-        df = new SimpleDateFormat();
+        this(context, null);
     }
 
     public DateButton(Context context, AttributeSet attr) {
         super(context, attr);
-        date = new Date();
+        date = null;
         int dateformatValue = attr.getAttributeResourceValue(null, "app.dateformat", -1);
         if ( dateformatValue <  0 ) {
             df = new SimpleDateFormat();
@@ -29,34 +27,50 @@ public class DateButton extends Button {
         }
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-        setText(df.format(date));
+    public boolean dateSelected() {
+        return date != null;
     }
 
-    public String getText() {
-        return df.format(date);
+    public void setDate(Date date) {
+        this.date = date;
+        if ( date != null ) {
+            setText(df.format(date));
+        } else {
+            setText(getContext().getString(R.string.select_date));
+        }
     }
 
     public int getYear() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.YEAR);
+        if ( dateSelected() ) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.YEAR);
+        } else {
+            return 9999;
+        }
     }
 
     public int getMonth() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.MONTH);
+        if ( dateSelected() ) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.MONTH);
+        } else {
+            return 99;
+        }
     }
 
     public int getDay() {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.DAY_OF_MONTH);
+        if ( dateSelected() ) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            return cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            return 99;
+        }
     }
 
     public long getTime() {
-        return date.getTime();
+        return dateSelected() ? date.getTime() : -1;
     }
 }
