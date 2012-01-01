@@ -95,8 +95,10 @@ public class DailyWorkSummary {
 
     public void resetFromWorkRecord(SQLiteDatabase db, long date) {
         DailyWorkSummary resetDate = WorkRecord.findByDate(db, date);
-        this.start_at = resetDate.getStartAt();
-        this.end_at = resetDate.getEndAt();
+        if ( !resetDate.isEmpty() ) {
+            this.start_at = resetDate.getStartAt();
+            this.end_at = resetDate.getEndAt();
+        }
     }
 
     public static void setEndTime(SQLiteDatabase db, long date, long endTime) {

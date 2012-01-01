@@ -80,35 +80,39 @@ public class DailySummaryActivity extends ListActivity {
 
     public void resetSummary(View v) {
         long date = dateSelectButton.getTime();
-        dailyWorkSummary.resetFromWorkRecord(db, date);
-        updateDisplayTime();
-        setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
+        if ( dailyWorkSummary != null ) {
+            dailyWorkSummary.resetFromWorkRecord(db, date);
+            updateDisplayTime();
+            setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
+        }
     }
 
     public void saveTable(View v) {
-        dailyWorkSummary.update(startTimeView, endTimeView);
+        if ( dailyWorkSummary != null ) {
+            dailyWorkSummary.update(startTimeView, endTimeView);
 
-        db.beginTransaction();
-        try {
-            if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
-                return;
-            }
-            db.delete(DailyTaskSummary.TABLE_NAME,
-                      "daily_work_summary_id = ?",
-                      new String[] { String.format("%d", dailyWorkSummary.getId()) });
-
-            TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-            int count = adapter.getCount();
-            for ( int i = 0 ; i < count ; i++ ) {
-                if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
-                     != QueryResult.SUCCESS ) {
+            db.beginTransaction();
+            try {
+                if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
                     return;
                 }
-            }
+                db.delete(DailyTaskSummary.TABLE_NAME,
+                          "daily_work_summary_id = ?",
+                          new String[] { String.format("%d", dailyWorkSummary.getId()) });
 
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
+                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+                int count = adapter.getCount();
+                for ( int i = 0 ; i < count ; i++ ) {
+                    if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
+                         != QueryResult.SUCCESS ) {
+                        return;
+                    }
+                }
+
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
+            }
         }
     }
 
