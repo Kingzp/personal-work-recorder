@@ -35,7 +35,7 @@ public class TimeView extends UpDownView {
     @Override
     public void up() {
         long remainder = time % UP_AND_DOWN_STEP;
-        time += remainder + UP_AND_DOWN_STEP;
+        time = time - remainder + UP_AND_DOWN_STEP;
     }
 
     @Override
