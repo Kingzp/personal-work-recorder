@@ -145,35 +145,8 @@
         android:id="@+id/android:list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/operationButtons"
         android:layout_below="@+id/summaryView" >
 
     </ListView>
-
-    <LinearLayout
-        android:id="@+id/operationButtons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:gravity="bottom|center" >
-
-        <Button
-            android:id="@+id/resetButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="resetSummary"
-            android:text="@string/reset" />
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="saveTable"
-            android:text="@string/save" />
-    </LinearLayout>
 
 </RelativeLayout>

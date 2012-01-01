@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/summaryReset"
+          android:orderInCategory="1"
+          android:icon="@drawable/ic_menu_revert"
+          android:title="@string/reset" />
+    <item android:id="@+id/summaryAdjust"
+          android:orderInCategory="2"
+          android:icon="@drawable/ic_menu_replace"
+          android:title="@string/adjust" />
+    <item android:id="@+id/summarySave"
+          android:orderInCategory="3"
+          android:icon="@drawable/ic_menu_save"
+          android:title="@string/save" />
+    <item android:id="@+id/summarySend"
+          android:orderInCategory="4"
+          android:icon="@drawable/ic_menu_send"
+          android:title="@string/send" />
+</menu>

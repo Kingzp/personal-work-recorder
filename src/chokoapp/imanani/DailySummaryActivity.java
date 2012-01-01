@@ -11,6 +11,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -67,6 +70,37 @@ public class DailySummaryActivity extends ListActivity {
 
         endTimeDown = (DownButton)findViewById(R.id.endTimeDown);
         endTimeDown.setupListeners(endTimeView);
+
+        dailyWorkSummary = new DailyWorkSummary();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        new MenuInflater(getApplication()).inflate(R.menu.daily_summary_save, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return dailyWorkSummary.isEmpty() ? false : true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.summaryReset:
+            resetSummary();
+            return true;
+        case R.id.summaryAdjust:
+            return true;
+        case R.id.summarySave:
+            saveTable();
+            return true;
+        case R.id.summarySend:
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
     }
 
     public void selectDate(View v) {
@@ -78,41 +112,37 @@ public class DailySummaryActivity extends ListActivity {
         dateSelector.show();
     }
 
-    public void resetSummary(View v) {
+    public void resetSummary() {
         long date = dateSelectButton.getTime();
-        if ( dailyWorkSummary != null ) {
-            dailyWorkSummary.resetFromWorkRecord(db, date);
-            updateDisplayTime();
-            setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
-        }
+        dailyWorkSummary.resetFromWorkRecord(db, date);
+        updateDisplayTime();
+        setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
     }
 
-    public void saveTable(View v) {
-        if ( dailyWorkSummary != null ) {
-            dailyWorkSummary.update(startTimeView, endTimeView);
+    public void saveTable() {
+        dailyWorkSummary.update(startTimeView, endTimeView);
 
-            db.beginTransaction();
-            try {
-                if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
+        db.beginTransaction();
+        try {
+            if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
+                return;
+            }
+            db.delete(DailyTaskSummary.TABLE_NAME,
+                      "daily_work_summary_id = ?",
+                      new String[] { String.format("%d", dailyWorkSummary.getId()) });
+
+            TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+            int count = adapter.getCount();
+            for ( int i = 0 ; i < count ; i++ ) {
+                if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
+                     != QueryResult.SUCCESS ) {
                     return;
                 }
-                db.delete(DailyTaskSummary.TABLE_NAME,
-                          "daily_work_summary_id = ?",
-                          new String[] { String.format("%d", dailyWorkSummary.getId()) });
-
-                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-                int count = adapter.getCount();
-                for ( int i = 0 ; i < count ; i++ ) {
-                    if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
-                         != QueryResult.SUCCESS ) {
-                        return;
-                    }
-                }
-
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
             }
+
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 

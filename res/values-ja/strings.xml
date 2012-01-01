@@ -25,4 +25,6 @@
     <string name="daily_summary_title">一日の作業集計結果</string>
     <string name="select_date">日付を選択して下さい</string>
     <string name="dateformat">yyyy年MM月dd日(E)</string>
+    <string name="adjust">自動調整</string>
+    <string name="send">メール送信</string>
 </resources>

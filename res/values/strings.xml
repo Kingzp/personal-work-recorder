@@ -25,4 +25,6 @@
     <string name="save">Save</string>
     <string name="select_date">Select Date</string>
     <string name="dateformat">MMMMMMMM dd, yyyy</string>
+    <string name="adjust">Auto Adjust</string>
+    <string name="send">Send Mail</string>
 </resources>
