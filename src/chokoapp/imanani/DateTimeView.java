@@ -7,14 +7,11 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class DateTimeView extends UpDownView {
-    private final static long UP_AND_DOWN_STEP = 15 * 60 * 1000;
     private Date date;
     private SimpleDateFormat df;
 
     public DateTimeView(Context context) {
-        super(context);
-        date = null;
-        df = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        this(context, null);
     }
     public DateTimeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -46,6 +43,7 @@ public class DateTimeView extends UpDownView {
         return isEmpty() ? -1 : date.getTime();
     }
 
+    @Override
     public void up() {
         if ( !isEmpty() ) {
             long current = date.getTime();
@@ -54,6 +52,7 @@ public class DateTimeView extends UpDownView {
         }
     }
 
+    @Override
     public void down() {
         if ( !isEmpty() ) {
             long current = date.getTime();

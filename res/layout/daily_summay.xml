@@ -57,20 +57,14 @@
 
         <chokoapp.imanani.UpButton
             android:id="@+id/startTimeUp"
-            android:layout_width="36dp"
-            android:layout_height="20dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            style="@style/up_down_button_style"
             android:layout_alignBottom="@+id/startTimeView"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/startTimeView" />
 
         <chokoapp.imanani.DownButton
             android:id="@+id/startTimeDown"
-            android:layout_width="36dp"
-            android:layout_height="20dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            style="@style/up_down_button_style"
             android:layout_alignBottom="@+id/startTimeView"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/startTimeUp" />

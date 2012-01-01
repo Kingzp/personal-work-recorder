@@ -29,14 +29,10 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         }
         TextView codeView = (TextView)convertView.findViewById(R.id.codeViewOnSummary);
         TextView descriptionView = (TextView)convertView.findViewById(R.id.descriptionOnSummary);
-        TextView taskDurationView = (TextView)convertView.findViewById(R.id.taskDurationOnSummary);
+        TimeView taskDurationView = (TimeView)convertView.findViewById(R.id.taskDurationOnSummary);
         codeView.setText(dailyTaskSummary.getCode());
         descriptionView.setText(dailyTaskSummary.getDescription());
-        long duration = dailyTaskSummary.getDuration() / 1000;
-        long sec = duration % 60;
-        long min = (duration / 60) % 60;
-        long hor = duration / (60 * 60);
-        taskDurationView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
+        taskDurationView.setTime(dailyTaskSummary.getDuration());
         return convertView;
     }
 
