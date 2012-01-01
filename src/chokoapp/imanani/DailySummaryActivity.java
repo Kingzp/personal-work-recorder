@@ -78,6 +78,13 @@ public class DailySummaryActivity extends ListActivity {
         dateSelector.show();
     }
 
+    public void resetSummary(View v) {
+        long date = dateSelectButton.getTime();
+        dailyWorkSummary.resetFromWorkRecord(db, date);
+        updateDisplayTime();
+        setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
+    }
+
     public void saveTable(View v) {
         dailyWorkSummary.update(startTimeView, endTimeView);
 
@@ -146,7 +153,6 @@ public class DailySummaryActivity extends ListActivity {
 
             act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
         }
-
     }
 
     private void updateDisplayTime() {
