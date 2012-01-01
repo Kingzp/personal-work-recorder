@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 
 public class UpButton extends ImageView {
     private ContinuouslyUp upper;
-    private DateTimeView targetView;
+    private UpDownView targetView;
 
     public UpButton(Context context) {
         this(context, null);

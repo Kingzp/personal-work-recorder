@@ -2,12 +2,11 @@ package chokoapp.imanani;
 
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import android.widget.TextView;
 import android.content.Context;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class DateTimeView extends TextView {
+public class DateTimeView extends UpDownView {
     private final static long UP_AND_DOWN_STEP = 15 * 60 * 1000;
     private Date date;
     private SimpleDateFormat df;

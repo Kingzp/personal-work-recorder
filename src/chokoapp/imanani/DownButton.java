@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 
 public class DownButton extends ImageView {
     private ContinuouslyDown downer;
-    private DateTimeView targetView;
+    private UpDownView targetView;
 
     public DownButton(Context context) {
         this(context, null);
