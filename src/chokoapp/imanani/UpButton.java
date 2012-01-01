@@ -21,7 +21,7 @@ public class UpButton extends ImageView {
         setImageResource(R.drawable.plus_button);
     }
 
-    public void setupListeners(DateTimeView view) {
+    public void setupListeners(UpDownView view) {
         this.targetView = view;
         setOnClickListener(new OnClickListener() {
                 @Override
