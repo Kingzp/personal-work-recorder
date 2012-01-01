@@ -34,11 +34,15 @@ public class TimeView extends UpDownView {
 
     @Override
     public void up() {
-        time += UP_AND_DOWN_STEP;
+        long remainder = time % UP_AND_DOWN_STEP;
+        time += remainder + UP_AND_DOWN_STEP;
     }
 
     @Override
     public void down() {
-        time -= UP_AND_DOWN_STEP;
+        if ( time > 0 ) {
+            long remainder = time % UP_AND_DOWN_STEP;
+            time -= remainder > 0 ? remainder : UP_AND_DOWN_STEP;
+        }
     }
 }
