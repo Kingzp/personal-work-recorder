@@ -44,7 +44,7 @@ public class DailySummaryActivity extends ListActivity {
         dateSelector = builder.create();
 
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
-        dateSelectButton.addTextChangedListener(new DisplaySummary(dateSelectButton, this));
+        dateSelectButton.addTextChangedListener(new DisplaySummary(this));
 
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
         endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
@@ -115,11 +115,9 @@ public class DailySummaryActivity extends ListActivity {
     }
 
     private class DisplaySummary implements TextWatcher {
-        private DateButton dateButton;
         private ListActivity act;
 
-        public DisplaySummary(DateButton dateButton, ListActivity act) {
-            this.dateButton = dateButton;
+        public DisplaySummary(ListActivity act) {
             this.act = act;
         }
 
@@ -131,9 +129,10 @@ public class DailySummaryActivity extends ListActivity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            dailyWorkSummary = DailyWorkSummary.findByDate(db, dateButton.getTime());
+            long date = dateSelectButton.getTime();
+            dailyWorkSummary = DailyWorkSummary.findByDate(db, date);
             if ( dailyWorkSummary.isEmpty() ) {
-                dailyWorkSummary = WorkRecord.findByDate(db, dateButton.getTime());
+                dailyWorkSummary = WorkRecord.findByDate(db, date);
             }
 
             setTime(startTimeView, endTimeView, dailyWorkSummary);
@@ -141,7 +140,7 @@ public class DailySummaryActivity extends ListActivity {
             List<DailyTaskSummary> dailyTaskSummaries =
                 dailyWorkSummary.existInDatabase() ?
                     DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
-                    TaskRecord.findByDate(db, dateButton.getTime());
+                    TaskRecord.findByDate(db, date);
 
             act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
         }
