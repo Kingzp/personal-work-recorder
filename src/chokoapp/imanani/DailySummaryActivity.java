@@ -1,12 +1,12 @@
 package chokoapp.imanani;
 
+import java.util.List;
+
 import java.util.Calendar;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
-import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -27,6 +27,8 @@ public class DailySummaryActivity extends ListActivity {
     private DownButton startTimeDown;
     private UpButton endTimeUp;
     private DownButton endTimeDown;
+    private DailyWorkSummary dailyWorkSummary;
+    private List<DailyTaskSummary> dailyTaskSummaries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,25 +105,31 @@ public class DailySummaryActivity extends ListActivity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            long work_summary_id = updateDailyWorkTable();
-            updateDailyTaskTable(work_summary_id);
+            dailyWorkSummary = DailyWorkSummary.findByDate(db, dateButton.getTime());
+            if ( dailyWorkSummary.isEmpty() ) {
+                dailyWorkSummary = WorkRecord.findByDate(db, dateButton.getTime());
+            }
 
-            Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
-            if ( daily_work_summary_cursor.moveToFirst() ) {
-                if ( daily_work_summary_cursor.isNull(2) ) {
+            if ( dailyWorkSummary.isEmpty() ) {
+                setTime(startTimeView, endTimeView, totalTimeView);
+            } else {
+                if ( dailyWorkSummary.nowRecording() ) {
                     setTime(startTimeView, endTimeView, totalTimeView,
-                            daily_work_summary_cursor.getLong(1));
+                            dailyWorkSummary.getStartAt());
                 } else {
                     setTime(startTimeView, endTimeView, totalTimeView,
-                            daily_work_summary_cursor.getLong(1),
-                            daily_work_summary_cursor.getLong(2));
+                            dailyWorkSummary.getStartAt(),
+                            dailyWorkSummary.getEndAt());
                 }
-            } else {
-                setTime(startTimeView, endTimeView, totalTimeView);
             }
-            daily_work_summary_cursor.close();
 
-            act.setListAdapter(new TaskSummaryAdapter(act, DailyTaskSummary.findById(db, work_summary_id)));
+            if ( dailyWorkSummary.existInDatabase() ) {
+                dailyTaskSummaries = DailyTaskSummary.findById(db, dailyWorkSummary.getId());
+            } else {
+                dailyTaskSummaries = TaskRecord.findByDate(db, dateButton.getTime());
+            }
+
+            act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
         }
 
         private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView,
@@ -139,62 +147,6 @@ public class DailySummaryActivity extends ListActivity {
         private void setTime(DateTimeView startView, DateTimeView endView, TextView totalView) {
             startView.clearTime();
             endView.clearTime();
-        }
-
-        private long updateDailyWorkTable() {
-            Cursor work_record_cursor = WorkRecord.findByDate(db, dateButton.getTime());
-            Cursor daily_work_summary_cursor = DailyWorkSummary.findByDate(db, dateButton.getTime());
-            long daily_work_summary_id = -1;
-            if ( daily_work_summary_cursor.moveToFirst() ) {   // already has a summary record
-                if ( work_record_cursor.moveToFirst() ) {
-                    if ( work_record_cursor.isNull(1) ) {
-                        DailyWorkSummary.setEndTimeNull(db, dateButton.getTime());
-                    } else {
-                        DailyWorkSummary.setEndTime(db, dateButton.getTime(),
-                                                    work_record_cursor.getLong(1));
-                    }
-                }
-                daily_work_summary_id = daily_work_summary_cursor.getLong(0);
-            } else {                                           // no summary record
-                if ( work_record_cursor.moveToFirst() ) {      // i have recorded the work
-                    if ( work_record_cursor.isNull(1) ) {      // but i am now recording the work
-                        daily_work_summary_id =
-                            DailyWorkSummary.setStartTime(db, work_record_cursor.getLong(0));
-                    } else {
-                        daily_work_summary_id =
-                            DailyWorkSummary.setStartEndTime(db, work_record_cursor.getLong(0),
-                                                             work_record_cursor.getLong(1));
-                    }
-                }
-            }
-            try {
-                return daily_work_summary_id;
-            } finally {
-                daily_work_summary_cursor.close();
-                work_record_cursor.close();
-            }
-        }
-
-        private void updateDailyTaskTable(long work_summary_id) {
-            Cursor task_record_cursor = TaskRecord.findByDate(db, dateButton.getTime());
-            db.beginTransaction();
-            try {
-                db.delete(DailyTaskSummary.TABLE_NAME,
-                          "daily_work_summary_id = ?",
-                          new String[] { String.format("%d", work_summary_id) } );
-                while ( task_record_cursor.moveToNext() ) {
-                    ContentValues val = new ContentValues();
-                    val.put("code" , task_record_cursor.getString(0));
-                    val.put("description", task_record_cursor.getString(1));
-                    val.put("duration", task_record_cursor.getLong(2));
-                    val.put("daily_work_summary_id", work_summary_id);
-                    db.insert(DailyTaskSummary.TABLE_NAME, null, val);
-                }
-                db.setTransactionSuccessful();
-            } finally {
-                db.endTransaction();
-            }
-            task_record_cursor.close();
         }
 
     }
@@ -229,5 +181,4 @@ public class DailySummaryActivity extends ListActivity {
             }
         }
     }
-
 }
