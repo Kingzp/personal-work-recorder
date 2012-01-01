@@ -3,6 +3,8 @@
 sqlite3 pwr.db "DELETE FROM tasks;"
 sqlite3 pwr.db "DELETE FROM work_records;"
 sqlite3 pwr.db "DELETE FROM task_records;"
+sqlite3 pwr.db "DELETE FROM daily_work_summary"
+sqlite3 pwr.db "DELETE FROM daily_task_summary"
 
 sqlite3 pwr.db <<EOF
 INSERT INTO tasks (code, description) VALUES ('A01', 'ミーティング');
