@@ -53,6 +53,12 @@ public class DailyTaskSummary {
         }
     }
 
+    public void setDuration(long duration) {
+        if ( duration >= 0 ) {
+            this.duration = duration;
+        }
+    }
+
     @SuppressWarnings("serial")
     public static List<DailyTaskSummary> findById(SQLiteDatabase db, final long daily_work_summary_id) {
         final Cursor daily_task_summary_cursor =

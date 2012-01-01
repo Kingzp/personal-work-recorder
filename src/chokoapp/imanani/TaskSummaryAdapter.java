@@ -3,6 +3,8 @@ package chokoapp.imanani;
 import java.util.List;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,14 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         codeView.setText(dailyTaskSummary.getCode());
         descriptionView.setText(dailyTaskSummary.getDescription());
         taskDurationView.setTime(dailyTaskSummary.getDuration());
+
+        UpButton upButton = (UpButton)convertView.findViewById(R.id.timePlusView);
+        upButton.setupListeners(taskDurationView);
+        DownButton downButton = (DownButton)convertView.findViewById(R.id.timeMinusView);
+        downButton.setupListeners(taskDurationView);
+
+        taskDurationView.addTextChangedListener(new UpdateDailyTaskSummary(position, taskDurationView));
+
         return convertView;
     }
 
@@ -41,4 +51,24 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         return false;
     }
 
+    private class UpdateDailyTaskSummary implements TextWatcher {
+        private int position;
+        private TimeView timeView;
+
+        public UpdateDailyTaskSummary(int position, TimeView timeView) {
+            this.position = position;
+            this.timeView = timeView;
+        }
+        @Override
+        public void afterTextChanged(Editable e) {
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            DailyTaskSummary dailyTaskSummary = getItem(position);
+            dailyTaskSummary.setDuration(timeView.getTime());
+        }
+    }
 }
