@@ -2,12 +2,13 @@ package chokoapp.imanani;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DailyTaskSummary {
+public class DailyTaskSummary extends Observable {
     public static final String TABLE_NAME = "daily_task_summary";
     public static final String[] COLUMNS = {
         "code TEXT",
@@ -54,9 +55,12 @@ public class DailyTaskSummary {
     }
 
     public void setDuration(long duration) {
-        if ( duration >= 0 ) {
-            this.duration = duration;
-        }
+        if ( duration < 0 ) return;
+        if ( this.duration == duration ) return;
+
+        this.duration = duration;
+        setChanged();
+        notifyObservers();
     }
 
     @SuppressWarnings("serial")

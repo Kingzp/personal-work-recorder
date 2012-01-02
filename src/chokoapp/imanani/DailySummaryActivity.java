@@ -1,6 +1,8 @@
 package chokoapp.imanani;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import java.util.Calendar;
 
@@ -8,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,7 +21,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-public class DailySummaryActivity extends ListActivity {
+public class DailySummaryActivity extends ListActivity implements Observer {
     private SQLiteDatabase db;
     private DatePicker datePicker;
     private AlertDialog dateSelector;
@@ -31,6 +34,8 @@ public class DailySummaryActivity extends ListActivity {
     private UpButton endTimeUp;
     private DownButton endTimeDown;
     private DailyWorkSummary dailyWorkSummary;
+    private TimeView differenceTimeView;
+    private DailyTaskSummary dummyTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +55,29 @@ public class DailySummaryActivity extends ListActivity {
         dateSelectButton.addTextChangedListener(new DisplaySummary(this));
 
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
+        startTimeView.addTextChangedListener(new DisplayTotal());
+
         endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
+        endTimeView.addTextChangedListener(new DisplayTotal());
+
         totalTimeView = (TextView)findViewById(R.id.totalTimeView);
-        startTimeView.addTextChangedListener(new CalculateTotal(startTimeView,
-                                                                endTimeView,
-                                                                totalTimeView));
-        endTimeView.addTextChangedListener(new CalculateTotal(startTimeView,
-                                                              endTimeView,
-                                                              totalTimeView));
+        differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
+
+        dummyTask = new DailyTaskSummary(0, "Dummy",
+                                         "for notify that change startTime or endTime", 0, 0);
+        dummyTask.addObserver(this);
 
         startTimeUp = (UpButton)findViewById(R.id.startTimeUp);
-        startTimeUp.setupListeners(startTimeView);
+        startTimeUp.setupListeners(startTimeView, dummyTask);
 
         startTimeDown = (DownButton)findViewById(R.id.startTimeDown);
-        startTimeDown.setupListeners(startTimeView);
+        startTimeDown.setupListeners(startTimeView, dummyTask);
 
         endTimeUp = (UpButton)findViewById(R.id.endTimeUp);
-        endTimeUp.setupListeners(endTimeView);
+        endTimeUp.setupListeners(endTimeView, dummyTask);
 
         endTimeDown = (DownButton)findViewById(R.id.endTimeDown);
-        endTimeDown.setupListeners(endTimeView);
+        endTimeDown.setupListeners(endTimeView, dummyTask);
 
         dailyWorkSummary = new DailyWorkSummary();
     }
@@ -103,6 +111,19 @@ public class DailySummaryActivity extends ListActivity {
         }
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) return;
+
+        long diff = calculateWorkTotal() - calculateTaskTotal();
+        differenceTimeView.setTime(diff);
+        if ( 0 <= diff && diff < 1000 ) {
+            differenceTimeView.setTextColor(Color.GREEN);
+        } else {
+            differenceTimeView.setTextColor(Color.RED);
+        }
+    }
+
     public void selectDate(View v) {
         if ( dateSelectButton.dateSelected() ) {
             datePicker.updateDate(dateSelectButton.getYear(),
@@ -116,7 +137,12 @@ public class DailySummaryActivity extends ListActivity {
         long date = dateSelectButton.getTime();
         dailyWorkSummary.resetFromWorkRecord(db, date);
         updateDisplayTime();
-        setListAdapter(new TaskSummaryAdapter(this, TaskRecord.findByDate(db, date)));
+        List<DailyTaskSummary> dailyTaskSummaries = TaskRecord.findByDate(db, date);
+        for ( DailyTaskSummary dailyTaskSummary : dailyTaskSummaries ) {
+            dailyTaskSummary.addObserver(this);
+        }
+        setListAdapter(new TaskSummaryAdapter(this, dailyTaskSummaries));
+        update(null, null);
     }
 
     public void saveTable() {
@@ -158,9 +184,9 @@ public class DailySummaryActivity extends ListActivity {
     }
 
     private class DisplaySummary implements TextWatcher {
-        private ListActivity act;
+        private DailySummaryActivity act;
 
-        public DisplaySummary(ListActivity act) {
+        public DisplaySummary(DailySummaryActivity act) {
             this.act = act;
         }
 
@@ -185,7 +211,11 @@ public class DailySummaryActivity extends ListActivity {
                     DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
                     TaskRecord.findByDate(db, date);
 
+            for ( DailyTaskSummary dailyTaskSummary : dailyTaskSummaries ) {
+                dailyTaskSummary.addObserver(act);
+            }
             act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
+            update(null, null);
         }
     }
 
@@ -204,17 +234,7 @@ public class DailySummaryActivity extends ListActivity {
         }
     }
 
-    private class CalculateTotal implements TextWatcher {
-        private DateTimeView startView;
-        private DateTimeView endView;
-        private TextView totalView;
-
-        public CalculateTotal(DateTimeView startView, DateTimeView endView, TextView totalView) {
-            this.startView = startView;
-            this.endView = endView;
-            this.totalView = totalView;
-        }
-
+    private class DisplayTotal implements TextWatcher {
         @Override
         public void afterTextChanged(Editable e) {
         }
@@ -223,15 +243,29 @@ public class DailySummaryActivity extends ListActivity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) {
-                totalView.setText("00:00:00");
-            } else {
-                long totalSeconds = (endView.getTime() - startView.getTime()) / 1000;
-                long sec = totalSeconds % 60;
-                long min = (totalSeconds / 60) % 60;
-                long hor = totalSeconds / (60 * 60);
-                totalView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
-            }
+            long totalSeconds = calculateWorkTotal() / 1000;
+            long sec = totalSeconds % 60;
+            long min = (totalSeconds / 60) % 60;
+            long hor = totalSeconds / (60 * 60);
+            totalTimeView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
         }
+    }
+
+    public long calculateWorkTotal() {
+        if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) {
+            return 0;
+        } else {
+            return endTimeView.getTime() - startTimeView.getTime();
+        }
+    }
+
+    public long calculateTaskTotal() {
+        TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+        int count = adapter.getCount();
+        long sum = 0;
+        for ( int i = 0 ; i < count ; i++ ) {
+            sum += adapter.getItem(i).getDuration();
+        }
+        return sum;
     }
 }

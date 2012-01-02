@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="5dp"
             android:padding="5dp"
             android:text="@string/start_recording"
             android:textSize="16dp" />
@@ -139,6 +139,17 @@
             android:padding="5dp"
             android:text="00:00:00"
             android:textSize="16dp" />
+
+        <chokoapp.imanani.TimeView
+            android:id="@+id/differenceTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/endTimeUp"
+            android:layout_toRightOf="@+id/totalTimeView"
+            android:padding="5dp"
+            android:text=" 00:00:00"
+            android:textSize="16dp" />
+
     </RelativeLayout>
 
     <ListView

@@ -19,4 +19,5 @@ abstract class UpDownView extends TextView {
 
     abstract public void up();
     abstract public void down();
+    abstract public long getTime();
 }

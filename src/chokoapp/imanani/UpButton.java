@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 public class UpButton extends ImageView {
     private ContinuouslyUp upper;
     private UpDownView targetView;
+    private DailyTaskSummary dailyTaskSummary;
 
     public UpButton(Context context) {
         this(context, null);
@@ -21,8 +22,9 @@ public class UpButton extends ImageView {
         setImageResource(R.drawable.plus_button);
     }
 
-    public void setupListeners(UpDownView view) {
+    public void setupListeners(UpDownView view, DailyTaskSummary dailyTaskSummary) {
         this.targetView = view;
+        this.dailyTaskSummary = dailyTaskSummary;
         setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -38,22 +40,27 @@ public class UpButton extends ImageView {
                     return true;
                 }
             });
-        setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        if ( upper != null) upper.cancel(true);
-                    case MotionEvent.ACTION_DOWN:
-                        break;
-                    default:
-                        break;
-                    }
-                    return false;
-                }
-            });
+        setOnTouchListener(new StopAndReflect());
     }
-
+    
+    private class StopAndReflect implements OnTouchListener {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if ( upper != null) upper.cancel(true);
+                if ( dailyTaskSummary != null ) {
+                    dailyTaskSummary.setDuration(targetView.getTime());
+                }
+            case MotionEvent.ACTION_DOWN:
+                break;
+            default:
+                break;
+            }
+            return false;
+        }
+    }
+    
     private class ContinuouslyUp extends AsyncTask<Void, Void, Void> {
         private static final int UPDATE_INTERVAL = 500;
 

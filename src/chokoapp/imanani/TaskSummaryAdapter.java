@@ -37,9 +37,9 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         taskDurationView.setTime(dailyTaskSummary.getDuration());
 
         UpButton upButton = (UpButton)convertView.findViewById(R.id.timePlusView);
-        upButton.setupListeners(taskDurationView);
+        upButton.setupListeners(taskDurationView, dailyTaskSummary);
         DownButton downButton = (DownButton)convertView.findViewById(R.id.timeMinusView);
-        downButton.setupListeners(taskDurationView);
+        downButton.setupListeners(taskDurationView, dailyTaskSummary);
 
         taskDurationView.addTextChangedListener(new UpdateDailyTaskSummary(position, taskDurationView));
 
@@ -71,4 +71,5 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
             dailyTaskSummary.setDuration(timeView.getTime());
         }
     }
+
 }

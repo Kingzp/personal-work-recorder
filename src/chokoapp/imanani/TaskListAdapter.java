@@ -59,9 +59,9 @@ public class TaskListAdapter extends CursorAdapter {
         public void onCheckedChanged(CompoundButton buttonView,
                                      boolean isChecked) {
             if (currentTaskId == cannotDeleteId) {
-                
-                Toast.makeText(buttonView.getContext(), 
-                               R.string.cannot_delete, 
+
+                Toast.makeText(buttonView.getContext(),
+                               R.string.cannot_delete,
                                Toast.LENGTH_SHORT).show();
                 buttonView.setChecked(false);
                 return;
