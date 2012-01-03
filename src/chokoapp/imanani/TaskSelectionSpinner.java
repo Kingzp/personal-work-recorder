@@ -1,50 +1,46 @@
 package chokoapp.imanani;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class TaskSelectionSpinner extends Spinner {
-    private long currentTaskId;
     private TimeKeeper timeKeeper;
 
-    public TaskSelectionSpinner(Context context, ArrayAdapter<Task> adapter, 
-                                long currentTaskId, TimeKeeper timeKeeper) {
-        super(context);
-        this.timeKeeper = timeKeeper;
-
+    public TaskSelectionSpinner(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setPromptId(R.string.selectTask);
+    }
+
+    public void setTimeKeeperAndAdapter(TimeKeeper timeKeeper,
+                                        ArrayAdapter<Task> adapter) {
+        this.timeKeeper = timeKeeper;
         setAdapter(adapter);
-        int spinnerPosition = 0;
+        setOnItemSelectedListener(new ChangeTask());
+        if ( adapter.getCount() == 0 ) return;
+
+        int spinnerPosition = -1;
         int count = adapter.getCount();
         for (int i = 0 ; i < count ; i++ ) {
-            if (adapter.getItem(i).getId() == currentTaskId) {
+            if (adapter.getItem(i).getId() == timeKeeper.getCurrentTaskId()) {
                 spinnerPosition = i;
             }
         }
-        this.currentTaskId = adapter.getItem(spinnerPosition).getId();
-        setSelection(spinnerPosition);
-        setOnItemSelectedListener(new ChangeTask(spinnerPosition));
+        if ( spinnerPosition != -1 ) {
+            setSelection(spinnerPosition);
+        }
     }
-
-    public long getCurrentTaskId() { return currentTaskId; }
+    public boolean valid() { return timeKeeper != null; }
 
     private class ChangeTask implements OnItemSelectedListener {
-        private int currentSpinnerPosition;
-        public ChangeTask(int currentSpinnerPosition) {
-            this.currentSpinnerPosition = currentSpinnerPosition;
-        }
-
         @Override
         public void onItemSelected(AdapterView<?> parent, View view,
                                    int pos, long id) {
-            if ( currentSpinnerPosition != pos ) {
-                Task selectedTask = (Task)parent.getItemAtPosition(pos);
-                currentTaskId = selectedTask.getId();
-                timeKeeper.changeTask(selectedTask);
-            }
+            Task selectedTask = (Task)parent.getItemAtPosition(pos);
+            timeKeeper.changeTask(selectedTask);
         }
 
         @Override

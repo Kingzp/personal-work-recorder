@@ -1,5 +1,8 @@
 package chokoapp.imanani;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 public class Task {
     public static final String TABLE_NAME = "tasks";
     private long _id;
@@ -18,6 +21,23 @@ public class Task {
     public long getId() { return _id; }
     public String getCode() { return code; }
     public String getDescription() { return description; }
+
+    static public long findByCode(SQLiteDatabase db, String code) {
+        Cursor task_cursor = db.query(TABLE_NAME,
+                                      new String[] { "_id" },
+                                      "code = ?",
+                                      new String[] { code },
+                                      null, null, null);
+        try {
+            if ( task_cursor.moveToFirst() ) {
+                return task_cursor.getLong(0);
+            } else {
+                return -1;
+            }
+        } finally {
+            task_cursor.close();
+        }
+    }
 
     public static String create_sql() {
         return "CREATE TABLE tasks (\n"

@@ -36,9 +36,15 @@ class TimeKeeper implements Runnable {
      */
     private SQLiteDatabase db;
 
+    /**
+     * 記録している作業の tasks._id
+     */
+    private long currentTaskId;
+
     public TimeKeeper(TextView workTimeView, TextView taskTimeView) {
         this.workTimeView = workTimeView;
         this.taskTimeView = taskTimeView;
+        this.currentTaskId = -1;
     }
 
     /**
@@ -78,11 +84,15 @@ class TimeKeeper implements Runnable {
             // 勤務が開始していなければ、作業も開始しない。
             return;
         }
+        if ( currentTaskId == task.getId() ) {
+            return;
+        }
         taskStartTime = System.currentTimeMillis();
         db.execSQL("insert into task_records"
                 + "(work_id, start_time, code, description)"
                 + "values(?,?,?,?)", new Object[] { workId, taskStartTime,
                                                     task.getCode(), task.getDescription() });
+        currentTaskId = task.getId();
     }
 
     /**
@@ -100,7 +110,7 @@ class TimeKeeper implements Runnable {
 
     /**
      * 時間のフォーマッティング。
-     * 
+     *
      * @param time
      *            ミリ秒単位の時間。
      * @return H:MM:SS形式の文字列。
@@ -122,7 +132,7 @@ class TimeKeeper implements Runnable {
             }
             workId = workCursor.getLong(0);
             taskStartTime = workStartTime = workCursor.getLong(1);
-            Cursor taskCursor = db.rawQuery("select start_time"
+            Cursor taskCursor = db.rawQuery("select start_time, code"
                     + " from task_records" + " where work_id = ?"
                     + " order by start_time desc",
                     new String[] { String.valueOf(workId) });
@@ -131,6 +141,8 @@ class TimeKeeper implements Runnable {
                     return;
                 }
                 taskStartTime = taskCursor.getLong(0);
+                // task_records には tasks の主キーを持ってないので苦肉の策
+                currentTaskId = Task.findByCode(db, taskCursor.getString(1));
             } finally {
                 taskCursor.close();
             }
@@ -141,5 +153,9 @@ class TimeKeeper implements Runnable {
 
     public boolean nowRecording() {
         return workStartTime != 0;
+    }
+
+    public long getCurrentTaskId() {
+        return currentTaskId;
     }
 }

@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
             Intent intent = new Intent(this, TaskListActivity.class);
             if (timeKeeper.nowRecording()) {
                 intent.putExtra("chokoapp.imanani.cannotDeleteId", 
-                                spinner.getCurrentTaskId());
+                                timeKeeper.getCurrentTaskId());
             }
             startActivity(intent);
             return true;
@@ -103,7 +103,7 @@ public class MainActivity extends Activity {
         super.onStop();
         pref = getSharedPreferences("pref", MODE_PRIVATE|MODE_WORLD_WRITEABLE);
         Editor e = pref.edit();
-        e.putLong("currentTaskId", spinner.getCurrentTaskId());
+        e.putLong("currentTaskId", timeKeeper.getCurrentTaskId());
         e.commit();
     }
 
@@ -121,7 +121,8 @@ public class MainActivity extends Activity {
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
             this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(allTaskCursor));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner = new TaskSelectionSpinner(this, adapter, currentTaskId, timeKeeper);
+        spinner = new TaskSelectionSpinner(this, null);
+        spinner.setTimeKeeperAndAdapter(timeKeeper, adapter);
         LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         param.setMargins(20, 0, 20, 0);
         layout.addView(spinner, 1, param);
@@ -137,7 +138,8 @@ public class MainActivity extends Activity {
     }
 
     public void onClickStartButton(View view) {
-        timeKeeper.beginWork((Task)spinner.getSelectedItem());
+        Task selectedTask = (Task)spinner.getSelectedItem();
+        if ( selectedTask != null ) timeKeeper.beginWork(selectedTask);
     }
 
     public void onClickFinishButton(View view) {
