@@ -14,20 +14,18 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(createTableSql("tasks", "code TEXT", "description TEXT"));
-        db.execSQL(createTableSql("task_records", "work_id INTEGER",
-                "start_time INTEGER", "code TEXT", "description TEXT"));
-        db.execSQL(createTableSql("work_records", "start_time INTEGER",
-                "end_time INTEGER"));
+        db.execSQL(createTableSql(Task.TABLE_NAME, Task.COLUMNS));
+        db.execSQL(createTableSql(TaskRecord.TABLE_NAME, TaskRecord.COLUMNS));
+        db.execSQL(createTableSql(WorkRecord.TABLE_NAME, WorkRecord.COLUMNS));
         db.execSQL(createTableSql(DailyWorkSummary.TABLE_NAME, DailyWorkSummary.COLUMNS));
         db.execSQL(createTableSql(DailyTaskSummary.TABLE_NAME, DailyTaskSummary.COLUMNS));
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists tasks");
-        db.execSQL("drop table if exists task_records");
-        db.execSQL("drop table if exists work_records");
+        db.execSQL("drop table if exists " + Task.TABLE_NAME);
+        db.execSQL("drop table if exists " + TaskRecord.TABLE_NAME);
+        db.execSQL("drop table if exists " + WorkRecord.TABLE_NAME);
         db.execSQL("drop table if exists " + DailyWorkSummary.TABLE_NAME);
         db.execSQL("drop table if exists " + DailyTaskSummary.TABLE_NAME);
         onCreate(db);

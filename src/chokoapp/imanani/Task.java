@@ -5,6 +5,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class Task {
     public static final String TABLE_NAME = "tasks";
+    public static final String[] COLUMNS = {
+        "code TEXT",
+        "description TEXT"
+    };
+
     private long _id;
     private String code;
     private String description;
@@ -37,18 +42,6 @@ public class Task {
         } finally {
             task_cursor.close();
         }
-    }
-
-    public static String create_sql() {
-        return "CREATE TABLE tasks (\n"
-                + "  _id INTEGER PRIMARY KEY AUTOINCREMENT,\n"
-                + "  code TEXT,\n"
-                + "  description TEXT\n"
-                + ");";
-    }
-
-    public static String insert_sql() {
-        return "INSERT INTO tasks (code, description) VALUES (?, ?);";
     }
 
     public String toString() {
