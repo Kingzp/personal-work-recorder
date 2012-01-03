@@ -32,12 +32,22 @@ SELECT_DAILY_WROK_SUMMARY="SELECT _id, \
                                   datetime(start_at / 1000, 'unixepoch', 'localtime') 'start at', \
                                   datetime(end_at / 1000, 'unixepoch', 'localtime') 'end at' \
                              FROM daily_work_summary;"
-SELECT_DAILY_TASK_SUMMARY="SELECT _id, \
+SELECT_DAILY_TASK_SUMMARY="SELECT daily_task_summary._id _id, \
                                   code, \
-                                  (duration / (3600 * 1000))||\":\"||((duration / (60 * 1000)) % 60)||\":\"||((duration / 1000) % 60) 'duration', \
-                                  daily_work_summary_id ws_id, \
+                                  CASE WHEN duration / (1000 * 3600) = 0  THEN '00' \
+                                       WHEN duration / (1000 * 3600) < 10 THEN '0'||(duration / (1000 * 3600)) \
+                                       ELSE duration / (1000 * 3600) END||':'||\
+                                  CASE WHEN (duration / (1000 * 60)) % 60 = 0 THEN '00' \
+                                       WHEN (duration / (1000 * 60)) % 60 < 10 THEN '0'||((duration / (1000 * 60)) % 60) \
+                                       ELSE (duration / (1000 * 60)) % 60 END||':'||\
+                                  CASE WHEN (duration / 1000) % 60 = 0  THEN '00'\
+                                       WHEN (duration / 1000) % 60 < 10 THEN '0'||((duration / 1000) % 60)\
+                                       ELSE (duration / 1000) % 60 END duration, \
+                                  datetime(daily_work_summary.start_at / 1000, 'unixepoch', 'localtime') wk_start, \
+                                  datetime(daily_work_summary.end_at / 1000, 'unixepoch', 'localtime') wk_end, \
                                   description \
-                             FROM daily_task_summary;"
+                             FROM daily_task_summary LEFT OUTER JOIN daily_work_summary \
+                               ON daily_task_summary.daily_work_summary_id = daily_work_summary._id;"
 
 MESSAGE="tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, dt)daily_task_summary, q)quit"
 
