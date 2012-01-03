@@ -156,7 +156,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 .setMessage(getString(R.string.cannot_save_summary))
                 .setPositiveButton(android.R.string.ok, null)
                 .create().show();
+            return;
         }
+
         db.beginTransaction();
         try {
             if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
