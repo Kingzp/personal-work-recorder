@@ -34,11 +34,13 @@ public class TimeView extends UpDownView {
         setText(String.format("%s%02d:%02d:%02d", sign, hor, min, sec));
     }
 
+    @Override
     public void setTime(long time) {
         this.time = time;
         invalidate();
     }
 
+    @Override
     public long getTime() { return time; }
 
     @Override
@@ -59,5 +61,10 @@ public class TimeView extends UpDownView {
         } else {
             time = time - remainder - UP_AND_DOWN_STEP;
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 }

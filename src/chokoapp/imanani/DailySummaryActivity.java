@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class DailySummaryActivity extends ListActivity implements Observer {
@@ -100,6 +101,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             resetSummary();
             return true;
         case R.id.summaryAdjust:
+            autoAdjust();
             return true;
         case R.id.summarySave:
             saveTable();
@@ -274,5 +276,17 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             sum += adapter.getItem(i).getDuration();
         }
         return sum;
+    }
+
+    private void autoAdjust() {
+        startTimeView.autoAdjust();
+        endTimeView.autoAdjust();
+        ListView listView = getListView();
+        int count = listView.getCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            TimeView durationView = (TimeView)listView.getChildAt(i)
+                .findViewById(R.id.taskDurationOnSummary);
+            durationView.autoAdjust();
+        }
     }
 }

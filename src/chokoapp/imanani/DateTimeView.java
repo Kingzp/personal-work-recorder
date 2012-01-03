@@ -29,6 +29,7 @@ public class DateTimeView extends UpDownView {
         }
     }
 
+    @Override
     public void setTime(long date) {
         this.date = new Date(date);
         invalidate();
@@ -39,6 +40,7 @@ public class DateTimeView extends UpDownView {
         invalidate();
     }
 
+    @Override
     public long getTime() {
         return isEmpty() ? -1 : date.getTime();
     }
@@ -61,7 +63,9 @@ public class DateTimeView extends UpDownView {
         }
     }
 
+    @Override
     public boolean isEmpty() {
         return date == null;
     }
+
 }

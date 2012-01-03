@@ -20,4 +20,22 @@ abstract class UpDownView extends TextView {
     abstract public void up();
     abstract public void down();
     abstract public long getTime();
+
+    abstract public boolean isEmpty();
+    abstract public void setTime(long date);
+
+    public void autoAdjust() {
+        if ( !isEmpty() ) {
+            long date = getTime();
+            long remainder = date % UP_AND_DOWN_STEP;
+            if ( remainder != 0 ) {
+                if ( remainder < UP_AND_DOWN_STEP / 2 &&
+                     remainder > -UP_AND_DOWN_STEP / 2) {
+                    setTime(date - remainder);
+                } else {
+                    setTime(date + (UP_AND_DOWN_STEP - remainder));
+                }
+            }
+        }
+    }
 }
