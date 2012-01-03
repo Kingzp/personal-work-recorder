@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -26,9 +24,6 @@ public class MainActivity extends Activity {
     private TimeKeeper timeKeeper;
     private Ticker ticker;
     private TaskSelectionSpinner spinner;
-    private long currentTaskId = 0;
-    private SharedPreferences pref;
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,22 +84,6 @@ public class MainActivity extends Activity {
     public void onPause() {
         super.onPause();
         ticker.stop();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        pref = getSharedPreferences("pref", MODE_PRIVATE|MODE_WORLD_READABLE);
-        currentTaskId = pref.getLong("currentTaskId", 0);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        pref = getSharedPreferences("pref", MODE_PRIVATE|MODE_WORLD_WRITEABLE);
-        Editor e = pref.edit();
-        e.putLong("currentTaskId", timeKeeper.getCurrentTaskId());
-        e.commit();
     }
 
     private void displayToday() {
