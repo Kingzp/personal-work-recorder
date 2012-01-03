@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -93,18 +91,11 @@ public class MainActivity extends Activity {
     }
 
     private void setupSpinner() {
-        LinearLayout layout = (LinearLayout)findViewById(R.id.recordingLinearLayout);
-        if ( spinner != null ) {
-            layout.removeView(spinner);
-        }
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
             this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(allTaskCursor));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner = new TaskSelectionSpinner(this, null);
+        spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
         spinner.setTimeKeeperAndAdapter(timeKeeper, adapter);
-        LayoutParams param = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-        param.setMargins(20, 0, 20, 0);
-        layout.addView(spinner, 1, param);
     }
 
     private ArrayList<Task> makeArrayListForSpinner(Cursor c) {
