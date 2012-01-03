@@ -148,6 +148,13 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     public void saveTable() {
         dailyWorkSummary.update(startTimeView, endTimeView);
 
+        if ( differenceTimeView.getTime() < 0 || differenceTimeView.getTime() >= 1000 ) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.error))
+                .setMessage(getString(R.string.cannot_save_summary))
+                .setPositiveButton(android.R.string.ok, null)
+                .create().show();
+        }
         db.beginTransaction();
         try {
             if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {

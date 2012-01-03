@@ -27,4 +27,6 @@
     <string name="dateformat">yyyy年MM月dd日(E)</string>
     <string name="adjust">自動調整</string>
     <string name="send">メール送信</string>
+    <string name="error">エラー</string>
+    <string name="cannot_save_summary">作業合計時間と各タスクの作業時間の合計が一致しないと保存できません</string>
 </resources>
