@@ -29,4 +29,12 @@
     <string name="send">Send Mail</string>
     <string name="error">Error</string>
     <string name="cannot_save_summary">You can only save summary that match the sum of task\'s durations and the total work time</string>
+    <string name="cannot_send_report">You can only report summary that match the sum of task\'s durations and the total work time</string>
+    <string name="daily_work_report">Daily Work Report</string>
+    <string name="work_date">Work Date</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="duration">Duration</string>
+    <string name="no_email_client">There is no email client installed</string>
+    <string name="failed_to_save">Failed to save the date</string>
 </resources>

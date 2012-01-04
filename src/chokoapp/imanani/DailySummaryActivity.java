@@ -8,7 +8,9 @@ import java.util.Calendar;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class DailySummaryActivity extends ListActivity implements Observer {
     private SQLiteDatabase db;
@@ -109,6 +112,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             saveTable();
             return true;
         case R.id.summarySend:
+            sendMail();
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -149,20 +153,27 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         update(null, null);
     }
 
-    public void saveTable() {
+    public boolean isValid(String error_message) {
         if ( differenceTimeView.getTime() < 0 || differenceTimeView.getTime() >= 1000 ) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.error))
-                .setMessage(getString(R.string.cannot_save_summary))
+                .setMessage(error_message)
                 .setPositiveButton(android.R.string.ok, null)
                 .create().show();
-            return;
+            return false;
+        } else {
+            return true;
         }
+    }
+
+    public boolean saveTable() {
+        if ( !isValid(getString(R.string.cannot_save_summary)) ) return false;
 
         db.beginTransaction();
         try {
             if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
-                return;
+                Toast.makeText(this, getString(R.string.failed_to_save), Toast.LENGTH_LONG).show();
+                return false;
             }
             db.delete(DailyTaskSummary.TABLE_NAME,
                       "daily_work_summary_id = ?",
@@ -173,11 +184,13 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             for ( int i = 0 ; i < count ; i++ ) {
                 if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
                      != QueryResult.SUCCESS ) {
-                    return;
+                    Toast.makeText(this, getString(R.string.failed_to_save), Toast.LENGTH_LONG).show();
+                    return false;
                 }
             }
 
             db.setTransactionSuccessful();
+            return true;
         } finally {
             db.endTransaction();
         }
@@ -303,5 +316,56 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 .findViewById(R.id.taskDurationOnSummary);
             durationView.autoAdjust();
         }
+    }
+
+    private void sendMail() {
+        if ( !isValid(getString(R.string.cannot_send_report)) ) return;
+
+        if ( !saveTable() ) return;
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("plain/text");
+        String mailSubject = String.format("[%s]%s(%s)",
+                                            getString(R.string.app_name),
+                                            getString(R.string.daily_work_report),
+                                            dailyWorkSummary.getDateString());
+        intent.putExtra(Intent.EXTRA_SUBJECT, mailSubject);
+        intent.putExtra(Intent.EXTRA_TEXT, mailBody());
+        try {
+            startActivity(Intent.createChooser(intent, "send mail..."));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, getString(R.string.no_email_client), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String mailBody() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getString(R.string.work_date) + "\n")
+            .append(dailyWorkSummary.getDateString() + "\n")
+            .append("\n")
+            .append(getString(R.string.start_time) + "\t" +
+                    getString(R.string.end_time) + "\n")
+            .append(dailyWorkSummary.getStartTimeString() + "\t" +
+                    dailyWorkSummary.getEndTimeString() + "\n")
+            .append("\n")
+            .append(getString(R.string.task_code) + "\t" +
+                    getString(R.string.task_name) + "\t" +
+                    getString(R.string.duration) + "\n");
+
+        TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+        int count = adapter.getCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            DailyTaskSummary dailyTaskSummary = adapter.getItem(i);
+            long duration = dailyTaskSummary.getDuration();
+            long hour = duration / (60 * 60 * 1000);
+            long min  = (duration / (60 * 1000)) % 60;
+            long sec  = (duration / 1000) % 60;
+            builder.append(dailyTaskSummary.getCode() + "\t" +
+                           dailyTaskSummary.getDescription() + "\t" +
+                           String.format("%02d:%02d:%02d", hour, min, sec) +
+                           "\n");
+        }
+
+        return builder.toString();
     }
 }

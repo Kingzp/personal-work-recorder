@@ -42,7 +42,7 @@ public class UpButton extends ImageView {
             });
         setOnTouchListener(new StopAndReflect());
     }
-    
+
     private class StopAndReflect implements OnTouchListener {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -60,7 +60,7 @@ public class UpButton extends ImageView {
             return false;
         }
     }
-    
+
     private class ContinuouslyUp extends AsyncTask<Void, Void, Void> {
         private static final int UPDATE_INTERVAL = 500;
 

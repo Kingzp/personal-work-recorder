@@ -1,5 +1,6 @@
 package chokoapp.imanani;
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,6 +31,22 @@ public class DailyWorkSummary {
     public long getId() { return _id; }
     public long getStartAt() { return start_at; }
     public long getEndAt() { return end_at; }
+
+    public String getDateString() {
+        return (new SimpleDateFormat("yyyy/MM/dd")).format(new Date(start_at));
+    }
+    public String getStartTimeString() {
+        return (new SimpleDateFormat("HH:mm:ss")).format(new Date(start_at));
+    }
+    public String getEndTimeString() {
+        Date start = (new SimpleDateFormat("yyyy/MM/dd"))
+            .parse(getDateString(), new ParsePosition(0));
+        long beginning_of_date = start.getTime();
+        long hour = (end_at - beginning_of_date)  / (60 * 60 * 1000);
+        long min  = ( (end_at - beginning_of_date) / (60 * 1000) ) % 60;
+        long sec  = ( (end_at - beginning_of_date) / 1000 ) % 60;
+        return String.format("%02d:%02d:%02d", hour, min, sec);
+    }
 
     public boolean nowRecording() { return end_at == 0; }
     public boolean existInDatabase() { return _id != 0; }
