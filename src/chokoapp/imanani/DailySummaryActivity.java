@@ -57,9 +57,11 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
         startTimeView.addTextChangedListener(new DisplayTotal());
+        startTimeView.addTextChangedListener(new UpdateBackendData());
 
         endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
         endTimeView.addTextChangedListener(new DisplayTotal());
+        endTimeView.addTextChangedListener(new UpdateBackendData());
 
         totalTimeView = (TextView)findViewById(R.id.totalTimeView);
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
@@ -148,8 +150,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     }
 
     public void saveTable() {
-        dailyWorkSummary.update(startTimeView, endTimeView);
-
         if ( differenceTimeView.getTime() < 0 || differenceTimeView.getTime() >= 1000 ) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.error))
@@ -259,6 +259,19 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             long min = (totalSeconds / 60) % 60;
             long hor = totalSeconds / (60 * 60);
             totalTimeView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
+        }
+    }
+
+    private class UpdateBackendData implements TextWatcher {
+        @Override
+        public void afterTextChanged(Editable e) {
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            dailyWorkSummary.update(startTimeView, endTimeView);
         }
     }
 
