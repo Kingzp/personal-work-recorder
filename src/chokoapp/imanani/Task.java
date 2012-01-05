@@ -1,5 +1,8 @@
 package chokoapp.imanani;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -27,20 +30,39 @@ public class Task {
     public String getCode() { return code; }
     public String getDescription() { return description; }
 
-    static public long findByCode(SQLiteDatabase db, String code) {
+    static public Task findByCode(SQLiteDatabase db, String code) {
         Cursor task_cursor = db.query(TABLE_NAME,
-                                      new String[] { "_id" },
+                                      new String[] { "_id", "code", "description" },
                                       "code = ?",
                                       new String[] { code },
                                       null, null, null);
         try {
             if ( task_cursor.moveToFirst() ) {
-                return task_cursor.getLong(0);
+                return new Task(task_cursor.getLong(0),
+                                task_cursor.getString(1),
+                                task_cursor.getString(2));
             } else {
-                return -1;
+                return null;
             }
         } finally {
             task_cursor.close();
+        }
+    }
+
+    static public List<Task> findAll(SQLiteDatabase db) {
+        List<Task> all = new ArrayList<Task>();
+        Cursor taskCursor = db.query(TABLE_NAME,
+                                      new String[] {"_id", "code", "description" },
+                                      null, null, null, null, "code");
+        while ( taskCursor.moveToNext() ) {
+            all.add(new Task(taskCursor.getLong(0),
+                             taskCursor.getString(1),
+                             taskCursor.getString(2)));
+        }
+        try {
+            return all;
+        } finally {
+            taskCursor.close();
         }
     }
 

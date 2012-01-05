@@ -1,5 +1,6 @@
 package chokoapp.imanani;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -10,6 +11,7 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -20,6 +22,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +44,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     private DailyWorkSummary dailyWorkSummary;
     private TimeView differenceTimeView;
     private DailyTaskSummary dummyTask;
+    private FooterView footerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +91,11 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         endTimeDown.setupListeners(endTimeView, dummyTask);
 
         dailyWorkSummary = new DailyWorkSummary();
+
+        ListView listView = getListView();
+        footerView = new FooterView(this);
+        listView.addFooterView(footerView);
+        listView.setOnItemClickListener(new PopupTaskList());
     }
 
     @Override
@@ -311,7 +321,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         endTimeView.autoAdjust();
         ListView listView = getListView();
         int count = listView.getCount();
-        for ( int i = 0 ; i < count ; i++ ) {
+        for ( int i = 0 ; i < count - 1; i++ ) {
             TimeView durationView = (TimeView)listView.getChildAt(i)
                 .findViewById(R.id.taskDurationOnSummary);
             durationView.autoAdjust();
@@ -367,5 +377,53 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         }
 
         return builder.toString();
+    }
+
+    private class PopupTaskList implements OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if ( view == footerView ) {
+                List<CharSequence> items = new ArrayList<CharSequence>();
+                List<Task> tasks = Task.findAll(db);
+                List<Task> tasksNotInTheAdapter = new ArrayList<Task>();
+                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+                for ( Task task : tasks ) {
+                    if ( !adapter.contains( task.getCode() ) ) {
+                        tasksNotInTheAdapter.add(task);
+                    }
+                }
+                for ( Task task : tasksNotInTheAdapter ) {
+                    items.add(task.toString());
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                builder.setTitle(R.string.add_a_missing_task)
+                    .setItems(items.toArray(new CharSequence[0]),
+                              new AddMissingTask(DailySummaryActivity.this, tasksNotInTheAdapter))
+                    .create().show();
+            }
+        }
+
+        private class AddMissingTask implements OnClickListener {
+            private DailySummaryActivity act;
+            private List<Task> tasks;
+
+            public AddMissingTask(DailySummaryActivity act, List<Task> tasks) {
+                this.act = act;
+                this.tasks = tasks;
+            }
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String code = tasks.get(which).getCode();
+                Task task = Task.findByCode(db, code);
+                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
+                List<DailyTaskSummary> dailyTaskSummaries = adapter.getDailyTaskSummaries();
+                DailyTaskSummary dailyTaskSummary = new DailyTaskSummary(task);
+                dailyTaskSummary.addObserver(act);
+                dailyTaskSummaries.add(dailyTaskSummary);
+                act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
+                act.update(null, null);
+            }
+        }
     }
 }

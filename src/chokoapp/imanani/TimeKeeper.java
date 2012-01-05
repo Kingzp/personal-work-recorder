@@ -142,7 +142,8 @@ class TimeKeeper implements Runnable {
                 }
                 taskStartTime = taskCursor.getLong(0);
                 // task_records には tasks の主キーを持ってないので苦肉の策
-                currentTaskId = Task.findByCode(db, taskCursor.getString(1));
+                Task currentTask = Task.findByCode(db, taskCursor.getString(1));
+                currentTaskId = currentTask == null ? -1 : currentTask.getId();
             } finally {
                 taskCursor.close();
             }

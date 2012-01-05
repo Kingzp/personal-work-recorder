@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
     private LayoutInflater inf;
     private static int resourceId = R.layout.task_summary_item;
+    private List<DailyTaskSummary> dailyTaskSummaries;
 
     public TaskSummaryAdapter(Context context, List<DailyTaskSummary> dailyTaskSummaries) {
         super(context, resourceId);
@@ -21,6 +22,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
             super.add(dailyTaskSummary);
         }
         this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.dailyTaskSummaries = dailyTaskSummaries;
     }
 
     @Override
@@ -72,4 +74,13 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         }
     }
 
+    public boolean contains(String code) {
+        int count = getCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            if ( getItem(i).getCode().equals(code) ) return true;
+        }
+        return false;
+    }
+
+    public List<DailyTaskSummary> getDailyTaskSummaries() { return dailyTaskSummaries; }
 }

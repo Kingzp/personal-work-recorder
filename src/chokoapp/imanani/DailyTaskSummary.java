@@ -32,6 +32,14 @@ public class DailyTaskSummary extends Observable {
         this.daily_work_summary_id = daily_work_summary_id;
     }
 
+    public DailyTaskSummary(Task task) {
+        this._id = 0;
+        this.code = task.getCode();
+        this.description = task.getDescription();
+        this.duration = 0;
+        this.daily_work_summary_id = 0;
+    }
+
     public long getId() { return _id; }
     public String getCode() { return code; }
     public String getDescription() { return description; }
