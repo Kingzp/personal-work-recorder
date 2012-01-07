@@ -163,6 +163,8 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         } else {
             differenceTimeView.setTextColor(Color.RED);
         }
+
+        footerView.setVisibility(dailyWorkSummary.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     public void selectDate(View v) {
