@@ -43,11 +43,13 @@ SELECT_DAILY_TASK_SUMMARY="SELECT daily_task_summary._id _id, \
                                   CASE WHEN (duration / 1000) % 60 = 0  THEN '00'\
                                        WHEN (duration / 1000) % 60 < 10 THEN '0'||((duration / 1000) % 60)\
                                        ELSE (duration / 1000) % 60 END duration, \
+                                  daily_work_summary._id ws_id, \
                                   datetime(daily_work_summary.start_at / 1000, 'unixepoch', 'localtime') wk_start, \
                                   datetime(daily_work_summary.end_at / 1000, 'unixepoch', 'localtime') wk_end, \
                                   description \
                              FROM daily_task_summary LEFT OUTER JOIN daily_work_summary \
-                               ON daily_task_summary.daily_work_summary_id = daily_work_summary._id;"
+                               ON daily_task_summary.daily_work_summary_id = daily_work_summary._id \
+                            ORDER BY ws_id, code;"
 
 MESSAGE="tm)tasks, wr)work_records, tr)task_records, ds)daily_work_summary, dt)daily_task_summary, q)quit"
 
