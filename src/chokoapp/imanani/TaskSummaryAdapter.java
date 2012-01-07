@@ -95,4 +95,13 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         }
         notifyDataSetChanged();
     }
+
+    public long getTotal() {
+        int count = getCount();
+        long sum = 0;
+        for ( int i = 0 ; i < count ; i++ ) {
+            sum += getItem(i).getDuration();
+        }
+        return sum;
+    }
 }

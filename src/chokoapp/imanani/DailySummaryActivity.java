@@ -143,7 +143,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
         totalTimeView.setTime(dailyWorkSummary.getTotal());
 
-        long diff = dailyWorkSummary.getTotal() - calculateTaskTotal();
+        long diff = dailyWorkSummary.getTotal() - taskSummaryAdapter.getTotal();
         differenceTimeView.setTime(diff);
         if ( 0 <= diff && diff < 1000 ) {
             differenceTimeView.setTextColor(Color.GREEN);
@@ -226,15 +226,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             taskSummaryAdapter.setDailyTaskSummaries(dailyTaskSummaries);
             update(null, null);
         }
-    }
-
-    public long calculateTaskTotal() {
-        int count = taskSummaryAdapter.getCount();
-        long sum = 0;
-        for ( int i = 0 ; i < count ; i++ ) {
-            sum += taskSummaryAdapter.getItem(i).getDuration();
-        }
-        return sum;
     }
 
     private void autoAdjust() {
