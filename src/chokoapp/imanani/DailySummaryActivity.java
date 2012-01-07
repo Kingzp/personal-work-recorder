@@ -248,11 +248,11 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             long date = dateSelectButton.getTime();
-            dailyWorkSummary = DailyWorkSummary.findByDate(db, date);
-            if ( dailyWorkSummary.isEmpty() ) {
-                dailyWorkSummary = WorkRecord.findByDate(db, date);
+            DailyWorkSummary fetchedWorkSummary = DailyWorkSummary.findByDate(db, date);
+            if ( fetchedWorkSummary.isEmpty() ) {
+                fetchedWorkSummary = WorkRecord.findByDate(db, date);
             }
-
+            dailyWorkSummary.copy(fetchedWorkSummary);
             updateDisplayTime();
 
             List<DailyTaskSummary> dailyTaskSummaries =

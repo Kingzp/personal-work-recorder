@@ -132,4 +132,10 @@ public class DailyWorkSummary {
             this.end_at = resetDate.getEndAt();
         }
     }
+
+    public void copy(DailyWorkSummary other) {
+        this._id = other._id;
+        this.start_at = other.start_at;
+        this.end_at = other.end_at;
+    }
 }
