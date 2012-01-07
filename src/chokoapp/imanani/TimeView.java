@@ -3,8 +3,9 @@ package chokoapp.imanani;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
-public class TimeView extends UpDownView {
+public class TimeView extends TextView {
     private long time;
 
     public TimeView(Context context) {
@@ -34,27 +35,18 @@ public class TimeView extends UpDownView {
         setText(String.format("%s%02d:%02d:%02d", sign, hor, min, sec));
     }
 
-    @Override
     public void setTime(long time) {
         this.time = time;
         invalidate();
     }
 
-    @Override
     public long getTime() { return time; }
 
-    @Override
     public void up() {
         setTime(TimeUtils.up(getTime()));
     }
 
-    @Override
     public void down() {
         setTime(TimeUtils.down(getTime()));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
     }
 }

@@ -2,11 +2,12 @@ package chokoapp.imanani;
 
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.widget.TextView;
 import android.content.Context;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 
-public class DateTimeView extends UpDownView {
+public class DateTimeView extends TextView {
     private Date date;
     private SimpleDateFormat df;
 
@@ -29,7 +30,6 @@ public class DateTimeView extends UpDownView {
         }
     }
 
-    @Override
     public void setTime(long date) {
         this.date = new Date(date);
         invalidate();
@@ -40,30 +40,10 @@ public class DateTimeView extends UpDownView {
         invalidate();
     }
 
-    @Override
     public long getTime() {
         return isEmpty() ? -1 : date.getTime();
     }
 
-    @Override
-    public void up() {
-        if ( !isEmpty() ) {
-            long current = date.getTime();
-            long remainder = current % UP_AND_DOWN_STEP;
-            setTime(current - remainder + UP_AND_DOWN_STEP);
-        }
-    }
-
-    @Override
-    public void down() {
-        if ( !isEmpty() ) {
-            long current = date.getTime();
-            long remainder = current % UP_AND_DOWN_STEP;
-            setTime(current - (remainder == 0 ? UP_AND_DOWN_STEP : remainder));
-        }
-    }
-
-    @Override
     public boolean isEmpty() {
         return date == null;
     }
