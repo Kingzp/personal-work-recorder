@@ -322,9 +322,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("plain/text");
         String mailSubject = String.format("[%s]%s(%s)",
-                                            getString(R.string.app_name),
-                                            getString(R.string.daily_work_report),
-                                            dailyWorkSummary.getDateString());
+                                           getString(R.string.app_name),
+                                           getString(R.string.daily_work_report),
+                                           TimeUtils.getDateString(dailyWorkSummary.getStartAt()));
         intent.putExtra(Intent.EXTRA_SUBJECT, mailSubject);
         intent.putExtra(Intent.EXTRA_TEXT, mailBody());
         try {
@@ -337,12 +337,13 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     private String mailBody() {
         StringBuilder builder = new StringBuilder();
         builder.append(getString(R.string.work_date) + "\n")
-            .append(dailyWorkSummary.getDateString() + "\n")
+            .append(TimeUtils.getDateString(dailyWorkSummary.getStartAt()) + "\n")
             .append("\n")
             .append(getString(R.string.start_time) + "\t" +
                     getString(R.string.end_time) + "\n")
-            .append(dailyWorkSummary.getStartTimeString() + "\t" +
-                    dailyWorkSummary.getEndTimeString() + "\n")
+            .append(TimeUtils.getTimeString(dailyWorkSummary.getStartAt()) + "\t" +
+                    TimeUtils.getTimeStringFrom(dailyWorkSummary.getEndAt(),
+                                                dailyWorkSummary.getStartAt()) + "\n")
             .append("\n")
             .append(getString(R.string.task_code) + "\t" +
                     getString(R.string.task_name) + "\t" +
@@ -352,13 +353,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         int count = adapter.getCount();
         for ( int i = 0 ; i < count ; i++ ) {
             DailyTaskSummary dailyTaskSummary = adapter.getItem(i);
-            long duration = dailyTaskSummary.getDuration();
-            long hour = duration / (60 * 60 * 1000);
-            long min  = (duration / (60 * 1000)) % 60;
-            long sec  = (duration / 1000) % 60;
             builder.append(dailyTaskSummary.getCode() + "\t" +
                            dailyTaskSummary.getDescription() + "\t" +
-                           String.format("%02d:%02d:%02d", hour, min, sec) +
+                           TimeUtils.getTimeString(dailyTaskSummary.getDuration()) +
                            "\n");
         }
 

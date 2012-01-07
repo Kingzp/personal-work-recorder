@@ -1,6 +1,5 @@
 package chokoapp.imanani;
 
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -14,7 +13,6 @@ public class DailyWorkSummary {
         "start_at INTEGER",
         "end_at INTEGER"
     };
-    public static final long UP_DOWN_STEP = 15 * 60 * 1000;
 
     private long _id;
     private long start_at;
@@ -33,30 +31,9 @@ public class DailyWorkSummary {
     public long getStartAt() { return start_at; }
     public long getEndAt() { return end_at; }
 
-    public String getDateString() {
-        return (new SimpleDateFormat("yyyy/MM/dd")).format(new Date(start_at));
-    }
-    public String getStartTimeString() {
-        return (new SimpleDateFormat("HH:mm:ss")).format(new Date(start_at));
-    }
-    public String getEndTimeString() {
-        Date start = (new SimpleDateFormat("yyyy/MM/dd"))
-            .parse(getDateString(), new ParsePosition(0));
-        long beginning_of_date = start.getTime();
-        long hour = (end_at - beginning_of_date)  / (60 * 60 * 1000);
-        long min  = ( (end_at - beginning_of_date) / (60 * 1000) ) % 60;
-        long sec  = ( (end_at - beginning_of_date) / 1000 ) % 60;
-        return String.format("%02d:%02d:%02d", hour, min, sec);
-    }
-
     public boolean nowRecording() { return end_at == 0; }
     public boolean existInDatabase() { return _id != 0; }
     public boolean isEmpty() { return _id == 0 && start_at == 0 && end_at == 0; }
-
-    public void update(DateTimeView startView, DateTimeView endView) {
-        if ( !startView.isEmpty() ) start_at = startView.getTime();
-        if ( !endView.isEmpty() )   end_at   = endView.getTime();
-    }
 
     public void setStartAt(long start) {
         if ( start < 0 ) return;
@@ -66,45 +43,33 @@ public class DailyWorkSummary {
         if ( end < 0 ) return;
         end_at = end;
     }
-    public static long up(long time) {
-        long remainder = time % UP_DOWN_STEP;
-        return remainder > 0 ?
-            time + UP_DOWN_STEP - remainder :
-            time + UP_DOWN_STEP;
-    }
-    public static long down(long time) {
-        long remainder = time % UP_DOWN_STEP;
-        return remainder > 0 ?
-            time - remainder :
-            time - UP_DOWN_STEP;
-    }
 
     public void startTimeUp() {
         if ( isEmpty() ) return;
         if ( nowRecording() ) return;
 
-        setStartAt(up(getStartAt()));
+        setStartAt(TimeUtils.up(getStartAt()));
     }
 
     public void startTimeDown() {
         if ( isEmpty() ) return;
         if ( nowRecording() ) return;
 
-        setStartAt(down(getStartAt()));
+        setStartAt(TimeUtils.down(getStartAt()));
     }
 
     public void endTimeUp() {
         if ( isEmpty() ) return;
         if ( nowRecording() ) return;
 
-        setEndAt(up(getEndAt()));
+        setEndAt(TimeUtils.up(getEndAt()));
     }
 
     public void endTimeDown() {
         if ( isEmpty() ) return;
         if ( nowRecording() ) return;
 
-        setEndAt(down(getEndAt()));
+        setEndAt(TimeUtils.down(getEndAt()));
     }
 
     public static DailyWorkSummary findByDate(SQLiteDatabase db, long date) {
