@@ -148,7 +148,12 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             differenceTimeView.setTextColor(Color.RED);
         }
 
-        footerView.setVisibility(dailyWorkSummary.isEmpty() ? View.GONE : View.VISIBLE);
+        if ( dailyWorkSummary.isEmpty() ||
+             taskSummaryAdapter.getRemainedTasks(db).isEmpty() ) {
+            footerView.setVisibility(View.GONE);
+        } else {
+            footerView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void resetSummary(long date) {
@@ -278,43 +283,30 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     }
 
     private class PopupTaskList implements OnItemClickListener {
+
+        @SuppressWarnings("serial")
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if ( view == footerView ) {
-                List<CharSequence> items = new ArrayList<CharSequence>();
-                List<Task> tasks = Task.findAll(db);
-                List<Task> tasksNotInTheAdapter = new ArrayList<Task>();
-                for ( Task task : tasks ) {
-                    if ( !taskSummaryAdapter.contains( task.getCode() ) ) {
-                        tasksNotInTheAdapter.add(task);
-                    }
-                }
-                for ( Task task : tasksNotInTheAdapter ) {
-                    items.add(task.toString());
-                }
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setTitle(R.string.add_a_missing_task)
-                    .setItems(items.toArray(new CharSequence[0]),
-                              new AddMissingTask(DailySummaryActivity.this, tasksNotInTheAdapter))
-                    .create().show();
-            }
-        }
-
-        private class AddMissingTask implements OnClickListener {
-            private DailySummaryActivity act;
-            private List<Task> tasks;
-
-            public AddMissingTask(DailySummaryActivity act, List<Task> tasks) {
-                this.act = act;
-                this.tasks = tasks;
-            }
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String code = tasks.get(which).getCode();
-                Task task = Task.findByCode(db, code);
-                taskSummaryAdapter.add(new DailyTaskSummary(task));
-                act.update(null, null);
+                final List<Task> remainedTasks = taskSummaryAdapter.getRemainedTasks(db);
+                List<CharSequence> items = new ArrayList<CharSequence>() {{
+                        for ( Task task : remainedTasks ) add(task.toString());
+                    }};
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle(R.string.add_a_missing_task)
+                .setItems(items.toArray(new CharSequence[0]),
+                          new OnClickListener() {
+                              @Override
+                              public void onClick(DialogInterface dialog, int which) {
+                                  String code = remainedTasks.get(which).getCode();
+                                  Task task = Task.findByCode(db, code);
+                                  taskSummaryAdapter.add(new DailyTaskSummary(task));
+                                  if ( taskSummaryAdapter.getRemainedTasks(db).isEmpty() ) {
+                                      footerView.setVisibility(View.GONE);
+                                  }
+                              }
+                          })
+                .create().show();
             }
         }
     }

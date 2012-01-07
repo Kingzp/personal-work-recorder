@@ -1,9 +1,11 @@
 package chokoapp.imanani;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,10 +82,10 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         return false;
     }
 
-    public boolean contains(String code) {
+    public boolean contains(Task task) {
         int count = getCount();
         for ( int i = 0 ; i < count ; i++ ) {
-            if ( getItem(i).getCode().equals(code) ) return true;
+            if ( getItem(i).getCode().equals(task.getCode()) ) return true;
         }
         return false;
     }
@@ -103,5 +105,14 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
             sum += getItem(i).getDuration();
         }
         return sum;
+    }
+
+    @SuppressWarnings("serial")
+    public List<Task> getRemainedTasks(final SQLiteDatabase db) {
+        return new ArrayList<Task>() {{
+                for ( Task task : Task.findAll(db) ) {
+                    if ( !TaskSummaryAdapter.this.contains(task) ) add(task);
+                }
+            }};
     }
 }
