@@ -26,7 +26,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class DailySummaryActivity extends ListActivity implements Observer {
@@ -36,11 +35,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     private DateButton dateSelectButton;
     private DateTimeView startTimeView;
     private DateTimeView endTimeView;
-    private TextView totalTimeView;
-    private UpButton startTimeUp;
-    private DownButton startTimeDown;
-    private UpButton endTimeUp;
-    private DownButton endTimeDown;
+    private TimeView totalTimeView;
     private DailyWorkSummary dailyWorkSummary;
     private TimeView differenceTimeView;
     private DailyTaskSummary dummyTask;
@@ -64,31 +59,51 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         dateSelectButton.addTextChangedListener(new DisplaySummary(this));
 
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
-        startTimeView.addTextChangedListener(new DisplayTotal());
-        startTimeView.addTextChangedListener(new UpdateBackendData());
+        ((ManipulateButton)findViewById(R.id.startTimeUp))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        startTimeView.up();
+                        dailyWorkSummary.startTimeUp();
+                        totalTimeView.setTime(calculateWorkTotal());
+                    }
+                });
+        ((ManipulateButton)findViewById(R.id.startTimeDown))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        startTimeView.down();
+                        dailyWorkSummary.startTimeDown();
+                        totalTimeView.setTime(calculateWorkTotal());
+                    }
+                });
 
         endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
-        endTimeView.addTextChangedListener(new DisplayTotal());
-        endTimeView.addTextChangedListener(new UpdateBackendData());
+        ((ManipulateButton)findViewById(R.id.endTimeUp))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        endTimeView.up();
+                        dailyWorkSummary.endTimeUp();
+                        totalTimeView.setTime(calculateWorkTotal());
+                    }
+                });
+        ((ManipulateButton)findViewById(R.id.endTimeDown))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        endTimeView.down();
+                        dailyWorkSummary.endTimeDown();
+                        totalTimeView.setTime(calculateWorkTotal());
+                    }
+                });
 
-        totalTimeView = (TextView)findViewById(R.id.totalTimeView);
+        totalTimeView = (TimeView)findViewById(R.id.totalTimeView);
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
 
         dummyTask = new DailyTaskSummary(0, "Dummy",
                                          "for notify that change startTime or endTime", 0, 0);
         dummyTask.addObserver(this);
-
-        startTimeUp = (UpButton)findViewById(R.id.startTimeUp);
-        startTimeUp.setupListeners(startTimeView, dummyTask);
-
-        startTimeDown = (DownButton)findViewById(R.id.startTimeDown);
-        startTimeDown.setupListeners(startTimeView, dummyTask);
-
-        endTimeUp = (UpButton)findViewById(R.id.endTimeUp);
-        endTimeUp.setupListeners(endTimeView, dummyTask);
-
-        endTimeDown = (DownButton)findViewById(R.id.endTimeDown);
-        endTimeDown.setupListeners(endTimeView, dummyTask);
 
         dailyWorkSummary = new DailyWorkSummary();
 
@@ -266,36 +281,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 endTimeView.setTime(dailyWorkSummary.getEndAt());
             }
         }
-    }
-
-    private class DisplayTotal implements TextWatcher {
-        @Override
-        public void afterTextChanged(Editable e) {
-        }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            long totalSeconds = calculateWorkTotal() / 1000;
-            long sec = totalSeconds % 60;
-            long min = (totalSeconds / 60) % 60;
-            long hor = totalSeconds / (60 * 60);
-            totalTimeView.setText(String.format("%02d:%02d:%02d", hor, min, sec));
-        }
-    }
-
-    private class UpdateBackendData implements TextWatcher {
-        @Override
-        public void afterTextChanged(Editable e) {
-        }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            dailyWorkSummary.update(startTimeView, endTimeView);
-        }
+        totalTimeView.setTime(calculateWorkTotal());
     }
 
     public long calculateWorkTotal() {

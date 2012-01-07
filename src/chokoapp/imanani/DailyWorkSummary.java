@@ -14,6 +14,7 @@ public class DailyWorkSummary {
         "start_at INTEGER",
         "end_at INTEGER"
     };
+    public static final long UP_DOWN_STEP = 15 * 60 * 1000;
 
     private long _id;
     private long start_at;
@@ -55,6 +56,55 @@ public class DailyWorkSummary {
     public void update(DateTimeView startView, DateTimeView endView) {
         if ( !startView.isEmpty() ) start_at = startView.getTime();
         if ( !endView.isEmpty() )   end_at   = endView.getTime();
+    }
+
+    public void setStartAt(long start) {
+        if ( start < 0 ) return;
+        start_at = start;
+    }
+    public void setEndAt(long end) {
+        if ( end < 0 ) return;
+        end_at = end;
+    }
+    public static long up(long time) {
+        long remainder = time % UP_DOWN_STEP;
+        return remainder > 0 ?
+            time + UP_DOWN_STEP - remainder :
+            time + UP_DOWN_STEP;
+    }
+    public static long down(long time) {
+        long remainder = time % UP_DOWN_STEP;
+        return remainder > 0 ?
+            time - remainder :
+            time - UP_DOWN_STEP;
+    }
+
+    public void startTimeUp() {
+        if ( isEmpty() ) return;
+        if ( nowRecording() ) return;
+
+        setStartAt(up(getStartAt()));
+    }
+
+    public void startTimeDown() {
+        if ( isEmpty() ) return;
+        if ( nowRecording() ) return;
+
+        setStartAt(down(getStartAt()));
+    }
+
+    public void endTimeUp() {
+        if ( isEmpty() ) return;
+        if ( nowRecording() ) return;
+
+        setEndAt(up(getEndAt()));
+    }
+
+    public void endTimeDown() {
+        if ( isEmpty() ) return;
+        if ( nowRecording() ) return;
+
+        setEndAt(down(getEndAt()));
     }
 
     public static DailyWorkSummary findByDate(SQLiteDatabase db, long date) {
