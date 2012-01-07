@@ -71,6 +71,18 @@ public class DailyTaskSummary extends Observable {
         notifyObservers();
     }
 
+    public void up() {
+        setDuration(TimeUtils.up(getDuration()));
+    }
+
+    public void down() {
+        setDuration(TimeUtils.down(getDuration()));
+    }
+
+    public void autoAdjust() {
+        setDuration(TimeUtils.adjustTime(getDuration()));
+    }
+
     @SuppressWarnings("serial")
     public static List<DailyTaskSummary> findById(SQLiteDatabase db, final long daily_work_summary_id) {
         final Cursor daily_task_summary_cursor =

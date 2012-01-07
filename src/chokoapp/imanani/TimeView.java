@@ -45,22 +45,12 @@ public class TimeView extends UpDownView {
 
     @Override
     public void up() {
-        long remainder = time % UP_AND_DOWN_STEP;
-        if ( remainder < 0 ) {
-            time = time - remainder;
-        } else {
-            time = time - remainder + UP_AND_DOWN_STEP;
-        }
+        setTime(TimeUtils.up(getTime()));
     }
 
     @Override
     public void down() {
-        long remainder = time % UP_AND_DOWN_STEP;
-        if ( remainder > 0 ) {
-            time = time - remainder;
-        } else {
-            time = time - remainder - UP_AND_DOWN_STEP;
-        }
+        setTime(TimeUtils.down(getTime()));
     }
 
     @Override

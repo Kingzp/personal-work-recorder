@@ -1,10 +1,9 @@
 package chokoapp.imanani;
 
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,36 +13,64 @@ import android.widget.TextView;
 public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
     private LayoutInflater inf;
     private static int resourceId = R.layout.task_summary_item;
-    private List<DailyTaskSummary> dailyTaskSummaries;
 
-    public TaskSummaryAdapter(Context context, List<DailyTaskSummary> dailyTaskSummaries) {
+    public TaskSummaryAdapter(Context context) {
         super(context, resourceId);
-        for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
-            super.add(dailyTaskSummary);
-        }
         this.inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.dailyTaskSummaries = dailyTaskSummaries;
+    }
+
+    public void setDailyTaskSummaries(List<DailyTaskSummary> dailyTaskSummaries) {
+        clear();
+        for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
+            add(dailyTaskSummary);
+        }
+    }
+
+    @Override
+    public void add(DailyTaskSummary dailyTaskSummary) {
+        super.add(dailyTaskSummary);
+        sort(new Comparator<DailyTaskSummary>() {
+                @Override
+                public int compare(DailyTaskSummary lhs, DailyTaskSummary rhs) {
+                    return lhs.getCode().compareTo(rhs.getCode());
+                }
+                @Override
+                public boolean equals(Object obj) {
+                    return this.equals(obj);
+                }
+            });
+        dailyTaskSummary.addObserver((DailySummaryActivity)getContext());
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        DailyTaskSummary dailyTaskSummary = (DailyTaskSummary)getItem(position);
+        final DailyTaskSummary dailyTaskSummary = (DailyTaskSummary)getItem(position);
         if ( convertView == null ) {
             convertView = inf.inflate(resourceId, null);
         }
         TextView codeView = (TextView)convertView.findViewById(R.id.codeViewOnSummary);
         TextView descriptionView = (TextView)convertView.findViewById(R.id.descriptionOnSummary);
-        TimeView taskDurationView = (TimeView)convertView.findViewById(R.id.taskDurationOnSummary);
+        final TimeView taskDurationView = (TimeView)convertView.findViewById(R.id.taskDurationOnSummary);
         codeView.setText(dailyTaskSummary.getCode());
         descriptionView.setText(dailyTaskSummary.getDescription());
         taskDurationView.setTime(dailyTaskSummary.getDuration());
 
-        UpButton upButton = (UpButton)convertView.findViewById(R.id.timePlusView);
-        upButton.setupListeners(taskDurationView, dailyTaskSummary);
-        DownButton downButton = (DownButton)convertView.findViewById(R.id.timeMinusView);
-        downButton.setupListeners(taskDurationView, dailyTaskSummary);
-
-        taskDurationView.addTextChangedListener(new UpdateDailyTaskSummary(position, taskDurationView));
+        ((ManipulateButton)convertView.findViewById(R.id.timePlusView))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        taskDurationView.up();
+                        dailyTaskSummary.up();
+                    }
+                });
+        ((ManipulateButton)convertView.findViewById(R.id.timeMinusView))
+            .setManipulator(new Manipulator() {
+                    @Override
+                    public void execute() {
+                        taskDurationView.down();
+                        dailyTaskSummary.down();
+                    }
+                });
 
         return convertView;
     }
@@ -51,27 +78,6 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
     @Override
     public boolean isEnabled(int position) {
         return false;
-    }
-
-    private class UpdateDailyTaskSummary implements TextWatcher {
-        private int position;
-        private TimeView timeView;
-
-        public UpdateDailyTaskSummary(int position, TimeView timeView) {
-            this.position = position;
-            this.timeView = timeView;
-        }
-        @Override
-        public void afterTextChanged(Editable e) {
-        }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            DailyTaskSummary dailyTaskSummary = getItem(position);
-            dailyTaskSummary.setDuration(timeView.getTime());
-        }
     }
 
     public boolean contains(String code) {
@@ -82,5 +88,11 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         return false;
     }
 
-    public List<DailyTaskSummary> getDailyTaskSummaries() { return dailyTaskSummaries; }
+    public void autoAdjust() {
+        int count = getCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            getItem(i).autoAdjust();
+        }
+        notifyDataSetChanged();
+    }
 }

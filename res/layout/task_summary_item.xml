@@ -39,13 +39,15 @@
             android:text="99:99:99"
             android:textSize="24dp" />
 
-        <chokoapp.imanani.UpButton
+        <chokoapp.imanani.ManipulateButton
             android:id="@+id/timePlusView"
+            android:src="@drawable/plus_button"
             style="@style/up_down_button_style"
             android:layout_gravity="center_vertical" />
 
-        <chokoapp.imanani.DownButton
+        <chokoapp.imanani.ManipulateButton
             android:id="@+id/timeMinusView"
+            android:src="@drawable/minus_button"
             style="@style/up_down_button_style"
             android:layout_gravity="center_vertical" />
 

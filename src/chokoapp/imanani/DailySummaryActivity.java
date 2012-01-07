@@ -38,8 +38,8 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     private TimeView totalTimeView;
     private DailyWorkSummary dailyWorkSummary;
     private TimeView differenceTimeView;
-    private DailyTaskSummary dummyTask;
     private FooterView footerView;
+    private TaskSummaryAdapter taskSummaryAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,25 +56,23 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         dateSelector = builder.create();
 
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
-        dateSelectButton.addTextChangedListener(new DisplaySummary(this));
+        dateSelectButton.addTextChangedListener(new DisplaySummary());
 
         startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
         ((ManipulateButton)findViewById(R.id.startTimeUp))
             .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
-                        startTimeView.up();
                         dailyWorkSummary.startTimeUp();
-                        totalTimeView.setTime(dailyWorkSummary.getTotal());
+                        update(null, null);
                     }
                 });
         ((ManipulateButton)findViewById(R.id.startTimeDown))
             .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
-                        startTimeView.down();
                         dailyWorkSummary.startTimeDown();
-                        totalTimeView.setTime(dailyWorkSummary.getTotal());
+                        update(null, null);
                     }
                 });
 
@@ -83,27 +81,21 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
-                        endTimeView.up();
                         dailyWorkSummary.endTimeUp();
-                        totalTimeView.setTime(dailyWorkSummary.getTotal());
+                        update(null, null);
                     }
                 });
         ((ManipulateButton)findViewById(R.id.endTimeDown))
             .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
-                        endTimeView.down();
                         dailyWorkSummary.endTimeDown();
-                        totalTimeView.setTime(dailyWorkSummary.getTotal());
+                        update(null, null);
                     }
                 });
 
         totalTimeView = (TimeView)findViewById(R.id.totalTimeView);
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
-
-        dummyTask = new DailyTaskSummary(0, "Dummy",
-                                         "for notify that change startTime or endTime", 0, 0);
-        dummyTask.addObserver(this);
 
         dailyWorkSummary = new DailyWorkSummary();
 
@@ -111,6 +103,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         footerView = new FooterView(this);
         listView.addFooterView(footerView);
         listView.setOnItemClickListener(new PopupTaskList());
+
+        taskSummaryAdapter = new TaskSummaryAdapter(this);
+        setListAdapter(taskSummaryAdapter);
     }
 
     @Override
@@ -128,7 +123,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.summaryReset:
-            resetSummary();
+            resetSummary(dateSelectButton.getTime());
             return true;
         case R.id.summaryAdjust:
             autoAdjust();
@@ -146,7 +141,20 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) return;
+        if ( dailyWorkSummary.isEmpty() ) {
+            startTimeView.clearTime();
+            endTimeView.clearTime();
+        } else {
+            if ( dailyWorkSummary.nowRecording() ) {
+                startTimeView.setTime(dailyWorkSummary.getStartAt());
+                endTimeView.clearTime();
+            } else {
+                startTimeView.setTime(dailyWorkSummary.getStartAt());
+                endTimeView.setTime(dailyWorkSummary.getEndAt());
+            }
+        }
+
+        totalTimeView.setTime(dailyWorkSummary.getTotal());
 
         long diff = dailyWorkSummary.getTotal() - calculateTaskTotal();
         differenceTimeView.setTime(diff);
@@ -166,15 +174,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         dateSelector.show();
     }
 
-    public void resetSummary() {
-        long date = dateSelectButton.getTime();
+    public void resetSummary(long date) {
         dailyWorkSummary.resetFromWorkRecord(db, date);
-        updateDisplayTime();
-        List<DailyTaskSummary> dailyTaskSummaries = TaskRecord.findByDate(db, date);
-        for ( DailyTaskSummary dailyTaskSummary : dailyTaskSummaries ) {
-            dailyTaskSummary.addObserver(this);
-        }
-        setListAdapter(new TaskSummaryAdapter(this, dailyTaskSummaries));
+        taskSummaryAdapter.setDailyTaskSummaries(TaskRecord.findByDate(db, date));
         update(null, null);
     }
 
@@ -204,10 +206,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                       "daily_work_summary_id = ?",
                       new String[] { String.format("%d", dailyWorkSummary.getId()) });
 
-            TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-            int count = adapter.getCount();
+            int count = taskSummaryAdapter.getCount();
             for ( int i = 0 ; i < count ; i++ ) {
-                if ( adapter.getItem(i).save(db, dailyWorkSummary.getId()) 
+                if ( taskSummaryAdapter.getItem(i).save(db, dailyWorkSummary.getId())
                      != QueryResult.SUCCESS ) {
                     Toast.makeText(this, getString(R.string.failed_to_save), Toast.LENGTH_LONG).show();
                     return false;
@@ -233,12 +234,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     }
 
     private class DisplaySummary implements TextWatcher {
-        private DailySummaryActivity act;
-
-        public DisplaySummary(DailySummaryActivity act) {
-            this.act = act;
-        }
-
         @Override
         public void afterTextChanged(Editable e) {
         }
@@ -253,58 +248,30 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 fetchedWorkSummary = WorkRecord.findByDate(db, date);
             }
             dailyWorkSummary.copy(fetchedWorkSummary);
-            updateDisplayTime();
 
             List<DailyTaskSummary> dailyTaskSummaries =
                 dailyWorkSummary.existInDatabase() ?
                     DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
                     TaskRecord.findByDate(db, date);
 
-            for ( DailyTaskSummary dailyTaskSummary : dailyTaskSummaries ) {
-                dailyTaskSummary.addObserver(act);
-            }
-            act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
+            taskSummaryAdapter.setDailyTaskSummaries(dailyTaskSummaries);
             update(null, null);
         }
     }
 
-    private void updateDisplayTime() {
-        if ( dailyWorkSummary.isEmpty() ) {
-            startTimeView.clearTime();
-            endTimeView.clearTime();
-        } else {
-            if ( dailyWorkSummary.nowRecording() ) {
-                startTimeView.setTime(dailyWorkSummary.getStartAt());
-                endTimeView.clearTime();
-            } else {
-                startTimeView.setTime(dailyWorkSummary.getStartAt());
-                endTimeView.setTime(dailyWorkSummary.getEndAt());
-            }
-        }
-        totalTimeView.setTime(dailyWorkSummary.getTotal());
-    }
-
     public long calculateTaskTotal() {
-        TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-        int count = adapter.getCount();
+        int count = taskSummaryAdapter.getCount();
         long sum = 0;
         for ( int i = 0 ; i < count ; i++ ) {
-            sum += adapter.getItem(i).getDuration();
+            sum += taskSummaryAdapter.getItem(i).getDuration();
         }
         return sum;
     }
 
     private void autoAdjust() {
         dailyWorkSummary.autoAdjust();
-        updateDisplayTime();
-
-        ListView listView = getListView();
-        int count = listView.getCount();
-        for ( int i = 0 ; i < count - 1; i++ ) {
-            TimeView durationView = (TimeView)listView.getChildAt(i)
-                .findViewById(R.id.taskDurationOnSummary);
-            durationView.autoAdjust();
-        }
+        taskSummaryAdapter.autoAdjust();
+        update(null, null);
     }
 
     private void sendMail() {
@@ -342,10 +309,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     getString(R.string.task_name) + "\t" +
                     getString(R.string.duration) + "\n");
 
-        TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-        int count = adapter.getCount();
+        int count = taskSummaryAdapter.getCount();
         for ( int i = 0 ; i < count ; i++ ) {
-            DailyTaskSummary dailyTaskSummary = adapter.getItem(i);
+            DailyTaskSummary dailyTaskSummary = taskSummaryAdapter.getItem(i);
             builder.append(dailyTaskSummary.getCode() + "\t" +
                            dailyTaskSummary.getDescription() + "\t" +
                            TimeUtils.getTimeString(dailyTaskSummary.getDuration()) +
@@ -362,9 +328,8 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 List<CharSequence> items = new ArrayList<CharSequence>();
                 List<Task> tasks = Task.findAll(db);
                 List<Task> tasksNotInTheAdapter = new ArrayList<Task>();
-                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
                 for ( Task task : tasks ) {
-                    if ( !adapter.contains( task.getCode() ) ) {
+                    if ( !taskSummaryAdapter.contains( task.getCode() ) ) {
                         tasksNotInTheAdapter.add(task);
                     }
                 }
@@ -392,12 +357,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             public void onClick(DialogInterface dialog, int which) {
                 String code = tasks.get(which).getCode();
                 Task task = Task.findByCode(db, code);
-                TaskSummaryAdapter adapter = (TaskSummaryAdapter)getListAdapter();
-                List<DailyTaskSummary> dailyTaskSummaries = adapter.getDailyTaskSummaries();
-                DailyTaskSummary dailyTaskSummary = new DailyTaskSummary(task);
-                dailyTaskSummary.addObserver(act);
-                dailyTaskSummaries.add(dailyTaskSummary);
-                act.setListAdapter(new TaskSummaryAdapter(act, dailyTaskSummaries));
+                taskSummaryAdapter.add(new DailyTaskSummary(task));
                 act.update(null, null);
             }
         }

@@ -31,6 +31,8 @@ public class TimeUtils {
             time + UP_DOWN_STEP;
     }
     public static long down(long time) {
+        if ( time <= 0 ) return time;
+
         long remainder = time % UP_DOWN_STEP;
         return remainder > 0 ?
             time - remainder :
