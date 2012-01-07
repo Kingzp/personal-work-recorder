@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import java.util.Calendar;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.ActivityNotFoundException;
@@ -24,14 +22,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
 
 public class DailySummaryActivity extends ListActivity implements Observer {
     private SQLiteDatabase db;
-    private DatePicker datePicker;
-    private AlertDialog dateSelector;
     private DateButton dateSelectButton;
     private DateTimeView startTimeView;
     private DateTimeView endTimeView;
@@ -46,14 +41,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.daily_summay);
         db = (new DBOpenHelper(this)).getWritableDatabase();
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        datePicker = new DatePicker(this);
-        builder.setView(datePicker);
-        builder.setTitle(getResources().getString(R.string.select_date));
-        builder.setPositiveButton(android.R.string.ok, new SetDate());
-        builder.setNegativeButton(android.R.string.cancel, null);
-        dateSelector = builder.create();
 
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
         dateSelectButton.addTextChangedListener(new DisplaySummary());
@@ -167,15 +154,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         footerView.setVisibility(dailyWorkSummary.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    public void selectDate(View v) {
-        if ( dateSelectButton.dateSelected() ) {
-            datePicker.updateDate(dateSelectButton.getYear(),
-                                  dateSelectButton.getMonth(),
-                                  dateSelectButton.getDay());
-        }
-        dateSelector.show();
-    }
-
     public void resetSummary(long date) {
         dailyWorkSummary.resetFromWorkRecord(db, date);
         taskSummaryAdapter.setDailyTaskSummaries(TaskRecord.findByDate(db, date));
@@ -221,17 +199,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             return true;
         } finally {
             db.endTransaction();
-        }
-    }
-
-    private class SetDate implements DialogInterface.OnClickListener {
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, datePicker.getYear());
-            cal.set(Calendar.MONTH, datePicker.getMonth());
-            cal.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-            dateSelectButton.setDate(cal.getTime());
         }
     }
 
