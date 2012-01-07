@@ -30,6 +30,11 @@ public class DailyWorkSummary {
     public long getId() { return _id; }
     public long getStartAt() { return start_at; }
     public long getEndAt() { return end_at; }
+    public long getTotal() {
+        if ( isEmpty() ) return 0;
+        if ( nowRecording() ) return 0;
+        return end_at - start_at;
+    }
 
     public boolean nowRecording() { return end_at == 0; }
     public boolean existInDatabase() { return _id != 0; }

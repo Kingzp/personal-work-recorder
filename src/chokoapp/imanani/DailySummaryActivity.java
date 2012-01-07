@@ -65,7 +65,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     public void execute() {
                         startTimeView.up();
                         dailyWorkSummary.startTimeUp();
-                        totalTimeView.setTime(calculateWorkTotal());
+                        totalTimeView.setTime(dailyWorkSummary.getTotal());
                     }
                 });
         ((ManipulateButton)findViewById(R.id.startTimeDown))
@@ -74,7 +74,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     public void execute() {
                         startTimeView.down();
                         dailyWorkSummary.startTimeDown();
-                        totalTimeView.setTime(calculateWorkTotal());
+                        totalTimeView.setTime(dailyWorkSummary.getTotal());
                     }
                 });
 
@@ -85,7 +85,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     public void execute() {
                         endTimeView.up();
                         dailyWorkSummary.endTimeUp();
-                        totalTimeView.setTime(calculateWorkTotal());
+                        totalTimeView.setTime(dailyWorkSummary.getTotal());
                     }
                 });
         ((ManipulateButton)findViewById(R.id.endTimeDown))
@@ -94,7 +94,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     public void execute() {
                         endTimeView.down();
                         dailyWorkSummary.endTimeDown();
-                        totalTimeView.setTime(calculateWorkTotal());
+                        totalTimeView.setTime(dailyWorkSummary.getTotal());
                     }
                 });
 
@@ -148,7 +148,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     public void update(Observable o, Object arg) {
         if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) return;
 
-        long diff = calculateWorkTotal() - calculateTaskTotal();
+        long diff = dailyWorkSummary.getTotal() - calculateTaskTotal();
         differenceTimeView.setTime(diff);
         if ( 0 <= diff && diff < 1000 ) {
             differenceTimeView.setTextColor(Color.GREEN);
@@ -281,15 +281,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 endTimeView.setTime(dailyWorkSummary.getEndAt());
             }
         }
-        totalTimeView.setTime(calculateWorkTotal());
-    }
-
-    public long calculateWorkTotal() {
-        if ( startTimeView.isEmpty() || endTimeView.isEmpty() ) {
-            return 0;
-        } else {
-            return endTimeView.getTime() - startTimeView.getTime();
-        }
+        totalTimeView.setTime(dailyWorkSummary.getTotal());
     }
 
     public long calculateTaskTotal() {
