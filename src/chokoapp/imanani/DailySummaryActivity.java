@@ -51,7 +51,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     @Override
                     public void execute() {
                         dailyWorkSummary.startTimeUp();
-                        update(null, null);
                     }
                 });
         ((ManipulateButton)findViewById(R.id.startTimeDown))
@@ -59,7 +58,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     @Override
                     public void execute() {
                         dailyWorkSummary.startTimeDown();
-                        update(null, null);
                     }
                 });
 
@@ -69,7 +67,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     @Override
                     public void execute() {
                         dailyWorkSummary.endTimeUp();
-                        update(null, null);
                     }
                 });
         ((ManipulateButton)findViewById(R.id.endTimeDown))
@@ -77,7 +74,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                     @Override
                     public void execute() {
                         dailyWorkSummary.endTimeDown();
-                        update(null, null);
                     }
                 });
 
@@ -85,6 +81,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
 
         dailyWorkSummary = new DailyWorkSummary();
+        dailyWorkSummary.addObserver(this);
 
         ListView listView = getListView();
         footerView = new FooterView(this);
@@ -231,7 +228,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     private void autoAdjust() {
         dailyWorkSummary.autoAdjust();
         taskSummaryAdapter.autoAdjust();
-        update(null, null);
     }
 
     private void sendMail() {

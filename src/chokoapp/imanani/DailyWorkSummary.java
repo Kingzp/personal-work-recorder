@@ -2,12 +2,13 @@ package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Observable;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DailyWorkSummary {
+public class DailyWorkSummary extends Observable {
     public static final String TABLE_NAME = "daily_work_summary";
     public static final String[] COLUMNS = {
         "start_at INTEGER",
@@ -42,11 +43,19 @@ public class DailyWorkSummary {
 
     public void setStartAt(long start) {
         if ( start < 0 ) return;
-        start_at = start;
+        if ( this.start_at == start ) return;
+
+        this.start_at = start;
+        setChanged();
+        notifyObservers();
     }
     public void setEndAt(long end) {
         if ( end < 0 ) return;
-        end_at = end;
+        if ( this.end_at == end ) return;
+
+        this.end_at = end;
+        setChanged();
+        notifyObservers();
     }
 
     public void startTimeUp() {
@@ -140,15 +149,16 @@ public class DailyWorkSummary {
 
     public void resetFromWorkRecord(SQLiteDatabase db, long date) {
         DailyWorkSummary resetDate = WorkRecord.findByDate(db, date);
-        if ( !resetDate.isEmpty() ) {
-            this.start_at = resetDate.getStartAt();
-            this.end_at = resetDate.getEndAt();
-        }
+        if ( resetDate.isEmpty() ) return;
+
+        setStartAt(resetDate.getStartAt());
+        setEndAt(resetDate.getEndAt());
     }
 
     public void copy(DailyWorkSummary other) {
         this._id = other._id;
-        this.start_at = other.start_at;
-        this.end_at = other.end_at;
+
+        setStartAt(other.start_at);
+        setEndAt(other.end_at);
     }
 }
