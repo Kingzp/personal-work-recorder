@@ -28,9 +28,6 @@ import android.widget.Toast;
 public class DailySummaryActivity extends ListActivity implements Observer {
     private SQLiteDatabase db;
     private DateButton dateSelectButton;
-    private DateTimeView startTimeView;
-    private DateTimeView endTimeView;
-    private TimeView totalTimeView;
     private DailyWorkSummary dailyWorkSummary;
     private TimeView differenceTimeView;
     private FooterView footerView;
@@ -45,43 +42,12 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
         dateSelectButton.addTextChangedListener(new DisplaySummary());
 
-        startTimeView = (DateTimeView)findViewById(R.id.startTimeView);
-        ((ManipulateButton)findViewById(R.id.startTimeUp))
-            .setManipulator(new Manipulator() {
-                    @Override
-                    public void execute() {
-                        dailyWorkSummary.startTimeUp();
-                    }
-                });
-        ((ManipulateButton)findViewById(R.id.startTimeDown))
-            .setManipulator(new Manipulator() {
-                    @Override
-                    public void execute() {
-                        dailyWorkSummary.startTimeDown();
-                    }
-                });
-
-        endTimeView = (DateTimeView)findViewById(R.id.endTimeView);
-        ((ManipulateButton)findViewById(R.id.endTimeUp))
-            .setManipulator(new Manipulator() {
-                    @Override
-                    public void execute() {
-                        dailyWorkSummary.endTimeUp();
-                    }
-                });
-        ((ManipulateButton)findViewById(R.id.endTimeDown))
-            .setManipulator(new Manipulator() {
-                    @Override
-                    public void execute() {
-                        dailyWorkSummary.endTimeDown();
-                    }
-                });
-
-        totalTimeView = (TimeView)findViewById(R.id.totalTimeView);
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
 
         dailyWorkSummary = new DailyWorkSummary();
         dailyWorkSummary.addObserver(this);
+        ((DailyWorkSummaryView)findViewById(R.id.summaryView))
+            .setDailyWorkSummary(dailyWorkSummary);
 
         ListView listView = getListView();
         footerView = new FooterView(this);
@@ -125,20 +91,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if ( dailyWorkSummary.isEmpty() ) {
-            startTimeView.clearTime();
-            endTimeView.clearTime();
-        } else {
-            if ( dailyWorkSummary.nowRecording() ) {
-                startTimeView.setTime(dailyWorkSummary.getStartAt());
-                endTimeView.clearTime();
-            } else {
-                startTimeView.setTime(dailyWorkSummary.getStartAt());
-                endTimeView.setTime(dailyWorkSummary.getEndAt());
-            }
-        }
-
-        totalTimeView.setTime(dailyWorkSummary.getTotal());
 
         long diff = dailyWorkSummary.getTotal() - taskSummaryAdapter.getTotal();
         differenceTimeView.setTime(diff);
@@ -148,7 +100,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             differenceTimeView.setTextColor(Color.RED);
         }
 
-        if ( dailyWorkSummary.isEmpty() ||
+        if ( taskSummaryAdapter.isEmpty() ||
              taskSummaryAdapter.getRemainedTasks(db).isEmpty() ) {
             footerView.setVisibility(View.GONE);
         } else {

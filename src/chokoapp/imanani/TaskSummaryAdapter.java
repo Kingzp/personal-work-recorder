@@ -107,6 +107,8 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         return sum;
     }
 
+    public boolean isEmpty() { return getCount() == 0; }
+
     @SuppressWarnings("serial")
     public List<Task> getRemainedTasks(final SQLiteDatabase db) {
         return new ArrayList<Task>() {{
