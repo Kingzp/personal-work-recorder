@@ -77,6 +77,14 @@ public class DailyWorkSummary {
         setEndAt(TimeUtils.down(getEndAt()));
     }
 
+    public void autoAdjust() {
+        if ( isEmpty() ) return;
+        if ( nowRecording() ) return;
+
+        setStartAt(TimeUtils.adjustTime(getStartAt()));
+        setEndAt(TimeUtils.adjustTime(getEndAt()));
+    }
+
     public static DailyWorkSummary findByDate(SQLiteDatabase db, long date) {
         Cursor daily_work_summary_cursor =
             db.query(TABLE_NAME,

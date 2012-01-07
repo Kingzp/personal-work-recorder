@@ -295,8 +295,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     }
 
     private void autoAdjust() {
-        startTimeView.autoAdjust();
-        endTimeView.autoAdjust();
+        dailyWorkSummary.autoAdjust();
+        updateDisplayTime();
+
         ListView listView = getListView();
         int count = listView.getCount();
         for ( int i = 0 ; i < count - 1; i++ ) {

@@ -36,4 +36,15 @@ public class TimeUtils {
             time - remainder :
             time - UP_DOWN_STEP;
     }
+
+    public static long adjustTime(long time) {
+        long remainder = time % UP_DOWN_STEP;
+        if ( remainder == 0 ) {
+            return time;
+        } else if ( remainder < UP_DOWN_STEP / 2 ) {
+            return time - remainder;
+        } else {
+            return time + (UP_DOWN_STEP - remainder);
+        }
+    }
 }
