@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Observable;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -160,5 +163,32 @@ public class DailyWorkSummary extends Observable {
 
         setStartAt(other.start_at);
         setEndAt(other.end_at);
+    }
+
+    public void saveToSharedPreference(Context context) {
+        SharedPreferences pref =
+            context.getSharedPreferences("dailyWorkSummary", 
+                                         Context.MODE_PRIVATE|Context.MODE_WORLD_WRITEABLE);
+        Editor e = pref.edit();
+        if ( isEmpty() ) {
+            e.clear();
+        } else {
+            e.putLong("_id", getId());
+            e.putLong("start_at", getStartAt());
+            e.putLong("end_at", getEndAt());
+        }
+        e.commit();
+    }
+
+    public void restoreFromSharedPreference(Context context) {
+        SharedPreferences pref =
+            context.getSharedPreferences("dailyWorkSummary", 
+                                         Context.MODE_PRIVATE|Context.MODE_WORLD_READABLE);
+        long _id = pref.getLong("_id", -1);
+        long start_at = pref.getLong("start_at", -1);
+        long end_at = pref.getLong("end_at", -1);
+        if ( _id >= 0 && start_at >= 0 && end_at >= 0 ) {
+            copy(new DailyWorkSummary(_id, start_at, end_at));
+        }
     }
 }

@@ -3,8 +3,10 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
-
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -104,5 +106,39 @@ public class DailyTaskSummary extends Observable {
         } finally {
             daily_task_summary_cursor.close();
         }
+    }
+
+    public void saveToSharedPreference(Context context) {
+        SharedPreferences pref =
+            context.getSharedPreferences(this.toString(), 
+                                         Context.MODE_PRIVATE|Context.MODE_WORLD_WRITEABLE);
+        Editor e = pref.edit();
+        e.putLong("_id", getId());
+        e.putString("code", getCode());
+        e.putString("description", getDescription());
+        e.putLong("duration", getDuration());
+        e.putLong("daily_work_summary_id", getDailyWorkSummaryId());
+        e.commit();
+   }
+
+    @SuppressWarnings("serial")
+    public static List<DailyTaskSummary>
+        restoreFromSharedPreference(final Context context, final String dailyTaskSummaries) {
+        return new ArrayList<DailyTaskSummary>() {{
+                for ( String dailyTaskSummary : dailyTaskSummaries.split(":") ) {
+                    SharedPreferences prefx =
+                        context.getSharedPreferences(dailyTaskSummary,
+                                                     Context.MODE_PRIVATE|Context.MODE_WORLD_READABLE);
+                    long _id = prefx.getLong("_id", -1);
+                    String code = prefx.getString("code", null);
+                    String description = prefx.getString("description", null);
+                    long duration = prefx.getLong("duration", -1);
+                    long daily_work_summary_id = prefx.getLong("daily_work_summary_id", -1);
+                    if ( _id >= 0 && code != null && description != null &&
+                         duration >= 0 && daily_work_summary_id >= 0 ) {
+                        add(new DailyTaskSummary(_id, code, description, duration, daily_work_summary_id));
+                    }
+                }
+            }};
     }
 }

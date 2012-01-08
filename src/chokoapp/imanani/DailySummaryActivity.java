@@ -1,6 +1,7 @@
 package chokoapp.imanani;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -11,6 +12,8 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -105,6 +108,33 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             footerView.setVisibility(View.GONE);
         } else {
             footerView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences pref = getSharedPreferences("pref",
+                                                      MODE_PRIVATE|MODE_WORLD_WRITEABLE);
+        long selectedDate = pref.getLong("selectedDate", -1);
+        if ( selectedDate >= 0 ) {
+            dateSelectButton.setDate(new Date(selectedDate));
+            dailyWorkSummary.restoreFromSharedPreference(this);
+            taskSummaryAdapter.restoreFromSharedPreference(this);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if ( dateSelectButton.dateSelected() ) {
+            SharedPreferences pref = getSharedPreferences("pref",
+                                                          MODE_PRIVATE|MODE_WORLD_READABLE);
+            Editor e = pref.edit();
+            e.putLong("selectedDate", dateSelectButton.getTime());
+            e.commit();
+            dailyWorkSummary.saveToSharedPreference(this);
+            taskSummaryAdapter.saveToSharedPreference(this);
         }
     }
 

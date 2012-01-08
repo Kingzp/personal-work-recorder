@@ -3,8 +3,9 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,5 +117,36 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
                     if ( !TaskSummaryAdapter.this.contains(task) ) add(task);
                 }
             }};
+    }
+
+    public void saveToSharedPreference(final Context context) {
+        SharedPreferences pref =
+            context.getSharedPreferences("taskSummaryAdapter",
+                                         Context.MODE_PRIVATE|Context.MODE_WORLD_WRITEABLE);
+        Editor e = pref.edit();
+        if ( isEmpty() ) {
+            e.clear();
+        } else {
+            int count = getCount();
+            StringBuilder dailyTaskSummaries = new StringBuilder();
+            for ( int i = 0 ; i < count ; i++ ) {
+                getItem(i).saveToSharedPreference(context);
+                dailyTaskSummaries.append(getItem(i));
+                if ( i < count - 1) dailyTaskSummaries.append(":");
+            }
+            e.putString("dailyTaskSummaries", dailyTaskSummaries.toString());
+        }
+        e.commit();
+    }
+
+    public void restoreFromSharedPreference(Context context) {
+        SharedPreferences pref =
+            context.getSharedPreferences("taskSummaryAdapter",
+                                         Context.MODE_PRIVATE|Context.MODE_WORLD_READABLE);
+        String dailyTaskSummaries = pref.getString("dailyTaskSummaries", null);
+        if ( dailyTaskSummaries != null ) {
+            setDailyTaskSummaries(
+                DailyTaskSummary.restoreFromSharedPreference(context, dailyTaskSummaries));
+        }
     }
 }
