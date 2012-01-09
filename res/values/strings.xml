@@ -7,7 +7,7 @@
     <string name="now_recording">Now recording...</string>
     <string name="task_code">CODE</string>
     <string name="task_name">DESCRIPTION</string>
-    <string name="update">Update</string>
+    <string name="change_task">Change</string>
     <string name="daily_summary">Daily</string>
     <string name="monthly_summary">Monthly</string>
     <string name="define_task">New Task</string>
