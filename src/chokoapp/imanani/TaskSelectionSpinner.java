@@ -47,4 +47,15 @@ public class TaskSelectionSpinner extends Spinner {
         public void onNothingSelected(AdapterView<?> parent) {
         }
     }
+
+    public void setSelection(Task task) {
+        ArrayAdapter<Task> adapter = (ArrayAdapter<Task>)getAdapter();
+        int count = adapter.getCount();
+        for ( int i = 0 ; i < count ; i++ ) {
+            if ( adapter.getItem(i).getCode().equals(task.getCode()) ) {
+                super.setSelection(i);
+                break;
+            }
+        }
+    }
 }

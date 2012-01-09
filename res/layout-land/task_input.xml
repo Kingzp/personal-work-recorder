@@ -31,23 +31,24 @@
       android:layout_marginRight="2dp"
       android:text="@string/task_name" />
 
-  <AutoCompleteTextView
-      android:id="@+id/taskCodeInput"
+  <chokoapp.imanani.TaskCompleteView
+      android:id="@+id/taskCompleteView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:dropDownWidth="match_parent"
+      android:dropDownHorizontalOffset="2dp"
+      android:completionThreshold="1"
       android:layout_alignLeft="@id/taskCodeView"
       android:layout_alignRight="@id/taskCodeView"
       android:layout_below="@id/taskCodeView"
-      android:layout_marginTop="5dp" >
-
-  </AutoCompleteTextView>
+      android:layout_marginTop="5dp" />
 
   <EditText
       android:id="@+id/taskDescriptionInput"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_alignLeft="@id/taskDescriptionView"
-      android:layout_alignTop="@+id/taskCodeInput"
+      android:layout_alignTop="@+id/taskCompleteView"
       android:layout_marginRight="5dp" >
 
   </EditText>

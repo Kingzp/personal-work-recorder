@@ -71,7 +71,13 @@ public class Task {
         ContentValues val = new ContentValues();
         val.put("code", getCode());
         val.put("description", getDescription());
-        return db.insert(TABLE_NAME, null, val) == -1 ? false : true;
+        long id = db.insert(TABLE_NAME, null, val);
+        if ( id >= 0 ) {
+            this._id = id;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String toString() {

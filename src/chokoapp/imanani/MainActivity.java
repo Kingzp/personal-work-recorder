@@ -3,6 +3,8 @@ package chokoapp.imanani;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import chokoapp.imanani.TaskInputView.OnTaskChangedListener;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -22,7 +24,8 @@ public class MainActivity extends Activity {
     private TimeKeeper timeKeeper;
     private Ticker ticker;
     private TaskSelectionSpinner spinner;
-    /** Called when the activity is first created. */
+    private TaskInputView taskInputView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,16 @@ public class MainActivity extends Activity {
                 (TextView) findViewById(R.id.durationView));
         timeKeeper.init(db);
         ticker = new Ticker(timeKeeper);
+
+        taskInputView = (TaskInputView)findViewById(R.id.taskInputView);
+        taskInputView.setOnTaskChangedListener(new OnTaskChangedListener() {
+                @Override
+                public void onChanged(Task task) {
+                    allTaskCursor.requery();
+                    setupSpinner();
+                    spinner.setSelection(task);
+                }
+            });
     }
 
     @Override
@@ -76,6 +89,7 @@ public class MainActivity extends Activity {
         super.onResume();
         setupSpinner();
         ticker.start();
+        taskInputView.setAdapter(new TaskCompleteAdapter(this, db));
     }
 
     @Override
