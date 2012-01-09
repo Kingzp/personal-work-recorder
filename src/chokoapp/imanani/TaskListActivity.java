@@ -3,7 +3,6 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -43,8 +42,8 @@ public class TaskListActivity extends ListActivity {
 
         db = (new DBOpenHelper(this)).getWritableDatabase();
         allTaskCursor = db.query(Task.TABLE_NAME, 
-                            new String[] {"_id", "code", "description"},
-                            null, null, null, null, null);
+                                 new String[] {"_id", "code", "description"},
+                                 null, null, null, null, "code");
         startManagingCursor(allTaskCursor);
         long cannotDeleteId = getIntent().getLongExtra("chokoapp.imanani.cannotDeleteId", -1);
         setListAdapter(new TaskListAdapter(this, allTaskCursor, deleteTask, cannotDeleteId));
@@ -53,22 +52,20 @@ public class TaskListActivity extends ListActivity {
 
     public void defineTask(View v) {
         String code = taskCode.getText().toString();
+        String description = taskDescription.getText().toString();
+
         if ( code.length() > 0 ) {
-            Cursor specifiedCodeCursor = db.query(Task.TABLE_NAME, null, "code = ?", new String[] {code},
-                                null, null, null);
-            if ( specifiedCodeCursor.moveToFirst() ) {
+            Task task = Task.findByCode(db, code);
+            if ( task != null ) {
                 Toast.makeText(this, getString(R.string.has_the_same_code), 
                                Toast.LENGTH_SHORT).show();
             } else {
-                ContentValues newTask = new ContentValues();
-                newTask.put("code", code);
-                newTask.put("description", taskDescription.getText().toString());
-                db.insert(Task.TABLE_NAME, null, newTask);
+                task = new Task(code, description);
+                task.save(db);
                 allTaskCursor.requery();
                 taskCode.setText("");
                 taskDescription.setText("");
             }
-            specifiedCodeCursor.close();
         } else {
             Toast.makeText(this, getString(R.string.should_not_be_empty),
                            Toast.LENGTH_SHORT).show();

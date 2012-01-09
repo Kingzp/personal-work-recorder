@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
         db = (new DBOpenHelper(this)).getWritableDatabase();
         allTaskCursor = db.query(Task.TABLE_NAME,
                                  new String[] {"_id", "code", "description" },
-                                 null, null, null, null, null);
+                                 null, null, null, null, "code");
         startManagingCursor(allTaskCursor);
 
         timeKeeper = new TimeKeeper(

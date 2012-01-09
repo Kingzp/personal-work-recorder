@@ -3,6 +3,7 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -64,6 +65,13 @@ public class Task {
         } finally {
             taskCursor.close();
         }
+    }
+
+    public boolean save(SQLiteDatabase db) {
+        ContentValues val = new ContentValues();
+        val.put("code", getCode());
+        val.put("description", getDescription());
+        return db.insert(TABLE_NAME, null, val) == -1 ? false : true;
     }
 
     public String toString() {
