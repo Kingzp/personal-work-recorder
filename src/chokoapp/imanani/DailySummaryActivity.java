@@ -121,6 +121,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             dateSelectButton.setDate(new Date(selectedDate));
             dailyWorkSummary.restoreFromSharedPreference(this);
             taskSummaryAdapter.restoreFromSharedPreference(this);
+            update(null, null);
         }
     }
 
