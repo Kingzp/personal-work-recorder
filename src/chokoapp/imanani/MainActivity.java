@@ -1,13 +1,11 @@
 package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import chokoapp.imanani.TaskInputView.OnTaskChangedListener;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,7 +18,6 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private SQLiteDatabase db;
-    private Cursor allTaskCursor;
     private TimeKeeper timeKeeper;
     private Ticker ticker;
     private TaskSelectionSpinner spinner;
@@ -35,11 +32,6 @@ public class MainActivity extends Activity {
                 R.layout.title_bar);
         displayToday();
         db = (new DBOpenHelper(this)).getWritableDatabase();
-        allTaskCursor = db.query(Task.TABLE_NAME,
-                                 new String[] {"_id", "code", "description" },
-                                 null, null, null, null, "code");
-        startManagingCursor(allTaskCursor);
-
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
                 (TextView) findViewById(R.id.durationView));
@@ -50,7 +42,6 @@ public class MainActivity extends Activity {
         taskInputView.setOnTaskChangedListener(new OnTaskChangedListener() {
                 @Override
                 public void onChanged(Task task) {
-                    allTaskCursor.requery();
                     setupSpinner();
                     spinner.setSelection(task);
                 }
@@ -106,19 +97,10 @@ public class MainActivity extends Activity {
 
     private void setupSpinner() {
         ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
-            this, android.R.layout.simple_spinner_item, makeArrayListForSpinner(allTaskCursor));
+            this, android.R.layout.simple_spinner_item, Task.findAll(db));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
         spinner.setTimeKeeperAndAdapter(timeKeeper, adapter);
-    }
-
-    private ArrayList<Task> makeArrayListForSpinner(Cursor c) {
-        c.moveToPosition(-1);
-        ArrayList<Task> ret =  new ArrayList<Task>();
-        while (c.moveToNext()) {
-            ret.add(new Task(c.getLong(0), c.getString(1), c.getString(2)));
-        }
-        return ret;
     }
 
     public void onClickStartButton(View view) {
