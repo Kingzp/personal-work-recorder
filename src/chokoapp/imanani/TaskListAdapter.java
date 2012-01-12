@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +34,10 @@ public class TaskListAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         CheckBox check = (CheckBox)view.findViewById(R.id.deleteCheck);
         check.setChecked(false);
-        check.setOnCheckedChangeListener(new SwitchDeleteButton(cursor.getLong(0)));
-        TextView taskId = (TextView)view.findViewById(R.id.taskId);
-        taskId.setText(String.format("%d",cursor.getLong(0)));
+        check.setOnCheckedChangeListener(cursor.getLong(0) == cannotDeleteId ?
+                                         new PopupErrorMessage() :
+                                         new ChangeCheckedIds(cursor.getLong(0)));
+
         TextView taskCode = (TextView)view.findViewById(R.id.taskCode);
         taskCode.setText(cursor.getString(1));
         TextView taskDescription = (TextView)view.findViewById(R.id.taskDescription);
@@ -48,34 +50,41 @@ public class TaskListAdapter extends CursorAdapter {
         return inf.inflate(R.layout.task_item, null);
     }
 
-    private class SwitchDeleteButton implements OnCheckedChangeListener {
-        private long currentTaskId;
-
-        public SwitchDeleteButton(long currentTaskId) {
-            this.currentTaskId = currentTaskId;
+    private class PopupErrorMessage implements OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            Toast.makeText(buttonView.getContext(), R.string.cannot_delete, 
+                           Toast.LENGTH_SHORT).show();
+            buttonView.setChecked(false);
         }
+    }
+
+    private class ChangeCheckedIds implements OnCheckedChangeListener {
+        private long checkedId;
+
+        public ChangeCheckedIds(long id) { this.checkedId = id; }
 
         @Override
-        public void onCheckedChanged(CompoundButton buttonView,
-                                     boolean isChecked) {
-            if (currentTaskId == cannotDeleteId) {
-
-                Toast.makeText(buttonView.getContext(),
-                               R.string.cannot_delete,
-                               Toast.LENGTH_SHORT).show();
-                buttonView.setChecked(false);
-                return;
-            }
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
-                checkedIds.add(currentTaskId);
+                checkedIds.add(checkedId);
             } else {
-                checkedIds.remove(currentTaskId);
+                checkedIds.remove(checkedId);
             }
-            if (checkedIds.isEmpty() ) {
-                deleteButton.setEnabled(false);
-            } else {
-                deleteButton.setEnabled(true);
+            deleteButton.setEnabled(!checkedIds.isEmpty());
+        }
+    }
+
+    public void deleteTask(SQLiteDatabase db) {
+        db.beginTransaction();
+        try {
+            for(Long id : checkedIds) {
+                db.delete(Task.TABLE_NAME, "_id = ?",
+                        new String[] { String.format("%d", id) });
             }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 }

@@ -1,7 +1,5 @@
 package chokoapp.imanani;
 
-import java.util.ArrayList;
-
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,10 +7,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 public class TaskListActivity extends ListActivity {
@@ -73,27 +68,8 @@ public class TaskListActivity extends ListActivity {
     }
 
     public void deleteTask(View v) {
-        ListView tasks = getListView();
-        int tasks_count = tasks.getChildCount();
-        ArrayList<Long> deleteIds = new ArrayList<Long>();
-        for(int i = 0 ; i < tasks_count ; i++ ) {
-            View taskView = tasks.getChildAt(i);
-            CheckBox b = (CheckBox)taskView.findViewById(R.id.deleteCheck);
-            if ( b.isChecked() ) {
-                String checkedId = ((TextView)taskView.findViewById(R.id.taskId)).getText().toString();
-                deleteIds.add(Long.parseLong(checkedId));
-            }
-        }
-        db.beginTransaction();
-        try {
-            for(Long id : deleteIds) {
-                db.delete(Task.TABLE_NAME, "_id = ?", 
-                        new String[] { String.format("%d", id) });
-            }
-            db.setTransactionSuccessful();
-        } finally {
-            db.endTransaction();
-        }
+        TaskListAdapter taskListAdapter = (TaskListAdapter)getListAdapter();
+        taskListAdapter.deleteTask(db);
         allTaskCursor.requery();
     }
 
