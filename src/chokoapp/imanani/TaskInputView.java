@@ -1,6 +1,7 @@
 package chokoapp.imanani;
 
 import android.content.Context;
+import android.text.InputFilter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,8 @@ public class TaskInputView extends RelativeLayout {
         taskCompleteView = (TaskCompleteView)topLayout.findViewById(R.id.taskCompleteView);
         taskDescriptionInput = (EditText)topLayout.findViewById(R.id.taskDescriptionInput);
         changeTaskButton = (Button)topLayout.findViewById(R.id.changeTaskButton);
+
+        taskCompleteView.setFilters(new InputFilter[] { new AlphaNumericFilter(context) });
 
         taskCompleteView.setOnItemClickListener(new OnItemClickListener() {
                 @Override

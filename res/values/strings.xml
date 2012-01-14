@@ -38,4 +38,5 @@
     <string name="no_email_client">There is no email client installed</string>
     <string name="failed_to_save">Failed to save the date</string>
     <string name="add_a_missing_task">Add a missing task ...</string>
+    <string name="should_be_alpha_numeric">You should name alpha numeric code</string>
 </resources>

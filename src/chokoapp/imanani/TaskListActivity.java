@@ -30,7 +30,7 @@ public class TaskListActivity extends ListActivity {
         defineTask.setEnabled(false);
 
         taskCode = (EditText)findViewById(R.id.definedTaskCode);
-        taskCode.setFilters(new InputFilter[] { new AlphaNumericFilter() });
+        taskCode.setFilters(new InputFilter[] { new AlphaNumericFilter(this) });
         taskCode.addTextChangedListener(new EnableDefineButton(defineTask));
 
         taskDescription = (EditText)findViewById(R.id.definedDescription);

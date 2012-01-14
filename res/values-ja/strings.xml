@@ -38,4 +38,5 @@
     <string name="no_email_client">メールクライアントがありません</string>
     <string name="failed_to_save">データの保存に失敗</string>
     <string name="add_a_missing_task">足りないタスクを追加</string>
+    <string name="should_be_alpha_numeric">英数字を指定して下さい</string>
 </resources>
