@@ -5,6 +5,7 @@ import android.text.InputFilter;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -14,6 +15,8 @@ import android.widget.RelativeLayout;
 
 public class TaskInputView extends RelativeLayout {
     private LayoutInflater inf;
+    private InputMethodManager imm;
+
     private OnTaskChangedListener listener;
 
     private Button changeTaskButton;
@@ -37,6 +40,8 @@ public class TaskInputView extends RelativeLayout {
         taskDescriptionInput = (EditText)topLayout.findViewById(R.id.taskDescriptionInput);
         changeTaskButton = (Button)topLayout.findViewById(R.id.changeTaskButton);
 
+        imm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
         taskCompleteView.setFilters(new InputFilter[] { new AlphaNumericFilter(context) });
 
         taskCompleteView.setOnItemClickListener(new OnItemClickListener() {
@@ -44,6 +49,7 @@ public class TaskInputView extends RelativeLayout {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     TaskCompleteAdapter adapter = (TaskCompleteAdapter)parent.getAdapter();
                     taskDescriptionInput.setText(adapter.getItem(position).getDescription());
+                    imm.hideSoftInputFromWindow(taskDescriptionInput.getWindowToken(), 0);
                 }
             });
         taskCompleteView.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -72,6 +78,7 @@ public class TaskInputView extends RelativeLayout {
                         listener.onChanged(task);
                     }
                     clearInputArea();
+                    imm.hideSoftInputFromWindow(taskDescriptionInput.getWindowToken(), 0);
                 }
             });
     }
