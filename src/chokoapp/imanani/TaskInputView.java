@@ -68,6 +68,7 @@ public class TaskInputView extends RelativeLayout {
                     if ( listener != null ) {
                         listener.onChanged(task);
                     }
+                    clearInputArea();
                 }
             });
     }
@@ -78,6 +79,11 @@ public class TaskInputView extends RelativeLayout {
 
     public void setOnTaskChangedListener(OnTaskChangedListener l) {
         this.listener = l;
+    }
+
+    private void clearInputArea() {
+        taskCompleteView.setText("");
+        taskDescriptionInput.setText("");
     }
 
     interface OnTaskChangedListener {
