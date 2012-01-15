@@ -27,9 +27,6 @@
     <string name="dateformat">yyyy年MM月dd日(E)</string>
     <string name="adjust">自動調整</string>
     <string name="send">メール送信</string>
-    <string name="error">エラー</string>
-    <string name="cannot_save_summary">作業合計時間と各タスクの作業時間の合計が一致しないと保存できません</string>
-    <string name="cannot_send_report">作業合計時間と各タスクの作業時間の合計が一致しないと報告できません</string>
     <string name="daily_work_report">日次作業レポート</string>
     <string name="work_date">作業日</string>
     <string name="start_time">開始時刻</string>

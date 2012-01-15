@@ -69,6 +69,16 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem saveMenu = menu.findItem(R.id.summarySave);
+        MenuItem mailSendMenu = menu.findItem(R.id.summarySend);
+        if ( !dailyWorkSummary.nowRecording() && matchTotalTime() ) {
+            saveMenu.setVisible(true);
+            mailSendMenu.setVisible(true);
+        } else {
+            saveMenu.setVisible(false);
+            mailSendMenu.setVisible(false);
+        }
+
         return dailyWorkSummary.isEmpty() ? false : true;
     }
 
@@ -145,22 +155,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         update(null, null);
     }
 
-    public boolean isValid(String error_message) {
-        if ( differenceTimeView.getTime() < 0 || differenceTimeView.getTime() >= 1000 ) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.error))
-                .setMessage(error_message)
-                .setPositiveButton(android.R.string.ok, null)
-                .create().show();
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     public boolean saveTable() {
-        if ( !isValid(getString(R.string.cannot_save_summary)) ) return false;
-
         db.beginTransaction();
         try {
             if ( dailyWorkSummary.save(db) != QueryResult.SUCCESS ) {
@@ -219,8 +214,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     }
 
     private void sendMail() {
-        if ( !isValid(getString(R.string.cannot_send_report)) ) return;
-
         if ( !saveTable() ) return;
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -292,5 +285,11 @@ public class DailySummaryActivity extends ListActivity implements Observer {
                 .create().show();
             }
         }
+    }
+
+    private boolean matchTotalTime() {
+        return
+            differenceTimeView.getTime() >= 0 &&
+            differenceTimeView.getTime() < 1000;
     }
 }

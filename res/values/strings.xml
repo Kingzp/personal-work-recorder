@@ -27,9 +27,6 @@
     <string name="dateformat">MMMMMMMM dd, yyyy</string>
     <string name="adjust">Auto Adjust</string>
     <string name="send">Send Mail</string>
-    <string name="error">Error</string>
-    <string name="cannot_save_summary">You can only save summary that match the sum of task\'s durations and the total work time</string>
-    <string name="cannot_send_report">You can only report summary that match the sum of task\'s durations and the total work time</string>
     <string name="daily_work_report">Daily Work Report</string>
     <string name="work_date">Work Date</string>
     <string name="start_time">Start Time</string>
