@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/taskCodeView"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/task_code"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/taskCodeEdit"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/taskCodeView"
+        android:layout_below="@id/taskCodeView"
+        android:layout_alignRight="@id/taskCodeView" />
+
+    <TextView
+        android:id="@+id/taskDescriptionView"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/taskCodeView"
+        android:layout_toRightOf="@+id/taskCodeView"
+        android:layout_marginRight="5dp"
+        android:text="@string/task_name"
+        android:textSize="18dp" />
+    
+    <EditText
+        android:id="@+id/descriptionEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/taskDescriptionView"
+        android:layout_below="@id/taskDescriptionView"
+        android:layout_toRightOf="@id/taskCodeEdit"
+        android:layout_alignRight="@id/taskDescriptionView" />
+
+
+</RelativeLayout>

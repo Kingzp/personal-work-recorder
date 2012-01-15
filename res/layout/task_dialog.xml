@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/task_code"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <EditText
         android:id="@+id/taskCodeEdit"
@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/task_name"
-        android:textSize="20dp" />
+        android:textSize="18dp" />
 
     <EditText
         android:id="@+id/descriptionEdit"
