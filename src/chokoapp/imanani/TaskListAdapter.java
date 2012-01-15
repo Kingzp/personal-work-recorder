@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,11 +30,13 @@ public class TaskListAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
+        long taskIdofThisRow = cursor.getLong(0);
+
         CheckBox check = (CheckBox)view.findViewById(R.id.deleteCheck);
-        check.setChecked(false);
-        check.setOnCheckedChangeListener(cursor.getLong(0) == cannotDeleteId ?
-                                         new PopupErrorMessage() :
-                                         new ChangeCheckedIds(cursor.getLong(0)));
+        check.setChecked(checkedIds.contains(taskIdofThisRow));
+        check.setOnClickListener(taskIdofThisRow == cannotDeleteId ?
+                                 new PopupErrorMessage() :
+                                 new ChangeCheckedIds(taskIdofThisRow));
 
         TextView taskCode = (TextView)view.findViewById(R.id.taskCode);
         taskCode.setText(cursor.getString(1));
@@ -50,26 +50,26 @@ public class TaskListAdapter extends CursorAdapter {
         return inf.inflate(R.layout.task_item, null);
     }
 
-    private class PopupErrorMessage implements OnCheckedChangeListener {
+    private class PopupErrorMessage implements View.OnClickListener {
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Toast.makeText(buttonView.getContext(), R.string.cannot_delete, 
+        public void onClick(View v) {
+            Toast.makeText(v.getContext(), R.string.cannot_delete, 
                            Toast.LENGTH_SHORT).show();
-            buttonView.setChecked(false);
+            ((CheckBox)v).setChecked(false);
         }
     }
 
-    private class ChangeCheckedIds implements OnCheckedChangeListener {
+    private class ChangeCheckedIds implements View.OnClickListener {
         private long checkedId;
 
         public ChangeCheckedIds(long id) { this.checkedId = id; }
 
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                checkedIds.add(checkedId);
-            } else {
+        public void onClick(View v) {
+            if ( checkedIds.contains(checkedId) ) {
                 checkedIds.remove(checkedId);
+            } else {
+                checkedIds.add(checkedId);
             }
             deleteButton.setEnabled(!checkedIds.isEmpty());
         }
@@ -83,6 +83,7 @@ public class TaskListAdapter extends CursorAdapter {
                         new String[] { String.format("%d", id) });
             }
             db.setTransactionSuccessful();
+            checkedIds.clear();
         } finally {
             db.endTransaction();
         }
