@@ -40,7 +40,9 @@ public class TaskListAdapter extends CursorAdapter {
         taskCode.setText(cursor.getString(1));
         TextView taskDescription = (TextView)view.findViewById(R.id.taskDescription);
         taskDescription.setText(cursor.getString(2));
+
         view.setOnLongClickListener(new ShowEditDialog(context, cursor));
+        view.setLongClickable(taskIdofThisRow != cannotDeleteId);
     }
 
     @Override
