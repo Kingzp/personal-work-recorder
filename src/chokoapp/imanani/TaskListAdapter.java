@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class TaskListAdapter extends CursorAdapter {
     private LayoutInflater inf;
@@ -34,9 +33,8 @@ public class TaskListAdapter extends CursorAdapter {
 
         CheckBox check = (CheckBox)view.findViewById(R.id.deleteCheck);
         check.setChecked(checkedIds.contains(taskIdofThisRow));
-        check.setOnClickListener(taskIdofThisRow == cannotDeleteId ?
-                                 new PopupErrorMessage() :
-                                 new ChangeCheckedIds(taskIdofThisRow));
+        check.setEnabled(taskIdofThisRow != cannotDeleteId);
+        check.setOnClickListener(new ChangeCheckedIds(taskIdofThisRow));
 
         TextView taskCode = (TextView)view.findViewById(R.id.taskCode);
         taskCode.setText(cursor.getString(1));
@@ -48,15 +46,6 @@ public class TaskListAdapter extends CursorAdapter {
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return inf.inflate(R.layout.task_item, null);
-    }
-
-    private class PopupErrorMessage implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(v.getContext(), R.string.cannot_delete, 
-                           Toast.LENGTH_SHORT).show();
-            ((CheckBox)v).setChecked(false);
-        }
     }
 
     private class ChangeCheckedIds implements View.OnClickListener {
