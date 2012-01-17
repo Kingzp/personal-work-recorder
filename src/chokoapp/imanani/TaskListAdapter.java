@@ -84,6 +84,7 @@ public class TaskListAdapter extends CursorAdapter {
             }
             db.setTransactionSuccessful();
             checkedIds.clear();
+            deleteButton.setEnabled(false);
         } finally {
             db.endTransaction();
         }
