@@ -17,6 +17,8 @@ public class TaskListActivity extends ListActivity {
     private Button defineTask;
     private EditText taskCode;
     private EditText taskDescription;
+    private boolean needToSwitchFocus;
+    private int errorMessageResourceId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +31,38 @@ public class TaskListActivity extends ListActivity {
         defineTask = (Button)findViewById(R.id.defineTaskButton);
         defineTask.setEnabled(false);
 
+        needToSwitchFocus = false;
+        errorMessageResourceId = 0;
+
         taskCode = (EditText)findViewById(R.id.definedTaskCode);
         taskCode.setFilters(new InputFilter[] { new AlphaNumericFilter(this) });
         taskCode.addTextChangedListener(new EnableDefineButton(defineTask));
+        taskCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus && validateInput() == false) {
+                        needToSwitchFocus = true;
+                    }
+                }
+            });
 
         taskDescription = (EditText)findViewById(R.id.definedDescription);
+        taskDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus && needToSwitchFocus) {
+                        Toast.makeText(v.getContext(),
+                                       errorMessageResourceId,
+                                       Toast.LENGTH_SHORT).show();
+                        v.clearFocus();
+                        taskCode.requestFocus();
+                        needToSwitchFocus = false;
+                    }
+                }
+            });
 
         db = (new DBOpenHelper(this)).getWritableDatabase();
-        allTaskCursor = db.query(Task.TABLE_NAME, 
+        allTaskCursor = db.query(Task.TABLE_NAME,
                                  new String[] {"_id", "code", "description"},
                                  null, null, null, null, "code");
         startManagingCursor(allTaskCursor);
@@ -52,7 +78,7 @@ public class TaskListActivity extends ListActivity {
         if ( code.length() > 0 ) {
             Task task = Task.findByCode(db, code);
             if ( task != null ) {
-                Toast.makeText(this, getString(R.string.has_the_same_code), 
+                Toast.makeText(this, getString(R.string.has_the_same_code),
                                Toast.LENGTH_SHORT).show();
             } else {
                 task = new Task(code, description);
@@ -73,4 +99,17 @@ public class TaskListActivity extends ListActivity {
         allTaskCursor.requery();
     }
 
+    private boolean validateInput() {
+        String code = taskCode.getText().toString();
+        if (code.length() == 0) {
+            errorMessageResourceId = R.string.should_not_be_empty;
+            return false;
+        } else if (Task.findByCode(db, code) != null) {
+            errorMessageResourceId = R.string.has_the_same_code;
+            return false;
+        } else {
+            errorMessageResourceId = 0;
+            return true;
+        }
+    }
 }
