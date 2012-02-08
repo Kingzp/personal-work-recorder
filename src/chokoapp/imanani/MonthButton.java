@@ -111,7 +111,4 @@ public class MonthButton extends Button {
         }
     }
 
-    public long getTime() {
-        return dateSelected() ? date.getTime() : -1;
-    }
 }

@@ -36,4 +36,9 @@
     <string name="failed_to_save">Failed to save the date</string>
     <string name="add_a_missing_task">Add a missing task ...</string>
     <string name="should_be_alpha_numeric">You should name alpha numeric code</string>
+    <string name="monthly_summary_title">The Monthly Summary</string>
+    <string name="select_month">Select Date</string>
+    <string name="monthformat">MMMMMMMM yyyy</string>
+    <string name="monthly_summary_sum_title">total time</string>
+    <string name="monthly_summary_sum_default_text">00:00:00</string>
 </resources>

@@ -1,33 +1,45 @@
 package chokoapp.imanani;
 
-import android.app.ListActivity;
+import android.app.Activity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
-import java.util.List;
+
 import java.util.Observable;
 import java.util.Observer;
 
 
-public class MonthlySummaryActivity extends ListActivity implements Observer {
+public class MonthlySummaryActivity extends Activity {
 
 
-    private MonthButton monthSelectButton;
+    private MonthButton button;
+    private SQLiteDatabase db;
+    private MonthlyWorkSummary summary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
-
-        monthSelectButton = (MonthButton)findViewById(R.id.monthSelectButton);
-        monthSelectButton.addTextChangedListener(new DisplayMonthlySummary());
+        db = (new DBOpenHelper(this)).getWritableDatabase();
+        button = (MonthButton)findViewById(R.id.monthSelectButton);
+        button.addTextChangedListener(new DisplayMonthlySummary());
 
     }
 
-    @Override
     public void update(Observable o, Object arg) {
 
+        SimpleAdapter adapter =
+                new SimpleAdapter(this, summary.getList(), R.layout.monthly_work_summary_list,
+                        new String[]{"code", "description", "duration", "percent"},
+                        new int[]{R.id.mws_code, R.id.mws_description, R.id.mws_duration, R.id.mws_percent}
+                );
+
+        ListView lv = (ListView)findViewById(R.id.monthlyWorkSummaryList);
+        lv.setAdapter(adapter);
     }
 
     private class DisplayMonthlySummary implements TextWatcher {
@@ -39,22 +51,15 @@ public class MonthlySummaryActivity extends ListActivity implements Observer {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            long date = monthSelectButton.getTime();
- /*
-            MonthlyWorkSummary mws = MonthlyWorkSummary.findByDate(db, date);
-            if ( fetchedWorkSummary.isEmpty() ) {
-                fetchedWorkSummary = WorkRecord.findByDate(db, date);
+
+            if (summary == null ||
+                button.getYear()  != summary.getYear() ||
+                button.getMonth() != summary.getMonth() ) {
+
+                summary = new MonthlyWorkSummary(db, button.getYear(), button.getMonth());
+                summary.queryWorks();
+                update(null, null);
             }
-            dailyWorkSummary.copy(fetchedWorkSummary);
-
-            List<DailyTaskSummary> dailyTaskSummaries =
-                dailyWorkSummary.existInDatabase() ?
-                    DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
-                    TaskRecord.findByDate(db, date);
-
-            taskSummaryAdapter.setDailyTaskSummaries(dailyTaskSummaries);
-            update(null, null);
-        */
         }
 
     }

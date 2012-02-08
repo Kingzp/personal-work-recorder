@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".TaskListActivity"></activity>
         <activity android:name=".DailySummaryActivity"></activity>
+        <activity android:name=".MonthlySummaryActivity"></activity>
     </application>
 
 </manifest>

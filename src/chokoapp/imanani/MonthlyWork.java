@@ -1,6 +1,6 @@
 package chokoapp.imanani;
 
-public class MonthlyWrok {
+public class MonthlyWork {
 
 
     private String code;
@@ -8,8 +8,16 @@ public class MonthlyWrok {
     private String description;
 
     private long duration;
-    
+
     private int percent;
+
+    public MonthlyWork() {}
+
+    public MonthlyWork(String code, String description, long duration){
+        this.code = code;
+        this.description = description;
+        this.duration = duration;
+    }
 
     public String getCode() {
         return code;
