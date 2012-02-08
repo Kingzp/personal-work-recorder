@@ -61,11 +61,12 @@ public class MainActivity extends Activity {
             startActivity(new Intent(this, DailySummaryActivity.class));
             return true;
         case R.id.monthlySummaryMenu:
+            startActivity(new Intent(this, MonthlySummaryActivity.class));
             return true;
         case R.id.defineTaskMenu:
             Intent intent = new Intent(this, TaskListActivity.class);
             if (timeKeeper.nowRecording()) {
-                intent.putExtra("chokoapp.imanani.cannotDeleteId", 
+                intent.putExtra("chokoapp.imanani.cannotDeleteId",
                                 timeKeeper.getCurrentTaskId());
             }
             startActivity(intent);

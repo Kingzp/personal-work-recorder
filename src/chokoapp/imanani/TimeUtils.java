@@ -3,6 +3,7 @@ package chokoapp.imanani;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class TimeUtils {
@@ -49,4 +50,25 @@ public class TimeUtils {
             return time + (UP_DOWN_STEP - remainder);
         }
     }
+
+    public static Calendar getFirstDay(int year, int month){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MARCH, month);
+
+        int days = c.getActualMinimum(Calendar.DAY_OF_MONTH);
+        c.set(Calendar.DAY_OF_MONTH, days);
+        return c;
+    }
+    public static Calendar getLastDay(int year, int month){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR,year);
+        c.set(Calendar.MARCH,month);
+
+        int days = c.getActualMaximum(Calendar.MONTH);
+        c.set(Calendar.DAY_OF_MONTH,days);
+        return c;
+    }
+
+
 }
