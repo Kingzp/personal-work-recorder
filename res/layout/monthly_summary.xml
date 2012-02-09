@@ -41,7 +41,6 @@
                 android:layout_marginLeft="2dp"
                 android:text="@string/monthly_summary_sum_default_text"
                 android:textSize="18dp" />
-
     </LinearLayout>
     <ListView
         android:id="@+id/monthlyWorkSummaryList"

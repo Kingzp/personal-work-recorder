@@ -36,7 +36,7 @@
     <string name="failed_to_save">データの保存に失敗</string>
     <string name="add_a_missing_task">足りないタスクを追加</string>
     <string name="should_be_alpha_numeric">英数字を指定して下さい</string>
-    <string name="monthly_summary_title">月次集計結果</string>
+    <string name="monthly_summary_title">月次集計 結果</string>
     <string name="select_month">年月を選択して下さい</string>
     <string name="monthformat">yyyy年MM月</string>
     <string name="monthly_summary_sum_title">合計時間</string>

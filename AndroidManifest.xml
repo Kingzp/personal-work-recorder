@@ -23,4 +23,5 @@
         <activity android:name=".MonthlySummaryActivity"></activity>
     </application>
 
+
 </manifest>
