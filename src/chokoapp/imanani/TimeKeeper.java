@@ -73,6 +73,7 @@ class TimeKeeper implements Runnable {
                     new Object[] { System.currentTimeMillis(), workId });
             workStartTime = taskStartTime = 0;
             workId = 0;
+            currentTaskId = -1;
         }
     }
 
