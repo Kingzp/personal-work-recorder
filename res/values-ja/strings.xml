@@ -2,8 +2,8 @@
 <resources>
     <string name="app_name">What\'s doing?</string>
     <string name="today_summary">今日の作業時間合計</string>
-    <string name="start_recording">記録開始</string>
-    <string name="finish_recording">記録終了</string>
+    <string name="start_recording">本日の記録を開始</string>
+    <string name="finish_recording">本日の記録を終了</string>
     <string name="now_recording">記録中...</string>
     <string name="task_code">作業コード</string>
     <string name="task_name">作業概要</string>

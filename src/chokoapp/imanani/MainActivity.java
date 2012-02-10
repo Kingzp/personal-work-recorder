@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class MainActivity extends Activity {
     private SQLiteDatabase db;
@@ -22,6 +23,7 @@ public class MainActivity extends Activity {
     private Ticker ticker;
     private TaskSelectionSpinner spinner;
     private TaskInputView taskInputView;
+    private ToggleButton toggleRecordingButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,19 @@ public class MainActivity extends Activity {
                 public void onChanged(Task task) {
                     setupSpinner();
                     spinner.setSelection(task);
+                }
+            });
+        toggleRecordingButton = (ToggleButton)findViewById(R.id.toggleRecordingButton);
+        toggleRecordingButton.setChecked(timeKeeper.nowRecording());
+        toggleRecordingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (toggleRecordingButton.isChecked()) {
+                        Task selectedTask = (Task)spinner.getSelectedItem();
+                        if ( selectedTask != null ) timeKeeper.beginWork(selectedTask);
+                    } else {
+                        timeKeeper.endWork();
+                    }
                 }
             });
     }
@@ -102,14 +117,5 @@ public class MainActivity extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
         spinner.setTimeKeeperAndAdapter(timeKeeper, adapter);
-    }
-
-    public void onClickStartButton(View view) {
-        Task selectedTask = (Task)spinner.getSelectedItem();
-        if ( selectedTask != null ) timeKeeper.beginWork(selectedTask);
-    }
-
-    public void onClickFinishButton(View view) {
-        timeKeeper.endWork();
     }
 }

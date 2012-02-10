@@ -13,6 +13,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="30"
             android:orientation="vertical" >
 
@@ -21,8 +22,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="2dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="1dp"
                 android:text="@string/today_summary"
                 android:textSize="18dp" />
 
@@ -41,21 +42,20 @@
                     android:text="00:00:00"
                     android:textSize="18dp" />
 
-                <Button
-                    android:id="@+id/startButton"
+                <ToggleButton
+                    android:id="@+id/toggleRecordingButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:onClick="onClickStartButton"
-                    android:text="@string/start_recording" />
-
-                <Button
-                    android:id="@+id/finishButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:onClick="onClickFinishButton"
-                    android:text="@string/finish_recording" />
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/toggle_button_land"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="10dp"
+                    android:textOff="@string/start_recording"
+                    android:textOn="@string/finish_recording" />
 
             </LinearLayout>
 
@@ -71,7 +71,7 @@
                 android:id="@+id/recordingLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="2dp"
                 android:layout_weight="5"
                 android:background="#066"
                 android:orientation="vertical" >
