@@ -14,38 +14,41 @@ public class MonthlyWorkSummary {
     private SQLiteDatabase db;
     private int year;
     private int month;
+    private long totalDuration;
 
-    protected MonthlyWorkSummary(){};
-
-    public MonthlyWorkSummary(SQLiteDatabase db, int year, int month) {
-        works = new ArrayList<MonthlyWork>();
+    public MonthlyWorkSummary(SQLiteDatabase db) {
         this.db = db;
-        this.year = year;
-        this.month = month;
     }
 
-    public void queryWorks() {
+    public void queryWorks(int year, int month) {
 
+        if (this.year == year && this.month == month) {
+            return;
+        }
+
+        this.year = year;
+        this.month = month;
+        works = new ArrayList<MonthlyWork>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String fromDate = sdf.format(TimeUtils.getFirstDay(year, month).getTime());
         String toDate = sdf.format(TimeUtils.getLastDay(year, month).getTime());
 
-        long totalDuration = 0;
+        totalDuration = 0;
         int totalPercent = 0;
 
         Cursor cursor = db.rawQuery(
                 "    SELECT t.code, t.description, sum(t.duration) " +
                 "      FROM daily_task_summary AS t " +
                 "INNER JOIN daily_work_summary AS w " +
-                "        ON t.daily_work_summary_id = w.id " +
-                "     WHERE ? <= w.start_at AND  w.start_at <= ? " +
+                "        ON t.daily_work_summary_id = w._id " +
+                "     WHERE strftime('%s', ?) * 1000  <= w.start_at AND  w.start_at <= strftime('%s', ?) * 1000" +
                 "  GROUP BY t.code, t.description;",
                 new String[] { fromDate, toDate });
 
         try {
             while (cursor.moveToNext()){
                 MonthlyWork work = new MonthlyWork(
-                        cursor.getString(0), cursor.getString(1), cursor.getLong(2));
+                        cursor.getString(0), cursor.getString(1), TimeUtils.getCutoffMsec(cursor.getLong(2)));
                  works.add(work);
                  totalDuration += work.getDuration();
             }
@@ -53,23 +56,19 @@ public class MonthlyWorkSummary {
             cursor.close();
         }
 
+        for (int i = 0; i <= works.size() - 2; i++) {
+            MonthlyWork work = works.get(i);
+            if (totalDuration == 0) {
+                work.setPercent(100);
+            } else {
+                work.setPercent((int)(work.getDuration() * 100 / totalDuration));
+            }
+            totalPercent += work.getPercent();
+        }
+
         if ( works.size() != 0) {
-            Iterator<MonthlyWork> iterator = works.iterator();
-            while(iterator.hasNext()) {
-                MonthlyWork work = (MonthlyWork)iterator.next();
-                if (totalDuration == 0) {
-                    work.setPercent(100);
-                } else {
-                    work.setPercent(Math.round(work.getDuration()/totalDuration * 100));
-                    totalPercent += work.getPercent();
-                }
-            }
-            //割合の補正
-            if (totalPercent != 100) {
-                MonthlyWork work = works.get(works.size());
-                int adjustedPercent = work.getPercent() + (100 - totalPercent);
-                work.setPercent(adjustedPercent);
-            }
+            MonthlyWork work = works.get(works.size() - 1);
+            work.setPercent(100 - totalPercent);
         }
     }
 
@@ -77,17 +76,15 @@ public class MonthlyWorkSummary {
         ArrayList<HashMap<String, String>> list
             = new ArrayList<HashMap<String, String>>();
 
-        if ( works.size() != 0) {
-            Iterator<MonthlyWork> iterator = works.iterator();
-            while(iterator.hasNext()) {
-                MonthlyWork work = (MonthlyWork)iterator.next();
-                HashMap<String, String> map = new HashMap<String, String>();
-                map.put("code", work.getCode());
-                map.put("description", work.getDescription());
-                map.put("duration", Long.toString(work.getDuration()));
-                map.put("percent", Integer.toString(work.getPercent()));
-                list.add(map);
-            }
+        Iterator<MonthlyWork> iterator = works.iterator();
+        while(iterator.hasNext()) {
+            MonthlyWork work = iterator.next();
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("code", work.getCode());
+            map.put("description", work.getDescription());
+            map.put("duration", TimeUtils.getTimeString(work.getDuration()));
+            map.put("percent", Integer.toString(work.getPercent()) + "%");
+            list.add(map);
         }
 
         return list;
@@ -103,5 +100,13 @@ public class MonthlyWorkSummary {
 
     public int getMonth() {
         return month;
+    }
+
+    public long getTotalDuration() {
+        return totalDuration;
+    }
+
+    public String getTimeStringTotalDuration() {
+        return TimeUtils.getTimeString(totalDuration);
     }
 }

@@ -7,11 +7,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-
-
-import java.util.Observable;
-import java.util.Observer;
-
+import android.widget.TextView;
 
 public class MonthlySummaryActivity extends Activity {
 
@@ -25,12 +21,12 @@ public class MonthlySummaryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
         db = (new DBOpenHelper(this)).getWritableDatabase();
+        summary = new MonthlyWorkSummary(db);
         button = (MonthButton)findViewById(R.id.monthSelectButton);
         button.addTextChangedListener(new DisplayMonthlySummary());
-
     }
 
-    public void update(Observable o, Object arg) {
+    public void refreshView() {
 
         SimpleAdapter adapter =
                 new SimpleAdapter(this, summary.getList(), R.layout.monthly_work_summary_list,
@@ -40,6 +36,9 @@ public class MonthlySummaryActivity extends Activity {
 
         ListView lv = (ListView)findViewById(R.id.monthlyWorkSummaryList);
         lv.setAdapter(adapter);
+
+        TextView tv = (TextView)findViewById(R.id.monthlySummarySumView);
+        tv.setText(summary.getTimeStringTotalDuration());
     }
 
     private class DisplayMonthlySummary implements TextWatcher {
@@ -51,16 +50,8 @@ public class MonthlySummaryActivity extends Activity {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            if (summary == null ||
-                button.getYear()  != summary.getYear() ||
-                button.getMonth() != summary.getMonth() ) {
-
-                summary = new MonthlyWorkSummary(db, button.getYear(), button.getMonth());
-                summary.queryWorks();
-                update(null, null);
-            }
+            summary.queryWorks(button.getYear(), button.getMonth());
+            refreshView();
         }
-
     }
 }
