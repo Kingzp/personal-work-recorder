@@ -15,6 +15,9 @@ public class TimeUtils {
     public static String getTimeString(long time) {
         return (new SimpleDateFormat("HH:mm:ss")).format(new Date(time));
     }
+    public static String getMonthlyTimeString(long time) {
+        return (new SimpleDateFormat("HHH:mm:ss")).format(new Date(time));
+    }
     public static String getTimeStringFrom(long time, long from) {
         Date start = (new SimpleDateFormat("yyyy/MM/dd"))
             .parse(getDateString(from), new ParsePosition(0));
@@ -82,8 +85,6 @@ public class TimeUtils {
     }
 
     public static long getCutoffMsec(long time) {
-        return  (long) (Math.floor(time / 1000) * 1000);
+        return  (long) (Math.round(time / 1000) * 1000);
     }
-
-
 }

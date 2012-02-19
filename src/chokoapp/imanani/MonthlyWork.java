@@ -44,4 +44,8 @@ public class MonthlyWork {
     public void setPercent(int percent) {
         this.percent = percent;
     }
+
+    public void adjustPercent(int unadjustedTotalPercent) {
+        this.percent = this.percent + (100 - unadjustedTotalPercent);
+    }
 }
