@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="monthly_summary_preference_time_display_entries">
+        <item>hour,minute,second</item>
+        <item>day,hour,minute,second</item>
+    </string-array>
+
+    <string-array name="monthly_summary_preference_time_display_values">
+        <item>HHH:mm:ss</item>
+        <item>dd days HH:mm:ss</item>
+    </string-array>
+        <string-array name="monthly_summary_preference_time_of_day_entries">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="monthly_summary_preference_time_of_day_values">
+        <item>HHH:mm:ss</item>
+        <item>dd days HH:mm:ss</item>
+    </string-array>
+
+</resources>

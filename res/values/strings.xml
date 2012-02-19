@@ -10,6 +10,7 @@
     <string name="change_task">Change</string>
     <string name="daily_summary">Daily</string>
     <string name="monthly_summary">Monthly</string>
+    <string name="appPreferences">Setting</string>
     <string name="define_task">New Task</string>
     <string name="selectTask">Select your task</string>
     <string name="task_list">Task List</string>
@@ -32,6 +33,7 @@
     <string name="start_time">Start Time</string>
     <string name="end_time">End Time</string>
     <string name="duration">Duration</string>
+    <string name="hour">hour</string>
     <string name="no_email_client">There is no email client installed</string>
     <string name="failed_to_save">Failed to save the date</string>
     <string name="add_a_missing_task">Add a missing task ...</string>
@@ -40,5 +42,12 @@
     <string name="select_month">Select Date</string>
     <string name="monthformat">MMMMMMMM yyyy</string>
     <string name="monthly_summary_sum_title">total time</string>
-    <string name="monthly_summary_sum_default_text">00:00:00</string>
+    <string name="monthly_summary_sum_default_text">000:00:00</string>
+    <string name="monthly_summary_preferences">monthly summary</string>
+    <string name="monthly_summary_preference_time_display_title">how to display time</string>
+    <string name="monthly_summary_preference_time_display_summary">how to display monthly summary time ?</string>
+    <string name="monthly_summary_preference_time_display_dialog_title">how to display time</string>
+    <string name="monthly_summary_preference_time_of_day_title">job standard time</string>
+    <string name="monthly_summary_preference_time_of_day_summary">how long do you work a day ?</string>
+    <string name="monthly_summary_preference_time_of_day_dialog_title">working hours, a day(1-24)</string>
 </resources>

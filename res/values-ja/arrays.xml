@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="monthly_summary_preference_time_display_entries">
+        <item>時間表示</item>
+        <item>日時表示</item>
+    </string-array>
+
+    <string-array name="monthly_summary_preference_time_display_values">
+        <item>HHH:mm:ss</item>
+        <item>dd日 HH:mm:ss</item>
+    </string-array>
+</resources>

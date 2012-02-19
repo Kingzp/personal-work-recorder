@@ -86,6 +86,9 @@ public class MainActivity extends Activity {
             }
             startActivity(intent);
             return true;
+        case R.id.appPreferencesMenu:
+            startActivity(new Intent(this, AppPreferenceActivity.class));
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }

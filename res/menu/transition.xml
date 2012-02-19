@@ -9,4 +9,7 @@
     <item android:id="@+id/defineTaskMenu"
           android:orderInCategory="3"
           android:title="@string/define_task" />
+    <item android:id="@+id/appPreferencesMenu"
+          android:orderInCategory="4"
+          android:title="@string/appPreferences" />
 </menu>

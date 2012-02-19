@@ -21,6 +21,8 @@
         <activity android:name=".TaskListActivity"></activity>
         <activity android:name=".DailySummaryActivity"></activity>
         <activity android:name=".MonthlySummaryActivity"></activity>
+        <activity android:name=".AppPreferenceActivity"
+                  android:label="@string/app_name" ></activity>
     </application>
 
 </manifest>

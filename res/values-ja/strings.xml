@@ -10,6 +10,7 @@
     <string name="change_task">作業変更</string>
     <string name="daily_summary">日次集計</string>
     <string name="monthly_summary">月次集計</string>
+    <string name="appPreferences">設定</string>
     <string name="define_task">作業登録</string>
     <string name="selectTask">作業を選択</string>
     <string name="no_data">タスクはありません</string>
@@ -32,6 +33,7 @@
     <string name="start_time">開始時刻</string>
     <string name="end_time">終了時刻</string>
     <string name="duration">作業時間</string>
+    <string name="hour">時間</string>
     <string name="no_email_client">メールクライアントがありません</string>
     <string name="failed_to_save">データの保存に失敗</string>
     <string name="add_a_missing_task">足りないタスクを追加</string>
@@ -40,5 +42,12 @@
     <string name="select_month">年月を選択して下さい</string>
     <string name="monthformat">yyyy年MM月</string>
     <string name="monthly_summary_sum_title">合計時間</string>
-    <string name="monthly_summary_sum_default_text">00:00:00</string>
+    <string name="monthly_summary_sum_default_text">000:00:00</string>
+    <string name="monthly_summary_preferences">月次集計画面</string>
+    <string name="monthly_summary_preference_time_display_title">月次集計画面の時間表示方法</string>
+    <string name="monthly_summary_preference_time_display_summary">月次集計画面の時間表示方法を選択</string>
+    <string name="monthly_summary_preference_time_display_dialog_title">月次集計画面の時間表示方法</string>
+    <string name="monthly_summary_preference_time_of_day_title">1日の作業時間</string>
+    <string name="monthly_summary_preference_time_of_day_summary">1日を何時間で計算するか入力(日時表示の場合に有効)</string>
+    <string name="monthly_summary_preference_time_of_day_dialog_title">1日の作業時間(1～24を入力)</string>
 </resources>
