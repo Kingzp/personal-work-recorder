@@ -1,6 +1,8 @@
 package chokoapp.imanani;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -15,20 +17,35 @@ public class MonthlySummaryActivity extends Activity {
 
 
     private MonthButton button;
-    private SQLiteDatabase db;
     private MonthlyWorkSummary summary;
     private MonthlySummaryAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
-        db = (new DBOpenHelper(this)).getWritableDatabase();
-        summary = new MonthlyWorkSummary(db);
         adapter = new MonthlySummaryAdapter(this);
         button = (MonthButton)findViewById(R.id.monthSelectButton);
         button.addTextChangedListener(new DisplayMonthlySummary());
+
+        summary = (MonthlyWorkSummary)getLastNonConfigurationInstance();
+
+        if (summary == null) {
+            SQLiteDatabase db = (new DBOpenHelper(this)).getWritableDatabase();
+            summary = new MonthlyWorkSummary(db);
+        } else if (summary.isQeryed()) {
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, summary.getYear());
+            cal.set(Calendar.MONTH, summary.getMonth());
+            button.setDate(summary.getYear(), summary.getMonth());
+            button.setButtonText();
+            refreshView();
+        }
+     }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return summary;
     }
 
     public void refreshView() {

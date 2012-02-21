@@ -44,6 +44,7 @@ public class MonthButton extends Button {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
                                        setDate(datePicker);
+                                       setButtonText();
                                    }
                                })
             .setNegativeButton(android.R.string.cancel, null)
@@ -64,8 +65,7 @@ public class MonthButton extends Button {
         return date != null;
     }
 
-    public void setButtonText(Date date) {
-        this.date = date;
+    public void setButtonText() {
         if ( date != null ) {
             setText(df.format(date));
         } else {
@@ -78,7 +78,14 @@ public class MonthButton extends Button {
         cal.set(Calendar.YEAR, datePicker.getYear());
         cal.set(Calendar.MONTH, datePicker.getMonth());
         cal.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
-        setButtonText(cal.getTime());
+        date = cal.getTime();
+    }
+
+    public void setDate(int year, int month) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, month);
+        date = cal.getTime();
     }
 
     public int getYear() {
@@ -97,7 +104,7 @@ public class MonthButton extends Button {
             cal.setTime(date);
             return cal.get(Calendar.MONTH);
         } else {
-            return 99;
+            return 12;
         }
     }
 
@@ -107,8 +114,7 @@ public class MonthButton extends Button {
             cal.setTime(date);
             return cal.get(Calendar.DAY_OF_MONTH);
         } else {
-            return 99;
+            return 31;
         }
     }
-
 }

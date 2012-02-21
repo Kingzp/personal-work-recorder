@@ -10,12 +10,14 @@ public class MonthlyWorkSummary {
 
     private ArrayList<MonthlyWork> works;
     private SQLiteDatabase db;
+    private boolean isQeryed;
     private int year;
     private int month;
     private long totalDuration;
 
     public MonthlyWorkSummary(SQLiteDatabase db) {
         this.db = db;
+        isQeryed = false;
     }
 
     public void queryWorks(int year, int month) {
@@ -49,6 +51,7 @@ public class MonthlyWorkSummary {
                  works.add(work);
                  totalDuration += work.getDuration();
             }
+            isQeryed = true;
         } finally {
             cursor.close();
         }
@@ -83,5 +86,9 @@ public class MonthlyWorkSummary {
 
     public long getTotalDuration() {
         return totalDuration;
+    }
+
+    public boolean isQeryed() {
+        return isQeryed;
     }
 }
