@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.app.Activity;
+import android.content.SharedPreferences;
 
 public class MonthlySummaryAdapter extends BaseAdapter {
 
@@ -49,7 +50,7 @@ public class MonthlySummaryAdapter extends BaseAdapter {
     public View getView(int i, View view, ViewGroup viewgroup) {
 
         MonthlyWork work = (MonthlyWork)getItem(i);
-        view = context.getLayoutInflater().inflate(R.layout.monthly_work_summary_list, null);
+        view = context.getLayoutInflater().inflate(R.layout.monthly_work_summary_item, null);
 
         TextView tvCode = (TextView)view.findViewById(R.id.monthlyWorkSummaryListCode);
         tvCode.setText(work.getCode());
@@ -58,7 +59,7 @@ public class MonthlySummaryAdapter extends BaseAdapter {
         tvDescription.setText(work.getDescription());
 
         TextView tvDuration = (TextView)view.findViewById(R.id.monthlyWorkSummaryListDuration);
-        tvDuration.setText(TimeUtils.getMonthlyTimeString(work.getDuration()));
+        tvDuration.setText(TimeUtils.getMonthlyTimeString(context, work.getDuration()));
 
         TextView tvPercent = (TextView)view.findViewById(R.id.monthlyWorkSummaryListPercent);
         tvPercent.setText(Integer.toString(work.getPercent()) + "%");

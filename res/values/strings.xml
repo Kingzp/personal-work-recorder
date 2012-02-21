@@ -33,7 +33,8 @@
     <string name="start_time">Start Time</string>
     <string name="end_time">End Time</string>
     <string name="duration">Duration</string>
-    <string name="hour">hour</string>
+    <string name="hours">hours</string>
+    <string name="days">days</string>
     <string name="no_email_client">There is no email client installed</string>
     <string name="failed_to_save">Failed to save the date</string>
     <string name="add_a_missing_task">Add a missing task ...</string>
@@ -41,12 +42,9 @@
     <string name="monthly_summary_title">The Monthly Summary</string>
     <string name="select_month">Select Date</string>
     <string name="monthformat">MMMMMMMM yyyy</string>
-    <string name="monthly_summary_sum_title">total time</string>
-    <string name="monthly_summary_sum_default_text">000:00:00</string>
+    <string name="monthly_summary_sum_title">monthly working time</string>
+    <string name="monthly_summary_time_default_text">0 days 00:00:00</string>
     <string name="monthly_summary_preferences">monthly summary</string>
-    <string name="monthly_summary_preference_time_display_title">how to display time</string>
-    <string name="monthly_summary_preference_time_display_summary">how to display monthly summary time ?</string>
-    <string name="monthly_summary_preference_time_display_dialog_title">how to display time</string>
     <string name="monthly_summary_preference_time_of_day_title">job standard time</string>
     <string name="monthly_summary_preference_time_of_day_summary">how long do you work a day ?</string>
     <string name="monthly_summary_preference_time_of_day_dialog_title">working hours, a day(1-24)</string>

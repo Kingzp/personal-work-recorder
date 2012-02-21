@@ -6,6 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 public class TimeUtils {
     private static final long UP_DOWN_STEP = 15 * 60 * 1000;
 
@@ -15,8 +19,8 @@ public class TimeUtils {
     public static String getTimeString(long time) {
         return (new SimpleDateFormat("HH:mm:ss")).format(new Date(time));
     }
-    public static String getMonthlyTimeString(long time) {
-        return (new SimpleDateFormat("HHH:mm:ss")).format(new Date(time));
+    public static String getTimeString(long time, String format) {
+        return (new SimpleDateFormat(format)).format(new Date(time));
     }
     public static String getTimeStringFrom(long time, long from) {
         Date start = (new SimpleDateFormat("yyyy/MM/dd"))
@@ -86,5 +90,21 @@ public class TimeUtils {
 
     public static long getCutoffMsec(long time) {
         return  (long) (Math.round(time / 1000) * 1000);
+    }
+
+    public static String getMonthlyTimeString(Context context, long time) {
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        int period = Integer.parseInt(sp.getString("monthly_summary_time_of_day","24"));
+
+        int days = (int)Math.floor((time / (period * 60 * 60 * 1000)));
+        long time2 = time - days * period * 60 * 60 * 1000;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String hmsString = sdf.format(new Date(time2));
+        String monthlyTimeString = String.valueOf(days) +
+                context.getString(R.string.days)  + " " + hmsString;
+
+        return monthlyTimeString;
     }
 }

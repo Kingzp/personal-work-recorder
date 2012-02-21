@@ -3,6 +3,7 @@ package chokoapp.imanani;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -39,8 +40,7 @@ public class MonthlySummaryActivity extends Activity {
         lv.setAdapter(adapter);
 
         TextView tv = (TextView)findViewById(R.id.monthlySummarySumView);
-        tv.setText(TimeUtils.getMonthlyTimeString(summary.getTotalDuration()));
-
+        tv.setText(TimeUtils.getMonthlyTimeString(this, summary.getTotalDuration()));
     }
 
     private class DisplayMonthlySummary implements TextWatcher {

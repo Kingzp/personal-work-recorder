@@ -32,15 +32,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="@string/monthly_summary_sum_title" />
+            android:text="@string/monthly_summary_sum_title"
+            android:textSize="20dp" />
 
-            <TextView
-                android:id="@+id/monthlySummarySumView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:text="@string/monthly_summary_sum_default_text"
-                android:textSize="18dp" />
+        <TextView
+            android:id="@+id/monthlySummarySumView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:text="@string/monthly_summary_time_default_text"
+            android:textSize="20dp" />
     </LinearLayout>
     <ListView
         android:id="@+id/monthlyWorkSummaryList"
