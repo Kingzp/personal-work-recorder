@@ -5,6 +5,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -100,8 +101,12 @@ public class TimeUtils {
         int days = (int)Math.floor((time / (period * 60 * 60 * 1000)));
         long time2 = time - days * period * 60 * 60 * 1000;
 
+        TimeZone defaultZone = TimeZone.getDefault();
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT"));
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         String hmsString = sdf.format(new Date(time2));
+        TimeZone.setDefault(defaultZone);
+
         String monthlyTimeString = String.valueOf(days) +
                 context.getString(R.string.days)  + " " + hmsString;
 
