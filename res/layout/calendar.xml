@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+    android:id="@+id/calendarLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/monthTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="1dp"
+            android:clickable="true"
+            android:text="2012年 2月"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/monthlyTotalTimeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="1dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="1dp"
+            android:text="167:30:00"
+            android:textSize="16sp"/>
+
+        <TextView
+            android:id="@+id/monthlyTotalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="1dp"
+            android:layout_toLeftOf="@+id/monthlyTotalTimeView"
+            android:layout_marginRight="5dp"
+            android:textSize="16sp"
+            android:text="作業合計" />
+
+        <ImageView
+            android:id="@+id/monthSelectIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/monthTextView"
+            android:background="#ffffff"
+            android:clickable="true"
+            android:src="@drawable/glyphicons_090_table" />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/TableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TableRow
+            android:id="@+id/dayOfWeekRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title_sunday"
+                android:gravity="center_horizontal"
+                android:text="日"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="月"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="火"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="水"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="木"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="金"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/calendar_title"
+                android:gravity="center_horizontal"
+                android:text="土"
+                android:textColor="#fffaf0"
+                android:textSize="12sp" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/firstWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate00"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate01"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate02"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate03"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate04"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate05"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate06"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/secondWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate10"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate11"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate12"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate13"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate14"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate15"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate16"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/thirdWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate20"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate21"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate22"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate23"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate24"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate25"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate26"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/fourthWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate30"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate31"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate32"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate33"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate34"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate35"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate36"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/fifthWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate40"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate41"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate42"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate43"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate44"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate45"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate46"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/sixthWeekRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate50"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate51"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate52"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate53"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate54"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate55"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <chokoapp.imanani.CalendarDateView
+                android:id="@+id/calendarDate56"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
