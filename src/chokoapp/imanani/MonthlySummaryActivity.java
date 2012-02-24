@@ -26,7 +26,7 @@ public class MonthlySummaryActivity extends Activity {
             SQLiteDatabase db = (new DBOpenHelper(this)).getWritableDatabase();
             summary = new MonthlyWorkSummary(db);
         }
-        if (summary.isQeryed()) {
+        if (summary.hasQueried()) {
             calendarView.display(summary.getYear(), summary.getMonth()+1);
         } else {
             summary.queryWorks(calendarView.getYear(), calendarView.getMonth()-1);
