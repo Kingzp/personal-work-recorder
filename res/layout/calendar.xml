@@ -4,26 +4,43 @@
     android:id="@+id/calendarLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/RelativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <TextView
-            android:id="@+id/monthTextView"
+        <LinearLayout
+            android:id="@+id/monthSelectLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="1dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="1dp"
-            android:clickable="true"
-            android:text="2012年 2月"
-            android:textSize="16sp" />
+            android:layout_toLeftOf="@+id/monthlyTotalTitle"
+            android:clickable="true" >
+
+          <TextView
+              android:id="@+id/monthSelectView"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:layout_marginBottom="1dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp"
+              android:layout_marginTop="1dp"
+              android:text="2012年02月"
+              android:textSize="16sp" />
+
+          <ImageView
+              android:id="@+id/monthSelectIcon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:background="#ffffff"
+              android:src="@drawable/glyphicons_090_table" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/monthlyTotalTimeView"
@@ -31,32 +48,19 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="1dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="1dp"
+            android:layout_centerVertical="true"
             android:text="167:30:00"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/monthlyTotalTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="1dp"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/monthlyTotalTimeView"
-            android:layout_marginRight="5dp"
-            android:textSize="16sp"
-            android:text="作業合計" />
-
-        <ImageView
-            android:id="@+id/monthSelectIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/monthTextView"
-            android:background="#ffffff"
-            android:clickable="true"
-            android:src="@drawable/glyphicons_090_table" />
+            android:gravity="center_vertical"
+            android:text="作業合計"
+            android:textSize="16sp" />
 
     </RelativeLayout>
 
@@ -142,7 +146,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/firstWeekRow"
+            android:id="@+id/weekRow0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
@@ -183,7 +187,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/secondWeekRow"
+            android:id="@+id/weekRow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
@@ -224,7 +228,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/thirdWeekRow"
+            android:id="@+id/weekRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
@@ -265,7 +269,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/fourthWeekRow"
+            android:id="@+id/weekRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
@@ -306,7 +310,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/fifthWeekRow"
+            android:id="@+id/weekRow4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
@@ -347,7 +351,7 @@
         </TableRow>
 
         <TableRow
-            android:id="@+id/sixthWeekRow"
+            android:id="@+id/weekRow5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
             <chokoapp.imanani.CalendarDateView
