@@ -69,9 +69,7 @@ public class CalendarView extends LinearLayout {
             }
         }
         Calendar now = Calendar.getInstance();
-        selectedYear = now.get(Calendar.YEAR);
-        selectedMonth = now.get(Calendar.MONTH)+1;
-        setMonth(selectedYear, selectedMonth);
+        display(now.get(Calendar.YEAR), now.get(Calendar.MONTH)+1);
 
         monthSelectLayout = (LinearLayout)topLayout.findViewById(R.id.monthSelectLayout);
         monthSelectLayout.setOnClickListener(new View.OnClickListener() {
@@ -82,8 +80,11 @@ public class CalendarView extends LinearLayout {
             });
     }
 
-    public void setMonth(int year, int month) {
-        setMonthTitle(year, month);
+    public void display(int year, int month) {
+        selectedYear = year;
+        selectedMonth = month;
+
+        displayTitle(year, month);
 
         TableLayout.LayoutParams param = new TableLayout.LayoutParams();
         param.weight = 1;
@@ -107,6 +108,9 @@ public class CalendarView extends LinearLayout {
 
     public void setOnMonthSelectListener(OnMonthSelectListener l) { listener = l; }
 
+    public int getYear() { return selectedYear; }
+    public int getMonth() { return selectedMonth; }
+
     private void showMonthPicker(int year, int month) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         final DatePicker datePicker = new DatePicker(getContext());
@@ -119,9 +123,7 @@ public class CalendarView extends LinearLayout {
                                new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
-                                       selectedYear = datePicker.getYear();
-                                       selectedMonth = datePicker.getMonth()+1;
-                                       setMonth(selectedYear, selectedMonth);
+                                       display(datePicker.getYear(), datePicker.getMonth()+1);
                                        if (listener != null ) {
                                            listener.onSelectMonth(selectedYear, selectedMonth);
                                        }
@@ -132,7 +134,7 @@ public class CalendarView extends LinearLayout {
             .show();
     }
 
-    private void setMonthTitle(int year, int month) {
+    private void displayTitle(int year, int month) {
         Calendar now = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月");
         now.set(Calendar.YEAR, year);

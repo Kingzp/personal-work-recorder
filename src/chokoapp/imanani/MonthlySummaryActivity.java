@@ -1,22 +1,14 @@
 package chokoapp.imanani;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class MonthlySummaryActivity extends Activity {
 
-
-    private MonthButton button;
+    private CalendarView calendarView;
     private MonthlyWorkSummary summary;
     private MonthlySummaryAdapter adapter;
 
@@ -25,22 +17,21 @@ public class MonthlySummaryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
         adapter = new MonthlySummaryAdapter(this);
-        button = (MonthButton)findViewById(R.id.monthSelectButton);
-        button.addTextChangedListener(new DisplayMonthlySummary());
+        calendarView = (CalendarView)findViewById(R.id.calendarView);
+        calendarView.setOnMonthSelectListener(new DisplayMonthlySummary());
 
         summary = (MonthlyWorkSummary)getLastNonConfigurationInstance();
 
         if (summary == null) {
             SQLiteDatabase db = (new DBOpenHelper(this)).getWritableDatabase();
             summary = new MonthlyWorkSummary(db);
-        } else if (summary.isQeryed()) {
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.YEAR, summary.getYear());
-            cal.set(Calendar.MONTH, summary.getMonth());
-            button.setDate(summary.getYear(), summary.getMonth());
-            button.setButtonText();
-            refreshView();
         }
+        if (summary.isQeryed()) {
+            calendarView.display(summary.getYear(), summary.getMonth()+1);
+        } else {
+            summary.queryWorks(calendarView.getYear(), calendarView.getMonth()-1);
+        }
+        refreshView();
      }
 
     @Override
@@ -55,21 +46,12 @@ public class MonthlySummaryActivity extends Activity {
 
         ListView lv = (ListView)findViewById(R.id.monthlyWorkSummaryList);
         lv.setAdapter(adapter);
-
-        TextView tv = (TextView)findViewById(R.id.monthlySummarySumView);
-        tv.setText(TimeUtils.getMonthlyTimeString(this, summary.getTotalDuration()));
     }
 
-    private class DisplayMonthlySummary implements TextWatcher {
+    private class DisplayMonthlySummary implements CalendarView.OnMonthSelectListener {
         @Override
-        public void afterTextChanged(Editable e) {
-        }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            summary.queryWorks(button.getYear(), button.getMonth());
+        public void onSelectMonth(int year, int month) {
+            summary.queryWorks(year, month-1);
             refreshView();
         }
     }
