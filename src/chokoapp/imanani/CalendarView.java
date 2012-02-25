@@ -1,11 +1,7 @@
 package chokoapp.imanani;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,13 +18,13 @@ import android.widget.TextView;
 
 public class CalendarView extends LinearLayout {
     private LayoutInflater inf;
-    private TableRow[] weekRows = new TableRow[6];
-    private CalendarDateView[][] calendarDates = new CalendarDateView[6][7];
     private OnMonthSelectListener listener;
     private LinearLayout monthSelectLayout;
     private int selectedYear;
     private int selectedMonth; /* 1: January, 2: February, 3: March ... */
     private TextView monthSelectView;
+    private TableLayout calendarContents;
+    private TableRow dayOfWeekRow;
 
     public interface OnMonthSelectListener {
         public void onSelectMonth(int year, int month);
@@ -40,34 +36,13 @@ public class CalendarView extends LinearLayout {
     public CalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View topLayout = inf.inflate(R.layout.calendar, this);
+        LinearLayout topLayout = (LinearLayout)inf.inflate(R.layout.calendar, this);
 
         monthSelectView = (TextView)topLayout.findViewById(R.id.monthSelectView);
+        calendarContents = (TableLayout)topLayout.findViewById(R.id.calendarContents);
 
-        Field[] idFields = R.id.class.getFields();
-        for (Field field : idFields) {
-            Pattern weekRowPattern = Pattern.compile("weekRow(\\d)");
-            Matcher matchRow = weekRowPattern.matcher(field.getName());
-            Pattern calendarDatePattern = Pattern.compile("calendarDate(\\d)(\\d)");
-            Matcher matchDate = calendarDatePattern.matcher(field.getName());
-            if (matchRow.matches()) {
-                int row = Integer.parseInt(matchRow.group(1));
-                try {
-                    weekRows[row] = (TableRow)topLayout.findViewById(field.getInt(null));
-                } catch (IllegalArgumentException e) {e.printStackTrace();
-                } catch (IllegalAccessException e) {e.printStackTrace();
-                }
-            }
-            if (matchDate.matches()) {
-                int row = Integer.parseInt(matchDate.group(1));
-                int col = Integer.parseInt(matchDate.group(2));
-                try {
-                    calendarDates[row][col] = (CalendarDateView)topLayout.findViewById(field.getInt(null));
-                } catch (IllegalArgumentException e) {e.printStackTrace();
-                } catch (IllegalAccessException e) {e.printStackTrace();
-                }
-            }
-        }
+        dayOfWeekRow = (TableRow)inf.inflate(R.layout.day_of_week_row, null, false);
+
         Calendar now = Calendar.getInstance();
         display(now.get(Calendar.YEAR), now.get(Calendar.MONTH)+1);
 
@@ -81,29 +56,38 @@ public class CalendarView extends LinearLayout {
     }
 
     public void display(int year, int month) {
+        if ( selectedYear == year && selectedMonth == month) return;
+
         selectedYear = year;
         selectedMonth = month;
 
         displayTitle(year, month);
 
-        TableLayout.LayoutParams param = new TableLayout.LayoutParams();
+        calendarContents.removeAllViews();
+        calendarContents.addView(dayOfWeekRow);
+        TableRow.LayoutParams param = new TableRow.LayoutParams();
         param.weight = 1;
+
+        TableRow tableRow = null;
 
         DateInfo dateInfo = new DateInfo(year, month);
         dateInfo.moveTopCorner();
         do {
-            int row = dateInfo.getRow();
-            int col = dateInfo.getColumn();
-            calendarDates[row][col].setDate(dateInfo.getDate());
-            if (dateInfo.getMonth() != month) {
-                calendarDates[row][col].setInvalid();
-            } else {
-                calendarDates[row][col].setBackground(dateInfo.isSunday());
+            if (dateInfo.isSunday()) {
+                tableRow = new TableRow(getContext());
             }
-        } while (dateInfo.moveToNext());
-        for ( int i = dateInfo.getRow() + 1 ; i < 6 ; i++ ) {
-            removeView(weekRows[i]);
-        }
+            CalendarDateView dateView = new CalendarDateView(getContext());
+            if (dateInfo.getMonth() != month) {
+                dateView.setInvalid();
+            } else {
+                dateView.setBackground(dateInfo.isSunday());
+            }
+            dateView.setDate(dateInfo.getDate());
+            tableRow.addView(dateView, param);
+            if (dateInfo.isSaturday()) {
+                calendarContents.addView(tableRow);
+            }
+        } while ( dateInfo.moveToNext() );
     }
 
     public void setOnMonthSelectListener(OnMonthSelectListener l) { listener = l; }

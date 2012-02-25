@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/dayOfWeekRow"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" >
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title_sunday"
+      android:gravity="center_horizontal"
+      android:text="日"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="月"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="火"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="水"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="木"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="金"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+
+  <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
+      android:background="@drawable/calendar_title"
+      android:gravity="center_horizontal"
+      android:text="土"
+      android:textColor="#fffaf0"
+      android:textSize="12sp" />
+</TableRow>

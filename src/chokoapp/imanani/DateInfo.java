@@ -27,6 +27,9 @@ public class DateInfo {
     public boolean isSunday() {
         return date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
+    public boolean isSaturday() {
+        return date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
+    }
     public void moveTopCorner() {
         date.set(baseYear, baseMonth - 1, 1);
         while (date.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
