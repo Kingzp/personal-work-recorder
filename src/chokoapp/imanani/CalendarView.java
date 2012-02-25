@@ -25,6 +25,7 @@ public class CalendarView extends LinearLayout {
     private TextView monthSelectView;
     private TableLayout calendarContents;
     private TableRow dayOfWeekRow;
+    private TimeView totalDurationView;
 
     public interface OnMonthSelectListener {
         public void onSelectMonth(int year, int month);
@@ -53,6 +54,8 @@ public class CalendarView extends LinearLayout {
                     showMonthPicker(selectedYear, selectedMonth);
                 }
             });
+
+        totalDurationView = (TimeView)topLayout.findViewById(R.id.totalDurationView);
     }
 
     public void display(int year, int month) {
@@ -94,6 +97,10 @@ public class CalendarView extends LinearLayout {
 
     public int getYear() { return selectedYear; }
     public int getMonth() { return selectedMonth; }
+
+    public void setTotalDuration(long time) {
+        totalDurationView.setTime(time);
+    }
 
     private void showMonthPicker(int year, int month) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());

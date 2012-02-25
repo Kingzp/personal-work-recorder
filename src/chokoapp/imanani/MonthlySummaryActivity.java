@@ -25,12 +25,12 @@ public class MonthlySummaryActivity extends Activity {
         if (summary == null) {
             SQLiteDatabase db = (new DBOpenHelper(this)).getWritableDatabase();
             summary = new MonthlyWorkSummary(db);
-        }
-        if (summary.hasQueried()) {
-            calendarView.display(summary.getYear(), summary.getMonth());
-        } else {
             summary.queryWorks(calendarView.getYear(), calendarView.getMonth());
+        } else {
+            calendarView.display(summary.getYear(), summary.getMonth());
         }
+
+        calendarView.setTotalDuration(summary.getTotalDuration());
         refreshView();
      }
 
@@ -52,6 +52,7 @@ public class MonthlySummaryActivity extends Activity {
         @Override
         public void onSelectMonth(int year, int month) {
             summary.queryWorks(year, month);
+            calendarView.setTotalDuration(summary.getTotalDuration());
             refreshView();
         }
     }

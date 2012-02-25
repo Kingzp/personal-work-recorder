@@ -12,7 +12,10 @@ public class TimeView extends TextView {
         this(context, null);
     }
     public TimeView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, android.R.attr.textViewStyle);
+    }
+    public TimeView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         time = 0;
     }
 
