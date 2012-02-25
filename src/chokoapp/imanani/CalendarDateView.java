@@ -39,4 +39,12 @@ public class CalendarDateView extends RelativeLayout {
         setBackgroundResource(R.drawable.date_cell_invalid);
         timeView.setText("");
     }
+
+    public void setTime(long time) {
+        long sec = time / 1000;
+        timeView.setText(String.format("%02d:%02d", sec / (60 * 60), (sec / 60) % 60));
+    }
+    public void setTextColor(int color) {
+        timeView.setTextColor(color);
+    }
 }

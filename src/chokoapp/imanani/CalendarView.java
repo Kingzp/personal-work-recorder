@@ -2,10 +2,14 @@ package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +22,7 @@ import android.widget.TextView;
 
 public class CalendarView extends LinearLayout {
     private LayoutInflater inf;
-    private OnMonthSelectListener listener;
+    private OnMonthSelectListener listener = new EmptyMonthSelectListener();
     private LinearLayout monthSelectLayout;
     private int selectedYear;
     private int selectedMonth;
@@ -26,9 +30,14 @@ public class CalendarView extends LinearLayout {
     private TableLayout calendarContents;
     private TableRow dayOfWeekRow;
     private TimeView totalDurationView;
+    private SQLiteDatabase db;
 
     public interface OnMonthSelectListener {
         public void onSelectMonth(int year, int month);
+    }
+    private class EmptyMonthSelectListener implements OnMonthSelectListener {
+        @Override
+        public void onSelectMonth(int year, int month) {}
     }
 
     public CalendarView(Context context) {
@@ -36,6 +45,8 @@ public class CalendarView extends LinearLayout {
     }
     public CalendarView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        db = (new DBOpenHelper(context)).getReadableDatabase();
         inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout topLayout = (LinearLayout)inf.inflate(R.layout.calendar, this);
 
@@ -84,6 +95,27 @@ public class CalendarView extends LinearLayout {
                 dateView.setInvalid();
             } else {
                 dateView.setBackground(dateInfo.isSunday());
+                if ( db != null ) {
+                    DailyWorkSummary dailyWorkSummary =
+                        DailyWorkSummary.findByDate(db, dateInfo.getTime());
+                    List<DailyTaskSummary> dailyTaskSummaries = null;
+                    int color = Color.BLACK;
+                    if (dailyWorkSummary.isEmpty()) {
+                        dailyTaskSummaries = TaskRecord.findByDate(db, dateInfo.getTime());
+                        if ( !dailyTaskSummaries.isEmpty() ) {
+                            color = Color.parseColor("#8ff0e68c"); /* khaki color */
+                        }
+                    } else {
+                        dailyTaskSummaries = DailyTaskSummary.findById(db, dailyWorkSummary.getId());
+                        color = Color.parseColor("#8f90ee90"); /* light green */
+                    }
+                    long time = 0;
+                    for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
+                        time += dailyTaskSummary.getDuration();
+                    }
+                    dateView.setTime(time);
+                    dateView.setTextColor(color);
+                }
             }
             dateView.setDate(dateInfo.getDate());
             tableRow.addView(dateView, param);
@@ -115,9 +147,7 @@ public class CalendarView extends LinearLayout {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
                                        display(datePicker.getYear(), datePicker.getMonth());
-                                       if (listener != null ) {
-                                           listener.onSelectMonth(selectedYear, selectedMonth);
-                                       }
+                                       listener.onSelectMonth(selectedYear, selectedMonth);
                                    }
                                })
             .setNegativeButton(android.R.string.cancel, null)
@@ -131,5 +161,5 @@ public class CalendarView extends LinearLayout {
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         monthSelectView.setText(df.format(now.getTime()));
-   }
+    }
 }

@@ -24,6 +24,9 @@ public class DateInfo {
     public int getYear() {
         return date.get(Calendar.YEAR);
     }
+    public long getTime() {
+        return date.getTime().getTime();
+    }
     public boolean isSunday() {
         return date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
     }
