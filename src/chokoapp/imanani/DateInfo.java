@@ -13,13 +13,13 @@ public class DateInfo {
         baseMonth = month;
         this.date = Calendar.getInstance();
         date.clear();
-        date.set(year, month - 1, 1);
+        date.set(year, month, 1);
     }
     public int getDate() {
         return date.get(Calendar.DATE);
     }
     public int getMonth() {
-        return date.get(Calendar.MONTH) + 1;
+        return date.get(Calendar.MONTH);
     }
     public int getYear() {
         return date.get(Calendar.YEAR);
@@ -31,14 +31,14 @@ public class DateInfo {
         return date.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY;
     }
     public void moveTopCorner() {
-        date.set(baseYear, baseMonth - 1, 1);
+        date.set(baseYear, baseMonth, 1);
         while (date.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
             date.add(Calendar.DATE, -1);
         }
     }
     public boolean isBottomCorner() {
         Calendar temp = Calendar.getInstance();
-        temp.set(baseYear, baseMonth - 1, 1);
+        temp.set(baseYear, baseMonth, 1);
         temp.add(Calendar.MONTH, 1);
         temp.add(Calendar.DATE, -1);
         while (temp.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY) {

@@ -27,9 +27,9 @@ public class MonthlySummaryActivity extends Activity {
             summary = new MonthlyWorkSummary(db);
         }
         if (summary.hasQueried()) {
-            calendarView.display(summary.getYear(), summary.getMonth()+1);
+            calendarView.display(summary.getYear(), summary.getMonth());
         } else {
-            summary.queryWorks(calendarView.getYear(), calendarView.getMonth()-1);
+            summary.queryWorks(calendarView.getYear(), calendarView.getMonth());
         }
         refreshView();
      }
@@ -51,7 +51,7 @@ public class MonthlySummaryActivity extends Activity {
     private class DisplayMonthlySummary implements CalendarView.OnMonthSelectListener {
         @Override
         public void onSelectMonth(int year, int month) {
-            summary.queryWorks(year, month-1);
+            summary.queryWorks(year, month);
             refreshView();
         }
     }

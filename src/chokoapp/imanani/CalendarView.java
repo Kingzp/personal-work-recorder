@@ -21,7 +21,7 @@ public class CalendarView extends LinearLayout {
     private OnMonthSelectListener listener;
     private LinearLayout monthSelectLayout;
     private int selectedYear;
-    private int selectedMonth; /* 1: January, 2: February, 3: March ... */
+    private int selectedMonth;
     private TextView monthSelectView;
     private TableLayout calendarContents;
     private TableRow dayOfWeekRow;
@@ -44,7 +44,7 @@ public class CalendarView extends LinearLayout {
         dayOfWeekRow = (TableRow)inf.inflate(R.layout.day_of_week_row, null, false);
 
         Calendar now = Calendar.getInstance();
-        display(now.get(Calendar.YEAR), now.get(Calendar.MONTH)+1);
+        display(now.get(Calendar.YEAR), now.get(Calendar.MONTH));
 
         monthSelectLayout = (LinearLayout)topLayout.findViewById(R.id.monthSelectLayout);
         monthSelectLayout.setOnClickListener(new View.OnClickListener() {
@@ -98,7 +98,7 @@ public class CalendarView extends LinearLayout {
     private void showMonthPicker(int year, int month) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         final DatePicker datePicker = new DatePicker(getContext());
-        datePicker.updateDate(year, month-1, 1);
+        datePicker.updateDate(year, month, 1);
         int day_id = Resources.getSystem().getIdentifier("day", "id", "android");
         datePicker.findViewById(day_id).setVisibility(View.GONE);
         builder.setView(datePicker)
@@ -107,7 +107,7 @@ public class CalendarView extends LinearLayout {
                                new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
-                                       display(datePicker.getYear(), datePicker.getMonth()+1);
+                                       display(datePicker.getYear(), datePicker.getMonth());
                                        if (listener != null ) {
                                            listener.onSelectMonth(selectedYear, selectedMonth);
                                        }
@@ -122,7 +122,7 @@ public class CalendarView extends LinearLayout {
         Calendar now = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月");
         now.set(Calendar.YEAR, year);
-        now.set(Calendar.MONTH, month-1);
+        now.set(Calendar.MONTH, month);
         monthSelectView.setText(df.format(now.getTime()));
    }
 }
