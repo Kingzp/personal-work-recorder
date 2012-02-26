@@ -9,12 +9,15 @@ public class DateInfo {
     private int baseYear;
     private int baseMonth;
 
-    public DateInfo(int year, int month) {
+    public DateInfo(int year, int month, int day) {
         baseYear = year;
         baseMonth = month;
         this.date = Calendar.getInstance();
         date.clear();
-        date.set(year, month, 1);
+        date.set(year, month, day);
+    }
+    public DateInfo(int year, int month) {
+        this(year, month, 1);
     }
     public int getDate() {
         return date.get(Calendar.DATE);

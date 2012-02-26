@@ -186,6 +186,9 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             }
 
             db.setTransactionSuccessful();
+            Intent intent = new Intent();
+            intent.putExtra("updatedDate", new Date(dateSelectButton.getTime()));
+            setResult(RESULT_OK, intent);
             return true;
         } finally {
             db.endTransaction();

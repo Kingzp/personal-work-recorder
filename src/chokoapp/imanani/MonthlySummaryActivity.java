@@ -1,7 +1,9 @@
 package chokoapp.imanani;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,6 +22,7 @@ public class MonthlySummaryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
         adapter = new MonthlySummaryAdapter(this);
+
         calendarView = (CalendarView)findViewById(R.id.calendarView);
         calendarView.setOnMonthSelectListener(new DisplayMonthlySummary());
         calendarView.setOnDateClickListener(new CalendarView.OnDateClickListener() {
@@ -56,7 +59,12 @@ public class MonthlySummaryActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == DAILY_SUMMARY_REQUEST) {
-            calendarView.display(summary.getYear(), summary.getMonth());
+            if (resultCode == RESULT_OK) {
+                Serializable date = data.getSerializableExtra("updatedDate");
+                if ( date != null && date instanceof Date) {
+                    calendarView.updateCell((Date)date);
+                }
+            }
         }
     }
 

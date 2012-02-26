@@ -2,6 +2,8 @@ package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -128,6 +130,24 @@ public class CalendarView extends LinearLayout {
 
     public void setTotalDuration(long time) {
         totalDurationView.setTime(time);
+    }
+
+    public void updateCell(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        if (selectedYear != cal.get(Calendar.YEAR) ||
+            selectedMonth != cal.get(Calendar.MONTH)) return;
+
+        DateInfo dateInfo = new DateInfo(cal.get(Calendar.YEAR),
+                                         cal.get(Calendar.MONTH),
+                                         cal.get(Calendar.DATE));
+        View row = calendarContents.getChildAt(dateInfo.getRow() + 1);
+        if (row != null && row instanceof TableRow) {
+            View cell = ((TableRow)row).getChildAt(dateInfo.getColumn());
+            if (cell != null && cell instanceof CalendarDateView) {
+                ((CalendarDateView)cell).setDate(date, db);
+            }
+        }
     }
 
     private void showMonthPicker(int year, int month) {
