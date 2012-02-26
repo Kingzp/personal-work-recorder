@@ -44,12 +44,12 @@ public class MonthlySummaryActivity extends Activity {
             summary = new MonthlyWorkSummary(db);
             summary.queryWorks(calendarView.getYear(), calendarView.getMonth());
         } else {
-            calendarView.display(summary.getYear(), summary.getMonth());
+            calendarView.setMonth(summary.getYear(), summary.getMonth());
         }
 
         calendarView.setTotalDuration(summary.getTotalDuration());
         refreshView();
-     }
+    }
 
     @Override
     public Object onRetainNonConfigurationInstance() {

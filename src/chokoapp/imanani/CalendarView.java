@@ -24,11 +24,10 @@ public class CalendarView extends LinearLayout {
     private OnMonthSelectListener monthSelectListener = new EmptyMonthSelectListener();
     private OnDateClickListener dateClickListener = new EmptyDateClickListener();
     private LinearLayout monthSelectLayout;
-    private int selectedYear;
-    private int selectedMonth;
+    private int currentYear;
+    private int currentMonth;
     private TextView monthSelectView;
     private TableLayout calendarContents;
-    private TableRow dayOfWeekRow;
     private TimeView totalDurationView;
     private SQLiteDatabase db;
 
@@ -61,72 +60,34 @@ public class CalendarView extends LinearLayout {
         monthSelectView = (TextView)topLayout.findViewById(R.id.monthSelectView);
         calendarContents = (TableLayout)topLayout.findViewById(R.id.calendarContents);
 
-        dayOfWeekRow = (TableRow)inf.inflate(R.layout.day_of_week_row, null, false);
-
         Calendar now = Calendar.getInstance();
-        display(now.get(Calendar.YEAR), now.get(Calendar.MONTH));
+        setMonth(now.get(Calendar.YEAR), now.get(Calendar.MONTH));
 
         monthSelectLayout = (LinearLayout)topLayout.findViewById(R.id.monthSelectLayout);
         monthSelectLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    showMonthPicker(selectedYear, selectedMonth);
+                    showMonthPicker(currentYear, currentMonth);
                 }
             });
 
         totalDurationView = (TimeView)topLayout.findViewById(R.id.totalDurationView);
     }
 
-    public void display(int year, int month) {
-        if ( selectedYear == year && selectedMonth == month) return;
+    public void setMonth(int year, int month) {
+        if (currentYear == year && currentMonth == month) return;
 
-        selectedYear = year;
-        selectedMonth = month;
+        currentYear = year;
+        currentMonth = month;
 
-        displayTitle(year, month);
-
-        calendarContents.removeAllViews();
-        calendarContents.addView(dayOfWeekRow);
-        TableRow.LayoutParams param = new TableRow.LayoutParams();
-        param.weight = 1;
-
-        TableRow tableRow = null;
-
-        DateInfo dateInfo = new DateInfo(year, month);
-        dateInfo.moveTopCorner();
-        do {
-            if (dateInfo.isSunday()) {
-                tableRow = new TableRow(getContext());
-            }
-            CalendarDateView dateView = new CalendarDateView(getContext());
-            if (dateInfo.getMonth() != month) {
-                dateView.setInvalid();
-                dateView.setDate(dateInfo.getDate());
-            } else {
-                dateView.setBackground(dateInfo.isSunday());
-                dateView.setDate(dateInfo.getTime(), db);
-                final int date = dateInfo.getDate();
-                dateView.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dateClickListener.onDateClick(selectedYear,
-                                                          selectedMonth,
-                                                          date);
-                        }
-                    });
-            }
-            tableRow.addView(dateView, param);
-            if (dateInfo.isSaturday()) {
-                calendarContents.addView(tableRow);
-            }
-        } while ( dateInfo.moveToNext() );
+        displayCalendar();
     }
 
     public void setOnMonthSelectListener(OnMonthSelectListener l) { monthSelectListener = l; }
     public void setOnDateClickListener(OnDateClickListener l) { dateClickListener = l; }
 
-    public int getYear() { return selectedYear; }
-    public int getMonth() { return selectedMonth; }
+    public int getYear() { return currentYear; }
+    public int getMonth() { return currentMonth; }
 
     public void setTotalDuration(long time) {
         totalDurationView.setTime(time);
@@ -135,8 +96,8 @@ public class CalendarView extends LinearLayout {
     public void updateCell(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        if (selectedYear != cal.get(Calendar.YEAR) ||
-            selectedMonth != cal.get(Calendar.MONTH)) return;
+        if (currentYear != cal.get(Calendar.YEAR) ||
+            currentMonth != cal.get(Calendar.MONTH)) return;
 
         DateInfo dateInfo = new DateInfo(cal.get(Calendar.YEAR),
                                          cal.get(Calendar.MONTH),
@@ -148,6 +109,48 @@ public class CalendarView extends LinearLayout {
                 ((CalendarDateView)cell).setDate(date, db);
             }
         }
+    }
+
+    private void displayCalendar() {
+
+        displayTitle();
+
+        calendarContents.removeAllViews();
+        TableRow dayOfWeekRow = (TableRow)inf.inflate(R.layout.day_of_week_row, null, false);
+        calendarContents.addView(dayOfWeekRow);
+        TableRow.LayoutParams param = new TableRow.LayoutParams();
+        param.weight = 1;
+
+        TableRow tableRow = null;
+
+        DateInfo dateInfo = new DateInfo(currentYear, currentMonth);
+        dateInfo.moveTopCorner();
+        do {
+            if (dateInfo.isSunday()) {
+                tableRow = new TableRow(getContext());
+            }
+            CalendarDateView dateView = new CalendarDateView(getContext());
+            if (dateInfo.getMonth() != currentMonth) {
+                dateView.setInvalid();
+                dateView.setDate(dateInfo.getDate());
+            } else {
+                dateView.setBackground(dateInfo.isSunday());
+                dateView.setDate(dateInfo.getTime(), db);
+                final int date = dateInfo.getDate();
+                dateView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dateClickListener.onDateClick(currentYear,
+                                                          currentMonth,
+                                                          date);
+                        }
+                    });
+            }
+            tableRow.addView(dateView, param);
+            if (dateInfo.isSaturday()) {
+                calendarContents.addView(tableRow);
+            }
+        } while ( dateInfo.moveToNext() );
     }
 
     private void showMonthPicker(int year, int month) {
@@ -162,8 +165,8 @@ public class CalendarView extends LinearLayout {
                                new DialogInterface.OnClickListener() {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
-                                       display(datePicker.getYear(), datePicker.getMonth());
-                                       monthSelectListener.onSelectMonth(selectedYear, selectedMonth);
+                                       setMonth(datePicker.getYear(), datePicker.getMonth());
+                                       monthSelectListener.onSelectMonth(currentYear, currentMonth);
                                    }
                                })
             .setNegativeButton(android.R.string.cancel, null)
@@ -171,11 +174,11 @@ public class CalendarView extends LinearLayout {
             .show();
     }
 
-    private void displayTitle(int year, int month) {
+    private void displayTitle() {
         Calendar now = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月");
-        now.set(Calendar.YEAR, year);
-        now.set(Calendar.MONTH, month);
+        now.set(Calendar.YEAR, currentYear);
+        now.set(Calendar.MONTH, currentMonth);
         monthSelectView.setText(df.format(now.getTime()));
     }
 }
