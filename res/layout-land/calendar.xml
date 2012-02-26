@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+    android:id="@+id/calendarLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="240dp"
+        android:layout_height="45dp" >
+
+        <LinearLayout
+            android:id="@+id/monthSelectLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:clickable="true" >
+
+          <TextView
+              android:id="@+id/monthSelectView"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center_vertical"
+              android:layout_marginBottom="1dp"
+              android:layout_marginLeft="10dp"
+              android:layout_marginRight="10dp"
+              android:layout_marginTop="1dp"
+              android:text="2012年02月"
+              android:textSize="16sp" />
+
+          <ImageView
+              android:id="@+id/monthSelectIcon"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentTop="true"
+              android:layout_marginRight="10dp"
+              android:background="#ffffff"
+              android:src="@drawable/glyphicons_090_table" />
+
+        </LinearLayout>
+
+        <chokoapp.imanani.TimeView
+            android:id="@+id/totalDurationView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/monthSelectLayout"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:text="00:00:00"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/monthlyTotalTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/monthSelectLayout"
+            android:layout_toLeftOf="@id/totalDurationView"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:text="作業合計"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <TableLayout
+        android:id="@+id/calendarContents"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+    </TableLayout>
+
+</LinearLayout>

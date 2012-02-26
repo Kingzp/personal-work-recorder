@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+      <chokoapp.imanani.CalendarView
+          android:id="@+id/calendarView"
+          android:layout_width="wrap_content"
+          android:layout_height="match_parent"
+          app.dateformat="@string/monthformat">
+      </chokoapp.imanani.CalendarView>
+
+    <ListView
+        android:id="@+id/monthlyWorkSummaryList"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+    </ListView>
+</LinearLayout>
