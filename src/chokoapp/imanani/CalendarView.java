@@ -2,14 +2,11 @@ package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,40 +99,20 @@ public class CalendarView extends LinearLayout {
             CalendarDateView dateView = new CalendarDateView(getContext());
             if (dateInfo.getMonth() != month) {
                 dateView.setInvalid();
+                dateView.setDate(dateInfo.getDate());
             } else {
                 dateView.setBackground(dateInfo.isSunday());
-                if ( db != null ) {
-                    DailyWorkSummary dailyWorkSummary =
-                        DailyWorkSummary.findByDate(db, dateInfo.getTime());
-                    List<DailyTaskSummary> dailyTaskSummaries = null;
-                    int color = Color.BLACK;
-                    if (dailyWorkSummary.isEmpty()) {
-                        dailyTaskSummaries = TaskRecord.findByDate(db, dateInfo.getTime());
-                        if ( !dailyTaskSummaries.isEmpty() ) {
-                            color = Color.parseColor("#8ff0e68c"); /* khaki color */
+                dateView.setDate(dateInfo.getTime(), db);
+                final int date = dateInfo.getDate();
+                dateView.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dateClickListener.onDateClick(selectedYear,
+                                                          selectedMonth,
+                                                          date);
                         }
-                    } else {
-                        dailyTaskSummaries = DailyTaskSummary.findById(db, dailyWorkSummary.getId());
-                        color = Color.parseColor("#8f90ee90"); /* light green */
-                    }
-                    long time = 0;
-                    for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
-                        time += dailyTaskSummary.getDuration();
-                    }
-                    dateView.setTime(time);
-                    dateView.setTextColor(color);
-                    final int date = dateInfo.getDate();
-                    dateView.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                dateClickListener.onDateClick(selectedYear,
-                                                              selectedMonth,
-                                                              date);
-                            }
-                        });
-                }
+                    });
             }
-            dateView.setDate(dateInfo.getDate());
             tableRow.addView(dateView, param);
             if (dateInfo.isSaturday()) {
                 calendarContents.addView(tableRow);

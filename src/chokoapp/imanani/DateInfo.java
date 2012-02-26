@@ -1,6 +1,7 @@
 package chokoapp.imanani;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class DateInfo {
     private static long MILLISEC_OF_DAY = 24 * 60 * 60 * 1000;
@@ -24,8 +25,8 @@ public class DateInfo {
     public int getYear() {
         return date.get(Calendar.YEAR);
     }
-    public long getTime() {
-        return date.getTime().getTime();
+    public Date getTime() {
+        return date.getTime();
     }
     public boolean isSunday() {
         return date.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
