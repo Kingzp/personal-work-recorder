@@ -1,5 +1,6 @@
 package chokoapp.imanani;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -124,14 +125,23 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     @Override
     public void onStart() {
         super.onStart();
-        SharedPreferences pref = getSharedPreferences("pref",
-                                                      MODE_PRIVATE|MODE_WORLD_WRITEABLE);
-        long selectedDate = pref.getLong("selectedDate", -1);
-        if ( selectedDate >= 0 ) {
-            dateSelectButton.setDate(new Date(selectedDate));
-            dailyWorkSummary.restoreFromSharedPreference(this);
-            taskSummaryAdapter.restoreFromSharedPreference(this);
-            update(null, null);
+
+        Intent intent = getIntent();
+        Serializable date = intent.getSerializableExtra("selectedDate");
+
+        if ( date != null && date instanceof Date ) {
+            dateSelectButton.setDate((Date)date);
+            intent.removeExtra("selectedDate");
+        } else {
+            SharedPreferences pref = getSharedPreferences("pref",
+                                                          MODE_PRIVATE|MODE_WORLD_WRITEABLE);
+            long selectedDate = pref.getLong("selectedDate", -1);
+            if ( selectedDate >= 0 ) {
+                dateSelectButton.setDate(new Date(selectedDate));
+                dailyWorkSummary.restoreFromSharedPreference(this);
+                taskSummaryAdapter.restoreFromSharedPreference(this);
+                update(null, null);
+            }
         }
     }
 

@@ -22,7 +22,8 @@ import android.widget.TextView;
 
 public class CalendarView extends LinearLayout {
     private LayoutInflater inf;
-    private OnMonthSelectListener listener = new EmptyMonthSelectListener();
+    private OnMonthSelectListener monthSelectListener = new EmptyMonthSelectListener();
+    private OnDateClickListener dateClickListener = new EmptyDateClickListener();
     private LinearLayout monthSelectLayout;
     private int selectedYear;
     private int selectedMonth;
@@ -38,6 +39,14 @@ public class CalendarView extends LinearLayout {
     private class EmptyMonthSelectListener implements OnMonthSelectListener {
         @Override
         public void onSelectMonth(int year, int month) {}
+    }
+
+    public interface OnDateClickListener {
+        public void onDateClick(int year, int month, int date);
+    }
+    private class EmptyDateClickListener implements OnDateClickListener {
+        @Override
+        public void onDateClick(int year, int month, int date) {}
     }
 
     public CalendarView(Context context) {
@@ -115,6 +124,15 @@ public class CalendarView extends LinearLayout {
                     }
                     dateView.setTime(time);
                     dateView.setTextColor(color);
+                    final int date = dateInfo.getDate();
+                    dateView.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dateClickListener.onDateClick(selectedYear,
+                                                              selectedMonth,
+                                                              date);
+                            }
+                        });
                 }
             }
             dateView.setDate(dateInfo.getDate());
@@ -125,7 +143,8 @@ public class CalendarView extends LinearLayout {
         } while ( dateInfo.moveToNext() );
     }
 
-    public void setOnMonthSelectListener(OnMonthSelectListener l) { listener = l; }
+    public void setOnMonthSelectListener(OnMonthSelectListener l) { monthSelectListener = l; }
+    public void setOnDateClickListener(OnDateClickListener l) { dateClickListener = l; }
 
     public int getYear() { return selectedYear; }
     public int getMonth() { return selectedMonth; }
@@ -147,7 +166,7 @@ public class CalendarView extends LinearLayout {
                                    @Override
                                    public void onClick(DialogInterface d, int w) {
                                        display(datePicker.getYear(), datePicker.getMonth());
-                                       listener.onSelectMonth(selectedYear, selectedMonth);
+                                       monthSelectListener.onSelectMonth(selectedYear, selectedMonth);
                                    }
                                })
             .setNegativeButton(android.R.string.cancel, null)
