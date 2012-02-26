@@ -10,7 +10,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title_sunday"
       android:gravity="center_horizontal"
-      android:text="日"
+      android:text="@string/sunday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -20,7 +20,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="月"
+      android:text="@string/monday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -30,7 +30,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="火"
+      android:text="@string/tuesday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -40,7 +40,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="水"
+      android:text="@string/wednesday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -50,7 +50,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="木"
+      android:text="@string/thursday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -60,7 +60,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="金"
+      android:text="@string/friday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 
@@ -70,7 +70,7 @@
       android:layout_weight="1"
       android:background="@drawable/calendar_title"
       android:gravity="center_horizontal"
-      android:text="土"
+      android:text="@string/saturday"
       android:textColor="#fffaf0"
       android:textSize="12sp" />
 </TableRow>

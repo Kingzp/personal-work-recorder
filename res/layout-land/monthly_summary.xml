@@ -9,7 +9,7 @@
           android:id="@+id/calendarView"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
-          app.dateformat="@string/monthformat">
+          app.monthformat="@string/monthformat">
       </chokoapp.imanani.CalendarView>
 
     <ListView

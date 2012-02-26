@@ -42,11 +42,18 @@
     <string name="monthly_summary_title">月次集計結果</string>
     <string name="select_month">年月を選択して下さい</string>
     <string name="monthformat">yyyy年MM月</string>
-    <string name="monthly_summary_sum_title">月間作業時間</string>
+    <string name="monthly_total">月間合計</string>
     <string name="monthly_summary_time_default_text">0 日 00:00:00</string>
     <string name="monthly_summary_preferences">月次集計</string>
     <string name="monthly_summary_preference_time_of_day_title">1日の作業時間</string>
     <string name="monthly_summary_preference_time_of_day_summary">1日を何時間で計算するか入力</string>
     <string name="monthly_summary_preference_time_of_day_dialog_title">1日の作業時間(1-24を入力)</string>
     <string name="monthly_ummary_preference_time_of_day_input_msg">1 ～ 24 の数字を入力して下さい</string>
+    <string name="sunday">日</string>
+    <string name="monday">月</string>
+    <string name="tuesday">火</string>
+    <string name="wednesday">水</string>
+    <string name="thursday">木</string>
+    <string name="friday">金</string>
+    <string name="saturday">土</string>
 </resources>

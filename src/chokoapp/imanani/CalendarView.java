@@ -30,6 +30,7 @@ public class CalendarView extends LinearLayout {
     private TableLayout calendarContents;
     private TimeView totalDurationView;
     private SQLiteDatabase db;
+    private SimpleDateFormat df;
 
     public interface OnMonthSelectListener {
         public void onSelectMonth(int year, int month);
@@ -60,6 +61,13 @@ public class CalendarView extends LinearLayout {
         monthSelectView = (TextView)topLayout.findViewById(R.id.monthSelectView);
         calendarContents = (TableLayout)topLayout.findViewById(R.id.calendarContents);
 
+        int monthformatValue = attrs.getAttributeResourceValue(null, "app.monthformat", -1);
+        if ( monthformatValue <  0 ) {
+            df = new SimpleDateFormat("yyyy/MM");
+        } else {
+            df = new SimpleDateFormat(getResources().getText(monthformatValue).toString());
+        }
+
         Calendar now = Calendar.getInstance();
         setMonth(now.get(Calendar.YEAR), now.get(Calendar.MONTH));
 
@@ -72,6 +80,7 @@ public class CalendarView extends LinearLayout {
             });
 
         totalDurationView = (TimeView)topLayout.findViewById(R.id.totalDurationView);
+
     }
 
     public void setMonth(int year, int month) {
@@ -176,7 +185,6 @@ public class CalendarView extends LinearLayout {
 
     private void displayTitle() {
         Calendar now = Calendar.getInstance();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月");
         now.set(Calendar.YEAR, currentYear);
         now.set(Calendar.MONTH, currentMonth);
         monthSelectView.setText(df.format(now.getTime()));

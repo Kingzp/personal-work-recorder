@@ -59,7 +59,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/totalDurationView"
             android:gravity="center_vertical"
-            android:text="作業合計"
+            android:text="@string/monthly_total"
             android:textSize="16sp" />
 
     </RelativeLayout>

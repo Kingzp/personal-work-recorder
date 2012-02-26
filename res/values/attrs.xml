@@ -3,4 +3,7 @@
     <declare-styleable name="DateButton">
         <attr name="dateformat" format="string" />
     </declare-styleable>
+    <declare-styleable name="CalendarView">
+        <attr name="monthformat" format="string" />
+    </declare-styleable>
 </resources>
