@@ -48,4 +48,5 @@
     <string name="monthly_summary_preference_time_of_day_title">job standard time</string>
     <string name="monthly_summary_preference_time_of_day_summary">how long do you work a day ?</string>
     <string name="monthly_summary_preference_time_of_day_dialog_title">working hours, a day(1-24)</string>
+    <string name="monthly_ummary_preference_time_of_day_input_msg">input number, 1-24</string>
 </resources>

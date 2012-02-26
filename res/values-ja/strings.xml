@@ -48,4 +48,5 @@
     <string name="monthly_summary_preference_time_of_day_title">1日の作業時間</string>
     <string name="monthly_summary_preference_time_of_day_summary">1日を何時間で計算するか入力</string>
     <string name="monthly_summary_preference_time_of_day_dialog_title">1日の作業時間(1-24を入力)</string>
+    <string name="monthly_ummary_preference_time_of_day_input_msg">1 ～ 24 の数字を入力して下さい</string>
 </resources>
