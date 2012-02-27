@@ -1,5 +1,11 @@
 package chokoapp.imanani;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
 public class MonthlyWork {
 
     private String code;
@@ -47,5 +53,29 @@ public class MonthlyWork {
 
     public void adjustPercent(int unadjustedTotalPercent) {
         this.percent = this.percent + (100 - unadjustedTotalPercent);
+    }
+
+    public static List<MonthlyWork> queryWorks(SQLiteDatabase db, int year, int month) {
+
+        Cursor cursor = db.rawQuery(
+                "    SELECT t.code, t.description, sum(t.duration) " +
+                "      FROM daily_task_summary AS t " +
+                "INNER JOIN daily_work_summary AS w " +
+                "        ON t.daily_work_summary_id = w._id " +
+                "     WHERE strftime('%Y%m', date(start_at / 1000, 'unixepoch', 'localtime')) = ? " +
+                "  GROUP BY t.code, t.description;",
+                new String[] { String.format("%04d%02d", year, month+1) });
+
+        List<MonthlyWork> works = new ArrayList<MonthlyWork>();
+        while (cursor.moveToNext()){
+            MonthlyWork work = new MonthlyWork(
+                cursor.getString(0), cursor.getString(1), TimeUtils.getCutoffMsec(cursor.getLong(2)));
+            works.add(work);
+        }
+        try {
+            return works;
+        } finally {
+            cursor.close();
+        }
     }
 }

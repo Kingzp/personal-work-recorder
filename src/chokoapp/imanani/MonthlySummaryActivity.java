@@ -1,27 +1,38 @@
 package chokoapp.imanani;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ListView;
 
 public class MonthlySummaryActivity extends Activity {
     private static final int DAILY_SUMMARY_REQUEST = 1;
     private CalendarView calendarView;
-    private MonthlyWorkSummary summary;
     private MonthlySummaryAdapter adapter;
+    private CachedMonth cache;
+
+    private static class CachedMonth {
+        private int year;
+        private int month;
+        public CachedMonth(int year, int month) {
+            this.year = year;
+            this.month = month;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.monthly_summary);
+
         adapter = new MonthlySummaryAdapter(this);
+
+        ListView lv = (ListView)findViewById(R.id.monthlyWorkSummaryList);
+        lv.setAdapter(adapter);
 
         calendarView = (CalendarView)findViewById(R.id.calendarView);
         calendarView.setOnMonthSelectListener(new DisplayMonthlySummary());
@@ -37,23 +48,23 @@ public class MonthlySummaryActivity extends Activity {
                 }
             });
 
-        summary = (MonthlyWorkSummary)getLastNonConfigurationInstance();
+        cache = (CachedMonth)getLastNonConfigurationInstance();
+        if ( cache == null ) {
+            int year = calendarView.getYear();
+            int month = calendarView.getMonth();
+            cache = new CachedMonth(year, month);
 
-        if (summary == null) {
-            SQLiteDatabase db = (new DBOpenHelper(this)).getWritableDatabase();
-            summary = new MonthlyWorkSummary(db);
-            summary.queryWorks(calendarView.getYear(), calendarView.getMonth());
         } else {
-            calendarView.setMonth(summary.getYear(), summary.getMonth());
+            calendarView.setMonth(cache.year, cache.month);
         }
 
-        calendarView.setTotalDuration(summary.getTotalDuration());
-        refreshView();
+        adapter.queryWorks(cache.year, cache.month);
+        calendarView.setTotalDuration(adapter.getTotalDuration());
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return summary;
+        return new CachedMonth(calendarView.getYear(), calendarView.getMonth());
     }
 
     @Override
@@ -63,26 +74,19 @@ public class MonthlySummaryActivity extends Activity {
                 Serializable date = data.getSerializableExtra("updatedDate");
                 if ( date != null && date instanceof Date) {
                     calendarView.updateCell((Date)date);
+                    adapter.queryWorks(calendarView.getYear(),
+                                       calendarView.getMonth());
+                    calendarView.setTotalDuration(adapter.getTotalDuration());
                 }
             }
         }
     }
 
-    public void refreshView() {
-
-        ArrayList<MonthlyWork>works = summary.getWorks();
-        adapter.setList(works);
-
-        ListView lv = (ListView)findViewById(R.id.monthlyWorkSummaryList);
-        lv.setAdapter(adapter);
-    }
-
     private class DisplayMonthlySummary implements CalendarView.OnMonthSelectListener {
         @Override
         public void onSelectMonth(int year, int month) {
-            summary.queryWorks(year, month);
-            calendarView.setTotalDuration(summary.getTotalDuration());
-            refreshView();
+            adapter.queryWorks(year, month);
+            calendarView.setTotalDuration(adapter.getTotalDuration());
         }
     }
 }

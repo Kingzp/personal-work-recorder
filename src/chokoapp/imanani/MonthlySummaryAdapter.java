@@ -1,70 +1,92 @@
 package chokoapp.imanani;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.app.Activity;
-import android.content.SharedPreferences;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
-public class MonthlySummaryAdapter extends BaseAdapter {
+public class MonthlySummaryAdapter extends ArrayAdapter<MonthlyWork> {
+    private static final int resourceId = R.layout.monthly_work_summary_item;
+    private LayoutInflater inf;
+    private SQLiteDatabase db;
 
-    private Activity context;
-    private ArrayList<MonthlyWork> list;
-
-    public MonthlySummaryAdapter(Activity context) {
-        super();
-        this.context = context;
+    public MonthlySummaryAdapter(Context context) {
+        this(context, new ArrayList<MonthlyWork>());
+    }
+    public MonthlySummaryAdapter(Context context, List<MonthlyWork> monthlyWorks) {
+        super(context, resourceId, monthlyWorks);
+        inf = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        db = (new DBOpenHelper(context)).getReadableDatabase();
     }
 
-    public MonthlySummaryAdapter(Activity context, ArrayList<MonthlyWork> list) {
-        super();
-        this.context = context;
-        this.list = list;
-    }
-
-    public int getCount() {
-        if (list == null) {
-            return 0;
-        } else {
-            return list.size();
+    public void setList(List<MonthlyWork> monthlyWorks) {
+        for (MonthlyWork monthlyWork : monthlyWorks) {
+            add(monthlyWork);
         }
     }
 
     @Override
-    public Object getItem(int i) {
-        return list.get(i);
-    }
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
+        MonthlyWork work = getItem(position);
+        if ( convertView == null ) {
+            convertView = inf.inflate(resourceId, null);
+        }
 
-    public void setList(ArrayList<MonthlyWork> list) {
-        this.list = list;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewgroup) {
-
-        MonthlyWork work = (MonthlyWork)getItem(i);
-        view = context.getLayoutInflater().inflate(R.layout.monthly_work_summary_item, null);
-
-        TextView tvCode = (TextView)view.findViewById(R.id.monthlyWorkSummaryListCode);
+        TextView tvCode = (TextView)convertView.findViewById(R.id.monthlyWorkSummaryListCode);
         tvCode.setText(work.getCode());
 
-        TextView tvDescription = (TextView)view.findViewById(R.id.monthlyWorkSummaryListDescription);
+        TextView tvDescription = (TextView)convertView.findViewById(R.id.monthlyWorkSummaryListDescription);
         tvDescription.setText(work.getDescription());
 
-        TextView tvDuration = (TextView)view.findViewById(R.id.monthlyWorkSummaryListDuration);
-        tvDuration.setText(TimeUtils.getMonthlyTimeString(context, work.getDuration()));
+        TextView tvDuration = (TextView)convertView.findViewById(R.id.monthlyWorkSummaryListDuration);
+        tvDuration.setText(TimeUtils.getMonthlyTimeString(getContext(), work.getDuration()));
 
-        TextView tvPercent = (TextView)view.findViewById(R.id.monthlyWorkSummaryListPercent);
-        tvPercent.setText(Integer.toString(work.getPercent()) + "%");
+        TextView tvPercent = (TextView)convertView.findViewById(R.id.monthlyWorkSummaryListPercent);
+        tvPercent.setText(Integer.toString(getPercent(position)) + "%");
 
-        return view;
+        return convertView;
     }
 
+    public void queryWorks(int year, int month) {
+        List<MonthlyWork> monthlyWorks = MonthlyWork.queryWorks(db, year, month);
+        clear();
+        setList(monthlyWorks);
+    }
+
+    public long getTotalDuration() {
+        long totalDuration = 0;
+        int count = getCount();
+        for (int i = 0 ; i < count ; i++) {
+            totalDuration += getItem(i).getDuration();
+        }
+        return totalDuration;
+    }
+
+    private int getPercent(int position) {
+        if (getTotalDuration() <= 0) return -1;
+
+        if (position < getCount() - 1) {
+            return (int)Math.round( (getItem(position).getDuration() * 100.0) / getTotalDuration() );
+        } else {
+            return 100 - lastPercent();
+        }
+    }
+
+    private int lastPercent() {
+        if (getTotalDuration() <= 0) return 0;
+
+        int percent = 0;
+        int count = getCount();
+        for (int i = 0 ; i < count - 1 ; i++) {
+            percent += getPercent(i);
+        }
+        return percent;
+    }
 }
