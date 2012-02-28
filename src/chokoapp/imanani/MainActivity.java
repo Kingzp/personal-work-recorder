@@ -72,9 +72,6 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-        case R.id.dailySummaryMenu:
-            startActivity(new Intent(this, DailySummaryActivity.class));
-            return true;
         case R.id.monthlySummaryMenu:
             startActivity(new Intent(this, MonthlySummaryActivity.class));
             return true;

@@ -8,8 +8,7 @@
     <string name="task_code">CODE</string>
     <string name="task_name">DESCRIPTION</string>
     <string name="change_task">Change</string>
-    <string name="daily_summary">Daily</string>
-    <string name="monthly_summary">Monthly</string>
+    <string name="summary">Summary</string>
     <string name="appPreferences">Setting</string>
     <string name="define_task">New Task</string>
     <string name="selectTask">Select your task</string>

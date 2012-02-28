@@ -8,8 +8,7 @@
     <string name="task_code">作業コード</string>
     <string name="task_name">作業概要</string>
     <string name="change_task">作業変更</string>
-    <string name="daily_summary">日次集計</string>
-    <string name="monthly_summary">月次集計</string>
+    <string name="summary">集計</string>
     <string name="appPreferences">設定</string>
     <string name="define_task">作業登録</string>
     <string name="selectTask">作業を選択</string>
