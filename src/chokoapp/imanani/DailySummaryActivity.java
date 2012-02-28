@@ -72,13 +72,10 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem saveMenu = menu.findItem(R.id.summarySave);
         MenuItem mailSendMenu = menu.findItem(R.id.summarySend);
         if ( !dailyWorkSummary.nowRecording() && matchTotalTime() ) {
-            saveMenu.setVisible(true);
             mailSendMenu.setVisible(true);
         } else {
-            saveMenu.setVisible(false);
             mailSendMenu.setVisible(false);
         }
 
@@ -93,9 +90,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             return true;
         case R.id.summaryAdjust:
             autoAdjust();
-            return true;
-        case R.id.summarySave:
-            saveTable();
             return true;
         case R.id.summarySend:
             sendMail();
@@ -165,6 +159,19 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         taskSummaryAdapter.saveToSharedPreference(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!dailyWorkSummary.nowRecording() && matchTotalTime()) {
+            if (saveTable()) {
+                Intent intent = new Intent();
+                intent.putExtra("updatedDate", currentDate);
+                setResult(RESULT_OK, intent);
+            }
+        }
+
+        super.onBackPressed();
+    }
+
     public void resetSummary() {
         long date = currentDate.getTime();
         dailyWorkSummary.resetFromWorkRecord(db, date);
@@ -193,9 +200,6 @@ public class DailySummaryActivity extends ListActivity implements Observer {
             }
 
             db.setTransactionSuccessful();
-            Intent intent = new Intent();
-            intent.putExtra("updatedDate", currentDate);
-            setResult(RESULT_OK, intent);
             return true;
         } finally {
             db.endTransaction();

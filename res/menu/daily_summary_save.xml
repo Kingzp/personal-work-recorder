@@ -8,12 +8,8 @@
           android:orderInCategory="2"
           android:icon="@drawable/ic_menu_replace"
           android:title="@string/adjust" />
-    <item android:id="@+id/summarySave"
-          android:orderInCategory="3"
-          android:icon="@drawable/ic_menu_save"
-          android:title="@string/save" />
     <item android:id="@+id/summarySend"
-          android:orderInCategory="4"
+          android:orderInCategory="3"
           android:icon="@drawable/ic_menu_send"
           android:title="@string/send" />
 </menu>
