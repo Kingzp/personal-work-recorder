@@ -11,7 +11,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dp"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="@string/start_time"
             android:textSize="16dp" />
 
@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/startTimeText"
+            android:gravity="right"
             android:padding="5dp"
             android:text="9999/99/99 00:00:00"
             android:textSize="16dp" />
@@ -46,8 +47,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/startTimeText"
+            android:layout_alignRight="@id/startTimeText"
             android:layout_below="@+id/startTimeText"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="@string/end_time"
             android:textSize="16dp" />
 
@@ -57,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/startTimeView"
             android:layout_toRightOf="@+id/endTimeText"
+            android:gravity="right"
             android:padding="5dp"
             android:text="9999/99/99 00:00:00"
             android:textSize="16dp" />
@@ -100,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/endTimeText"
             android:layout_below="@+id/endTimeText"
-            android:padding="5dp"
+            android:padding="3dp"
             android:text="@string/daily_total"
             android:textSize="16dp" />
 

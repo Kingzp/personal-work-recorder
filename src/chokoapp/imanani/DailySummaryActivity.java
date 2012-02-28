@@ -1,6 +1,7 @@
 package chokoapp.imanani;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,33 +19,33 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class DailySummaryActivity extends ListActivity implements Observer {
     private SQLiteDatabase db;
-    private DateButton dateSelectButton;
+    private TextView selectedDateView;
     private DailyWorkSummary dailyWorkSummary;
     private TimeView differenceTimeView;
     private FooterView footerView;
     private TaskSummaryAdapter taskSummaryAdapter;
+    private Date currentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.daily_summay);
-        db = (new DBOpenHelper(this)).getWritableDatabase();
 
-        dateSelectButton = (DateButton)findViewById(R.id.dateSelectButton);
-        dateSelectButton.addTextChangedListener(new DisplaySummary());
+        db = (new DBOpenHelper(this)).getWritableDatabase();
 
         differenceTimeView = (TimeView)findViewById(R.id.differenceTimeView);
 
@@ -60,6 +61,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
         taskSummaryAdapter = new TaskSummaryAdapter(this);
         setListAdapter(taskSummaryAdapter);
+
     }
 
     @Override
@@ -87,7 +89,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.summaryReset:
-            resetSummary(dateSelectButton.getTime());
+            resetSummary();
             return true;
         case R.id.summaryAdjust:
             autoAdjust();
@@ -129,37 +131,42 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         Intent intent = getIntent();
         Serializable date = intent.getSerializableExtra("selectedDate");
 
-        if ( date != null && date instanceof Date ) {
-            dateSelectButton.setDate((Date)date);
+        if ( date != null && date instanceof Date ) { /* start from MonthlySummaryActivity */
+            currentDate = (Date)date;
             intent.removeExtra("selectedDate");
-        } else {
+            displaySummary();
+        } else {                                      /* rotation */
             SharedPreferences pref = getSharedPreferences("pref",
                                                           MODE_PRIVATE|MODE_WORLD_WRITEABLE);
-            long selectedDate = pref.getLong("selectedDate", -1);
-            if ( selectedDate >= 0 ) {
-                dateSelectButton.setDate(new Date(selectedDate));
+            long dateValue = pref.getLong("selectedDate", -1);
+            if ( dateValue >= 0 ) {
+                currentDate = new Date(dateValue);
                 dailyWorkSummary.restoreFromSharedPreference(this);
                 taskSummaryAdapter.restoreFromSharedPreference(this);
                 update(null, null);
             }
         }
+        selectedDateView = (TextView)findViewById(R.id.selectedDateView);
+        SimpleDateFormat df = new SimpleDateFormat(getString(R.string.dateformat));
+        selectedDateView.setText(getString(R.string.daily_summary_title,
+                                           df.format(currentDate)));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if ( dateSelectButton.dateSelected() ) {
-            SharedPreferences pref = getSharedPreferences("pref",
-                                                          MODE_PRIVATE|MODE_WORLD_READABLE);
-            Editor e = pref.edit();
-            e.putLong("selectedDate", dateSelectButton.getTime());
-            e.commit();
-            dailyWorkSummary.saveToSharedPreference(this);
-            taskSummaryAdapter.saveToSharedPreference(this);
-        }
+
+        SharedPreferences pref = getSharedPreferences("pref",
+                                                      MODE_PRIVATE|MODE_WORLD_READABLE);
+        Editor e = pref.edit();
+        e.putLong("selectedDate", currentDate.getTime());
+        e.commit();
+        dailyWorkSummary.saveToSharedPreference(this);
+        taskSummaryAdapter.saveToSharedPreference(this);
     }
 
-    public void resetSummary(long date) {
+    public void resetSummary() {
+        long date = currentDate.getTime();
         dailyWorkSummary.resetFromWorkRecord(db, date);
         taskSummaryAdapter.setDailyTaskSummaries(TaskRecord.findByDate(db, date));
         update(null, null);
@@ -187,7 +194,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
             db.setTransactionSuccessful();
             Intent intent = new Intent();
-            intent.putExtra("updatedDate", new Date(dateSelectButton.getTime()));
+            intent.putExtra("updatedDate", currentDate);
             setResult(RESULT_OK, intent);
             return true;
         } finally {
@@ -195,30 +202,21 @@ public class DailySummaryActivity extends ListActivity implements Observer {
         }
     }
 
-    private class DisplaySummary implements TextWatcher {
-        @Override
-        public void afterTextChanged(Editable e) {
+    private void displaySummary() {
+        long date = currentDate.getTime();
+        DailyWorkSummary fetchedWorkSummary = DailyWorkSummary.findByDate(db, date);
+        if ( fetchedWorkSummary.isEmpty() ) {
+            fetchedWorkSummary = WorkRecord.findByDate(db, date);
         }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-        }
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            long date = dateSelectButton.getTime();
-            DailyWorkSummary fetchedWorkSummary = DailyWorkSummary.findByDate(db, date);
-            if ( fetchedWorkSummary.isEmpty() ) {
-                fetchedWorkSummary = WorkRecord.findByDate(db, date);
-            }
-            dailyWorkSummary.copy(fetchedWorkSummary);
+        dailyWorkSummary.copy(fetchedWorkSummary);
 
-            List<DailyTaskSummary> dailyTaskSummaries =
-                dailyWorkSummary.existInDatabase() ?
-                    DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
-                    TaskRecord.findByDate(db, date);
+        List<DailyTaskSummary> dailyTaskSummaries =
+            dailyWorkSummary.existInDatabase() ?
+            DailyTaskSummary.findById(db, dailyWorkSummary.getId()) :
+            TaskRecord.findByDate(db, date);
 
-            taskSummaryAdapter.setDailyTaskSummaries(dailyTaskSummaries);
-            update(null, null);
-        }
+        taskSummaryAdapter.setDailyTaskSummaries(dailyTaskSummaries);
+        update(null, null);
     }
 
     private void autoAdjust() {

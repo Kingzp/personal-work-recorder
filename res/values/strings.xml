@@ -20,7 +20,7 @@
     <string name="edit_task">Edit Task</string>
     <string name="cannot_delete">You cannot delete currently recording task</string>
     <string name="daily_total">Daily Total</string>
-    <string name="daily_summary_title">The Daily Summary</string>
+    <string name="daily_summary_title">Aggregate of %1$s</string>
     <string name="reset">Reset</string>
     <string name="save">Save</string>
     <string name="select_date">Select Date</string>

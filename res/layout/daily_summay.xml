@@ -5,33 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:id="@+id/dateSelector"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true" >
-
-        <chokoapp.imanani.DateButton
-            android:id="@+id/dateSelectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app.dateformat="@string/dateformat"
-            android:text="@string/select_date" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="@string/daily_summary_title" />
-    </LinearLayout>
+  <TextView
+      android:id="@+id/selectedDateView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentTop="true"
+      android:gravity="center_horizontal"
+      android:padding="5dp"
+      android:background="#8fdcdcdc"
+      android:textColor="#f0e68c"
+      android:text="@string/daily_summary_title"
+      android:textSize="18sp" />
 
     <chokoapp.imanani.DailyWorkSummaryView
         android:id="@+id/summaryView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dateSelector" />
+        android:layout_below="@+id/selectedDateView" />
 
     <ListView
         android:id="@+id/android:list"
