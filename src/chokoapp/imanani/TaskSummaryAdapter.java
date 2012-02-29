@@ -47,7 +47,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final DailyTaskSummary dailyTaskSummary = (DailyTaskSummary)getItem(position);
+        final DailyTaskSummary dailyTaskSummary = getItem(position);
         if ( convertView == null ) {
             convertView = inf.inflate(resourceId, null);
         }

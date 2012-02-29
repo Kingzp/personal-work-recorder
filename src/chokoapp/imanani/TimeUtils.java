@@ -90,7 +90,7 @@ public class TimeUtils {
     }
 
     public static long getCutoffMsec(long time) {
-        return  (long) (Math.round(time / 1000) * 1000);
+        return  (Math.round(time / 1000) * 1000);
     }
 
     public static String getMonthlyTimeString(Context context, long time) {
