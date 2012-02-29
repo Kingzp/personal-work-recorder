@@ -33,7 +33,6 @@ public class TaskSelectionSpinner extends Spinner {
             setSelection(spinnerPosition);
         }
     }
-    public boolean valid() { return timeKeeper != null; }
 
     private class ChangeTask implements OnItemSelectedListener {
         @Override
