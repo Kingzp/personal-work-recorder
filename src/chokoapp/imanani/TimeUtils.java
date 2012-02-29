@@ -3,7 +3,6 @@ package chokoapp.imanani;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -57,36 +56,6 @@ public class TimeUtils {
         } else {
             return time + (UP_DOWN_STEP - remainder);
         }
-    }
-
-    public static Calendar getFirstDay(int year, int month){
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.AM_PM, Calendar.AM);
-        c.set(Calendar.HOUR, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        c.set(Calendar.MILLISECOND, 0);
-
-        int day = c.getActualMinimum(Calendar.DAY_OF_MONTH);
-        c.set(Calendar.DAY_OF_MONTH, day);
-        return c;
-    }
-
-    public static Calendar getLastDay(int year, int month){
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.YEAR, year);
-        c.set(Calendar.MONTH, month);
-        c.set(Calendar.AM_PM, Calendar.PM);
-        c.set(Calendar.HOUR, 11);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
-        c.set(Calendar.MILLISECOND, 999);
-
-        int day = c.getActualMaximum(Calendar.DAY_OF_MONTH);
-        c.set(Calendar.DAY_OF_MONTH, day);
-        return c;
     }
 
     public static long getCutoffMsec(long time) {
