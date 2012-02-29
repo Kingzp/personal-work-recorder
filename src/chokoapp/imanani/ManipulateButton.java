@@ -77,6 +77,7 @@ public class ManipulateButton extends ImageView {
             }
         }
 
+        @Override
         protected void onProgressUpdate(Void... values) {
             manipulator.execute();
         }

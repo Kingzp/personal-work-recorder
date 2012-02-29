@@ -66,6 +66,7 @@ public class TaskInputView extends RelativeLayout {
             });
 
         changeTaskButton.setOnClickListener(new OnClickListener() {
+                @Override
                 public void onClick(View v) {
                     if ( taskCompleteView.length() == 0 ) return;
 
