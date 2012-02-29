@@ -48,6 +48,7 @@ public class ManipulateButton extends ImageView {
                         if ( continuousToch != null) {
                             continuousToch.cancel(true);
                         }
+                        break;
                     case MotionEvent.ACTION_DOWN:
                         break;
                     default:
