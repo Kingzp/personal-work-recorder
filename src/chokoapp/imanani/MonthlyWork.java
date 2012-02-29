@@ -51,10 +51,6 @@ public class MonthlyWork {
         this.percent = percent;
     }
 
-    public void adjustPercent(int unadjustedTotalPercent) {
-        this.percent = this.percent + (100 - unadjustedTotalPercent);
-    }
-
     public static List<MonthlyWork> queryWorks(SQLiteDatabase db, int year, int month) {
 
         Cursor cursor = db.rawQuery(
