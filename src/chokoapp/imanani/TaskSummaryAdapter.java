@@ -59,7 +59,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         taskDurationView.setTime(dailyTaskSummary.getDuration());
 
         ((ManipulateButton)convertView.findViewById(R.id.timePlusView))
-            .setManipulator(new Manipulator() {
+            .setManipulator(new ManipulateButton.Manipulator() {
                     @Override
                     public void execute() {
                         taskDurationView.up();
@@ -67,7 +67,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
                     }
                 });
         ((ManipulateButton)convertView.findViewById(R.id.timeMinusView))
-            .setManipulator(new Manipulator() {
+            .setManipulator(new ManipulateButton.Manipulator() {
                     @Override
                     public void execute() {
                         taskDurationView.down();

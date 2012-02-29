@@ -11,6 +11,10 @@ public class ManipulateButton extends ImageView {
     private Manipulator manipulator;
     private ContinuousTouch continuousToch;
 
+    public interface Manipulator {
+        public void execute();
+    }
+
     public ManipulateButton(Context context) {
         this(context, null, 0);
     }
