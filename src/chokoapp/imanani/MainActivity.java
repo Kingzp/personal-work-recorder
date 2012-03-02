@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -31,9 +30,13 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-                R.layout.title_bar);
+                                  R.layout.title_bar);
         displayToday();
+
         db = (new DBOpenHelper(this)).getWritableDatabase();
+        spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
+
+
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
                 (TextView) findViewById(R.id.durationView));
@@ -44,7 +47,7 @@ public class MainActivity extends Activity {
         taskInputView.setOnTaskChangedListener(new OnTaskChangedListener() {
                 @Override
                 public void onChanged(Task task) {
-                    setupSpinner();
+                    spinner.initialize(timeKeeper);
                     spinner.setSelection(task);
                 }
             });
@@ -94,7 +97,7 @@ public class MainActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        setupSpinner();
+        spinner.initialize(timeKeeper);
         ticker.start();
         taskInputView.setAdapter(new TaskCompleteAdapter(this, db));
     }
@@ -109,13 +112,5 @@ public class MainActivity extends Activity {
         TextView v = (TextView) findViewById(R.id.todayView);
         SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd (E)");
         v.setText(df.format(Calendar.getInstance().getTime()));
-    }
-
-    private void setupSpinner() {
-        ArrayAdapter<Task> adapter = new ArrayAdapter<Task>(
-            this, android.R.layout.simple_spinner_item, Task.findAll(db));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
-        spinner.setTimeKeeperAndAdapter(timeKeeper, adapter);
     }
 }
