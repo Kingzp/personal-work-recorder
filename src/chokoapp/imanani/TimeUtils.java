@@ -3,6 +3,7 @@ package chokoapp.imanani;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -58,8 +59,38 @@ public class TimeUtils {
         }
     }
 
+    public static Calendar getFirstDay(int year, int month){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.AM_PM, Calendar.AM);
+        c.set(Calendar.HOUR, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        int day = c.getActualMinimum(Calendar.DAY_OF_MONTH);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        return c;
+    }
+
+    public static Calendar getLastDay(int year, int month){
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.AM_PM, Calendar.PM);
+        c.set(Calendar.HOUR, 11);
+        c.set(Calendar.MINUTE, 59);
+        c.set(Calendar.SECOND, 59);
+        c.set(Calendar.MILLISECOND, 999);
+
+        int day = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+        c.set(Calendar.DAY_OF_MONTH, day);
+        return c;
+    }
+
     public static long getCutoffMsec(long time) {
-        return  (Math.round(time / 1000) * 1000);
+        return  (long) (Math.round(time / 1000) * 1000);
     }
 
     public static String getMonthlyTimeString(Context context, long time) {

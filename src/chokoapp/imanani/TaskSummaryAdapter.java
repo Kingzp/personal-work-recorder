@@ -47,7 +47,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final DailyTaskSummary dailyTaskSummary = getItem(position);
+        final DailyTaskSummary dailyTaskSummary = (DailyTaskSummary)getItem(position);
         if ( convertView == null ) {
             convertView = inf.inflate(resourceId, null);
         }
@@ -59,7 +59,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         taskDurationView.setTime(dailyTaskSummary.getDuration());
 
         ((ManipulateButton)convertView.findViewById(R.id.timePlusView))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         taskDurationView.up();
@@ -67,7 +67,7 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
                     }
                 });
         ((ManipulateButton)convertView.findViewById(R.id.timeMinusView))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         taskDurationView.down();
@@ -107,6 +107,8 @@ public class TaskSummaryAdapter extends ArrayAdapter<DailyTaskSummary> {
         }
         return sum;
     }
+
+    public boolean isEmpty() { return getCount() == 0; }
 
     @SuppressWarnings("serial")
     public List<Task> getRemainedTasks(final SQLiteDatabase db) {

@@ -11,10 +11,6 @@ public class ManipulateButton extends ImageView {
     private Manipulator manipulator;
     private ContinuousTouch continuousToch;
 
-    public interface Manipulator {
-        public void execute();
-    }
-
     public ManipulateButton(Context context) {
         this(context, null, 0);
     }
@@ -52,7 +48,6 @@ public class ManipulateButton extends ImageView {
                         if ( continuousToch != null) {
                             continuousToch.cancel(true);
                         }
-                        break;
                     case MotionEvent.ACTION_DOWN:
                         break;
                     default:
@@ -81,7 +76,6 @@ public class ManipulateButton extends ImageView {
             }
         }
 
-        @Override
         protected void onProgressUpdate(Void... values) {
             manipulator.execute();
         }

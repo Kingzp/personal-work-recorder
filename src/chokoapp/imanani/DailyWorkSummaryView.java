@@ -37,14 +37,14 @@ public class DailyWorkSummaryView extends RelativeLayout implements Observer {
         dailyWorkSummary.addObserver(this);
 
         ((ManipulateButton)findViewById(R.id.startTimeUp))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         dailyWorkSummary.startTimeUp();
                     }
                 });
         ((ManipulateButton)findViewById(R.id.startTimeDown))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         dailyWorkSummary.startTimeDown();
@@ -52,14 +52,14 @@ public class DailyWorkSummaryView extends RelativeLayout implements Observer {
                 });
 
         ((ManipulateButton)findViewById(R.id.endTimeUp))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         dailyWorkSummary.endTimeUp();
                     }
                 });
         ((ManipulateButton)findViewById(R.id.endTimeDown))
-            .setManipulator(new ManipulateButton.Manipulator() {
+            .setManipulator(new Manipulator() {
                     @Override
                     public void execute() {
                         dailyWorkSummary.endTimeDown();

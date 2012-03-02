@@ -33,11 +33,16 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center" >
+
             <ToggleButton
                 android:id="@+id/toggleRecordingButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/toggle_button"
@@ -47,6 +52,8 @@
                 android:paddingTop="10dp"
                 android:textOff="@string/start_recording"
                 android:textOn="@string/finish_recording" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -60,13 +67,9 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/recordingTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
-            android:textColor="#f0e68c"
+            android:layout_marginLeft="5dp"
             android:text="@string/now_recording" />
 
         <chokoapp.imanani.TaskSelectionSpinner

@@ -99,7 +99,6 @@ class TimeKeeper implements Runnable {
     /**
      * 勤務時間と作業時間を表示に反映させる。
      */
-    @Override
     public void run() {
         long now = System.currentTimeMillis();
         if (workStartTime != 0) {
