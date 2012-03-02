@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Animation;
 
 public class MainActivity extends Activity {
     private SQLiteDatabase db;
@@ -23,6 +25,8 @@ public class MainActivity extends Activity {
     private TaskSelectionSpinner spinner;
     private TaskInputView taskInputView;
     private ToggleButton toggleRecordingButton;
+    private TextView recordingTitle;
+    private Animation fadeIn, fadeOut;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,12 +40,18 @@ public class MainActivity extends Activity {
         db = (new DBOpenHelper(this)).getWritableDatabase();
         spinner = (TaskSelectionSpinner)findViewById(R.id.selectTaskSpinner);
 
-
         timeKeeper = new TimeKeeper(
                 (TextView) findViewById(R.id.totalTimeView),
                 (TextView) findViewById(R.id.durationView));
         timeKeeper.init(db);
         ticker = new Ticker(timeKeeper);
+
+        recordingTitle = (TextView)findViewById(R.id.recordingTitle);
+        if (timeKeeper.nowRecording()) {
+            recordingTitle.setVisibility(View.VISIBLE);
+        } else {
+            recordingTitle.setVisibility(View.INVISIBLE);
+        }
 
         taskInputView = (TaskInputView)findViewById(R.id.taskInputView);
         taskInputView.setOnTaskChangedListener(new OnTaskChangedListener() {
@@ -51,6 +61,7 @@ public class MainActivity extends Activity {
                     spinner.setSelection(task);
                 }
             });
+
         toggleRecordingButton = (ToggleButton)findViewById(R.id.toggleRecordingButton);
         toggleRecordingButton.setChecked(timeKeeper.nowRecording());
         toggleRecordingButton.setOnClickListener(new View.OnClickListener() {
@@ -59,11 +70,16 @@ public class MainActivity extends Activity {
                     if (toggleRecordingButton.isChecked()) {
                         Task selectedTask = (Task)spinner.getSelectedItem();
                         if ( selectedTask != null ) timeKeeper.beginWork(selectedTask);
+                        recordingTitle.startAnimation(fadeIn);
                     } else {
                         timeKeeper.endWork();
+                        recordingTitle.startAnimation(fadeOut);
                     }
                 }
             });
+
+        fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
+        fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
     }
 
     @Override
