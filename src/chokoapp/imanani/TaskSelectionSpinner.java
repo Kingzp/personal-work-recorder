@@ -35,18 +35,26 @@ public class TaskSelectionSpinner extends Spinner {
         setAdapter(adapter);
 
         setOnItemSelectedListener(new ChangeTask());
-        if ( adapter.getCount() == 0 ) return;
 
-        int spinnerPosition = -1;
-        int count = adapter.getCount();
-        for (int i = 0 ; i < count ; i++ ) {
-            if (adapter.getItem(i).getId() == timeKeeper.getCurrentTaskId()) {
-                spinnerPosition = i;
-            }
-        }
-        if ( spinnerPosition != -1 ) {
+        int spinnerPosition = getCurrentTaskPosition(timeKeeper);
+        if (spinnerPosition != -1) {
             setSelection(spinnerPosition);
         }
+    }
+
+    private int getCurrentTaskPosition(TimeKeeper timeKeeper) {
+        if (timeKeeper.nowRecording()) {
+            int count = getCount();
+            for (int i = 0 ; i < count ; i++ ) {
+                Object obj = getItemAtPosition(i);
+                if (obj instanceof Task &&
+                    ((Task)obj).getId() == timeKeeper.getCurrentTaskId()) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        return -1;
     }
 
     private class ChangeTask implements OnItemSelectedListener {
