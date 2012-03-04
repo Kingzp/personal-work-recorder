@@ -19,7 +19,7 @@
     <string name="has_the_same_code">You has the same code</string>
     <string name="edit_task">Edit Task</string>
     <string name="cannot_delete">You cannot delete currently recording task</string>
-    <string name="daily_total">Daily Total</string>
+    <string name="daily_total">Total</string>
     <string name="daily_summary_title">Aggregate of %1$s</string>
     <string name="reset">Reset</string>
     <string name="save">Save</string>
@@ -29,8 +29,8 @@
     <string name="send">Send Mail</string>
     <string name="daily_work_report">Daily Work Report</string>
     <string name="work_date">Work Date</string>
-    <string name="start_time">Start Time</string>
-    <string name="end_time">End Time</string>
+    <string name="start_time">Start</string>
+    <string name="end_time">End</string>
     <string name="duration">Duration</string>
     <string name="hours">hours</string>
     <string name="days">days</string>

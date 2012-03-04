@@ -1,130 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+    android:id="@+id/TableLayout1"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" >
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/startTimeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="5dp"
-            android:padding="3dp"
+            android:layout_gravity="clip_vertical"
+            android:gravity="right"
+            android:padding="5dp"
             android:text="@string/start_time"
-            android:textSize="16dp" />
+            android:textSize="14dp" />
 
         <chokoapp.imanani.DateTimeView
             android:id="@+id/startTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/startTimeText"
             android:gravity="right"
             android:padding="5dp"
-            android:text="9999/99/99 00:00:00"
-            android:textSize="16dp" />
+            android:text="99/99 00:00:00"
+            android:textSize="24dp" />
 
         <chokoapp.imanani.ManipulateButton
             android:id="@+id/startTimeUp"
             style="@style/up_down_button_style"
-            android:src="@drawable/plus_button"
-            android:layout_alignBottom="@+id/startTimeView"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/startTimeView" />
+            android:src="@drawable/plus_button" />
 
         <chokoapp.imanani.ManipulateButton
             android:id="@+id/startTimeDown"
             style="@style/up_down_button_style"
-            android:src="@drawable/minus_button"
-            android:layout_alignBottom="@+id/startTimeView"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/startTimeUp" />
+            android:src="@drawable/minus_button" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/endTimeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/startTimeText"
-            android:layout_alignRight="@id/startTimeText"
-            android:layout_below="@+id/startTimeText"
+            android:layout_gravity="clip_vertical"
+            android:gravity="right"
             android:padding="3dp"
             android:text="@string/end_time"
-            android:textSize="16dp" />
+            android:textSize="14dp" />
 
         <chokoapp.imanani.DateTimeView
             android:id="@+id/endTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/startTimeView"
-            android:layout_toRightOf="@+id/endTimeText"
             android:gravity="right"
             android:padding="5dp"
-            android:text="9999/99/99 00:00:00"
-            android:textSize="16dp" />
+            android:text="99/99 00:00:00"
+            android:textSize="24dp" />
 
         <chokoapp.imanani.ManipulateButton
             android:id="@+id/endTimeUp"
-            android:src="@drawable/plus_button"
-            android:layout_width="36dp"
-            android:layout_height="20dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:layout_alignBottom="@+id/endTimeView"
-            android:layout_below="@+id/startTimeUp"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@+id/endTimeView" />
+            style="@style/up_down_button_style"
+            android:src="@drawable/plus_button" />
 
         <chokoapp.imanani.ManipulateButton
             android:id="@+id/endTimeDown"
-            android:src="@drawable/minus_button"
-            android:layout_width="36dp"
-            android:layout_height="20dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:layout_alignBottom="@+id/endTimeView"
-            android:layout_below="@+id/startTimeDown"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@+id/endTimeUp" />
+            style="@style/up_down_button_style"
+            android:src="@drawable/minus_button" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <ImageView
             android:id="@+id/recordSeparator"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/endTimeText"
+            android:layout_span="4"
             android:scaleType="fitXY"
             android:src="@android:drawable/divider_horizontal_bright" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/endTimeText"
-            android:layout_below="@+id/endTimeText"
+            android:layout_gravity="center_vertical"
+            android:gravity="right"
             android:padding="3dp"
             android:text="@string/daily_total"
-            android:textSize="16dp" />
+            android:textSize="14dp" />
 
         <chokoapp.imanani.TimeView
             android:id="@+id/totalTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/endTimeView"
-            android:layout_below="@+id/endTimeView"
             android:padding="5dp"
             android:text="00:00:00"
-            android:textSize="16dp" />
+            android:gravity="right"
+            android:textSize="24dp" />
 
         <chokoapp.imanani.TimeView
             android:id="@+id/differenceTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/endTimeUp"
-            android:layout_toRightOf="@+id/totalTimeView"
+            android:layout_span="2"
+            android:gravity="right"
             android:padding="5dp"
             android:text=" 00:00:00"
-            android:textSize="16dp" />
+            android:textSize="24dp" />
 
-</RelativeLayout>
+    </TableRow>
+
+</TableLayout>
