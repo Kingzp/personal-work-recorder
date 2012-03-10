@@ -2,8 +2,6 @@ package chokoapp.imanani;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -49,27 +47,36 @@ public class CalendarDateView extends RelativeLayout {
         if ( db != null ) {
             DailyWorkSummary dailyWorkSummary =
                 DailyWorkSummary.findByDate(db, date.getTime());
-            List<DailyTaskSummary> dailyTaskSummaries = null;
-            int color = Color.BLACK;
             if (dailyWorkSummary.isEmpty()) {
-                dailyTaskSummaries = TaskRecord.findByDate(db, date.getTime());
-                if ( !dailyTaskSummaries.isEmpty() ) {
-                    color = Color.parseColor("#8ff0e68c"); /* khaki color */
-                }
-            } else {
-                dailyTaskSummaries = DailyTaskSummary.findById(db, dailyWorkSummary.getId());
-                color = Color.parseColor("#8f90ee90"); /* light green */
+                dailyWorkSummary = WorkRecord.findByDate(db, date.getTime());
             }
-            long time = 0;
-            for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
-                time += dailyTaskSummary.getDuration();
-            }
-            setTime(time);
-            setTextColor(color);
+            setTime(dailyWorkSummary.getTotal());
+            setTextColor(getTimeColor(date, db));
         } else {
             setTime(0);
             setTextColor(Color.BLACK);
         }
+    }
+
+    private int getTimeColor(Date date, SQLiteDatabase db) {
+        DailyWorkSummary dailyWorkSummary =
+            DailyWorkSummary.findByDate(db, date.getTime());
+        if (dailyWorkSummary.isEmpty()) {
+            dailyWorkSummary = WorkRecord.findByDate(db, date.getTime());
+            if (dailyWorkSummary.isEmpty()) {
+                return Color.BLACK;
+            } else {
+                return Color.parseColor("#8ff0e68c"); /* khaki color */
+            }
+        } else {
+            if (dailyWorkSummary.hasConsistentDetails(db)) {
+                return Color.parseColor("#8f90ee90"); /* light green */
+            } else {
+                return Color.parseColor("#8fff4500"); /* orange red */
+            }
+        }
+
+
     }
     public void setDate(int date) {
         dateView.setText(Integer.toString(date));

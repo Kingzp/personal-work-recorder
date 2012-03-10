@@ -161,7 +161,7 @@ public class DailySummaryActivity extends ListActivity implements Observer {
 
     @Override
     public void onBackPressed() {
-        if (!dailyWorkSummary.nowRecording() && matchTotalTime()) {
+        if (!dailyWorkSummary.nowRecording()) {
             if (saveTable()) {
                 Intent intent = new Intent();
                 intent.putExtra("updatedDate", currentDate);

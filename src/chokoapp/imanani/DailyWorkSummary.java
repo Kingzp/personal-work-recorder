@@ -2,6 +2,7 @@ package chokoapp.imanani;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Observable;
 
 import android.content.ContentValues;
@@ -167,7 +168,7 @@ public class DailyWorkSummary extends Observable {
 
     public void saveToSharedPreference(Context context) {
         SharedPreferences pref =
-            context.getSharedPreferences("dailyWorkSummary", 
+            context.getSharedPreferences("dailyWorkSummary",
                                          Context.MODE_PRIVATE|Context.MODE_WORLD_WRITEABLE);
         Editor e = pref.edit();
         if ( isEmpty() ) {
@@ -182,7 +183,7 @@ public class DailyWorkSummary extends Observable {
 
     public void restoreFromSharedPreference(Context context) {
         SharedPreferences pref =
-            context.getSharedPreferences("dailyWorkSummary", 
+            context.getSharedPreferences("dailyWorkSummary",
                                          Context.MODE_PRIVATE|Context.MODE_WORLD_READABLE);
         long _id = pref.getLong("_id", -1);
         long start_at = pref.getLong("start_at", -1);
@@ -190,5 +191,17 @@ public class DailyWorkSummary extends Observable {
         if ( _id >= 0 && start_at >= 0 && end_at >= 0 ) {
             copy(new DailyWorkSummary(_id, start_at, end_at));
         }
+    }
+
+    public boolean hasConsistentDetails(SQLiteDatabase db) {
+        if (!existInDatabase()) return false;
+
+        List<DailyTaskSummary> dailyTaskSummaries =
+            DailyTaskSummary.findById(db, _id);
+        long time = 0;
+        for (DailyTaskSummary dailyTaskSummary : dailyTaskSummaries) {
+            time += dailyTaskSummary.getDuration();
+        }
+        return Math.abs(time - getTotal()) < 1000;
     }
 }
