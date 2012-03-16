@@ -1,7 +1,7 @@
 # HOW TO USE
-# 1. copy this script to /data/data/chokoapp.imanani/databases by DDMS tool
+# 1. copy this script to /data/data/jp.gr.java_conf.choplin_j.imanani/databases by DDMS tool
 # 2. at adb shell. type
-#    # cd /data/data/chokoapp.imanani/databases (the place where the database file is stored)
+#    # cd /data/data/jp.gr.java_conf.choplin_j.imanani/databases (the place where the database file is stored)
 #    # chmod 776 display_tables.sh (not be accepted u+x style, you must specify hex code)
 # 3. execute this script
 #    # ./display_tables.sh
