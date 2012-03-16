@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="chokoapp.imanani"
+    package="jp.gr.java_conf.choplin_j.imanani"
     android:versionCode="1"
     android:versionName="1.0" >
 

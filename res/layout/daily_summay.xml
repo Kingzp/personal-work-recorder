@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+                xmlns:app="http://schemas.android.com/apk/res/jp.gr.java_conf.choplin_j.imanani"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
@@ -19,7 +19,7 @@
       android:text="@string/daily_summary_title"
       android:textSize="18sp" />
 
-    <chokoapp.imanani.DailyWorkSummaryView
+    <jp.gr.java_conf.choplin_j.imanani.DailyWorkSummaryView
         android:id="@+id/summaryView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

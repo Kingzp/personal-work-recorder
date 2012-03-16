@@ -31,7 +31,7 @@
       android:layout_marginRight="2dp"
       android:text="@string/task_name" />
 
-  <chokoapp.imanani.TaskCompleteView
+  <jp.gr.java_conf.choplin_j.imanani.TaskCompleteView
       android:id="@+id/taskCompleteView"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

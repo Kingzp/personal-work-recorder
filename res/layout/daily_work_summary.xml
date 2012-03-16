@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/chokoapp.imanani"
+    xmlns:app="http://schemas.android.com/apk/res/jp.gr.java_conf.choplin_j.imanani"
     android:id="@+id/TableLayout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
@@ -20,7 +20,7 @@
             android:text="@string/start_time"
             android:textSize="14dp" />
 
-        <chokoapp.imanani.DateTimeView
+        <jp.gr.java_conf.choplin_j.imanani.DateTimeView
             android:id="@+id/startTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,12 +29,12 @@
             android:text="99/99 00:00:00"
             android:textSize="24dp" />
 
-        <chokoapp.imanani.ManipulateButton
+        <jp.gr.java_conf.choplin_j.imanani.ManipulateButton
             android:id="@+id/startTimeUp"
             style="@style/up_down_button_style"
             android:src="@drawable/plus_button" />
 
-        <chokoapp.imanani.ManipulateButton
+        <jp.gr.java_conf.choplin_j.imanani.ManipulateButton
             android:id="@+id/startTimeDown"
             style="@style/up_down_button_style"
             android:src="@drawable/minus_button" />
@@ -56,7 +56,7 @@
             android:text="@string/end_time"
             android:textSize="14dp" />
 
-        <chokoapp.imanani.DateTimeView
+        <jp.gr.java_conf.choplin_j.imanani.DateTimeView
             android:id="@+id/endTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,12 +65,12 @@
             android:text="99/99 00:00:00"
             android:textSize="24dp" />
 
-        <chokoapp.imanani.ManipulateButton
+        <jp.gr.java_conf.choplin_j.imanani.ManipulateButton
             android:id="@+id/endTimeUp"
             style="@style/up_down_button_style"
             android:src="@drawable/plus_button" />
 
-        <chokoapp.imanani.ManipulateButton
+        <jp.gr.java_conf.choplin_j.imanani.ManipulateButton
             android:id="@+id/endTimeDown"
             style="@style/up_down_button_style"
             android:src="@drawable/minus_button" />
@@ -106,7 +106,7 @@
             android:text="@string/daily_total"
             android:textSize="14dp" />
 
-        <chokoapp.imanani.TimeView
+        <jp.gr.java_conf.choplin_j.imanani.TimeView
             android:id="@+id/totalTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
             android:gravity="right"
             android:textSize="24dp" />
 
-        <chokoapp.imanani.TimeView
+        <jp.gr.java_conf.choplin_j.imanani.TimeView
             android:id="@+id/differenceTimeView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
