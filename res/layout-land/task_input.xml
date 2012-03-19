@@ -41,6 +41,7 @@
       android:layout_alignLeft="@id/taskCodeView"
       android:layout_alignRight="@id/taskCodeView"
       android:layout_below="@id/taskCodeView"
+      android:singleLine="true"
       android:layout_marginTop="5dp" />
 
   <EditText
@@ -49,6 +50,7 @@
       android:layout_height="wrap_content"
       android:layout_alignLeft="@id/taskDescriptionView"
       android:layout_alignTop="@+id/taskCompleteView"
+      android:singleLine="true"
       android:layout_marginRight="5dp" >
 
   </EditText>
