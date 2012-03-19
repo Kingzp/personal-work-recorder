@@ -28,6 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:shrinkColumns="2"
         android:stretchColumns="2" >
 
         <TableRow
@@ -44,12 +45,15 @@
             <EditText
                 android:id="@+id/definedTaskCode"
                 android:layout_width="70dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
 
             <EditText
                 android:id="@+id/definedDescription"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:singleLine="true" />
+
         </TableRow>
 
         <TableRow
