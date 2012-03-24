@@ -51,4 +51,6 @@
     <string name="thursday">Thu.</string>
     <string name="friday">Fri.</string>
     <string name="saturday">Sat.</string>
+    <string name="version_info">Version Info</string>
+    <string name="version">version %1$s</string>
 </resources>

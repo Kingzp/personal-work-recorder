@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-            android:title="@string/monthly_summary_preferences">
+    xmlns:android="http://schemas.android.com/apk/res/android">
+  <PreferenceCategory
+      android:title="@string/monthly_summary_preferences">
 
-        <EditTextPreference
-                android:key="monthly_summary_time_of_day"
-                android:title="@string/monthly_summary_preference_time_of_day_title"
-                android:summary="@string/monthly_summary_preference_time_of_day_summary"
-                android:dialogTitle="@string/monthly_summary_preference_time_of_day_dialog_title"
-                android:inputType="number"
-                android:maxLength="2"/>
-    </PreferenceCategory>
+    <EditTextPreference
+        android:key="monthly_summary_time_of_day"
+        android:title="@string/monthly_summary_preference_time_of_day_title"
+        android:summary="@string/monthly_summary_preference_time_of_day_summary"
+        android:dialogTitle="@string/monthly_summary_preference_time_of_day_dialog_title"
+        android:inputType="number"
+        android:maxLength="2"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+      android:title="@string/version_info">
+
+    <jp.gr.java_conf.choplin_j.imanani.AboutPreference
+        android:key="about"
+        android:layout="@layout/about_this_software"
+        android:selectable="false"/>
+  </PreferenceCategory>
 </PreferenceScreen>
