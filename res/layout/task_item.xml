@@ -15,10 +15,8 @@
         android:layout_width="70dp"
         android:layout_height="match_parent"
         android:layout_margin="1dp"
-        android:editable="false"
         android:gravity="center_vertical"
-        android:padding="1dp"
-        android:text="TextView" />
+        android:padding="1dp" />
 
     <TextView
         android:id="@+id/taskDescription"
@@ -26,9 +24,7 @@
         android:layout_height="match_parent"
         android:layout_margin="1dp"
         android:layout_marginLeft="1dp"
-        android:editable="false"
         android:gravity="center_vertical"
-        android:padding="1dp"
-        android:text="TextView" />
+        android:padding="1dp" />
 
 </LinearLayout>
